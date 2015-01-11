@@ -1,6 +1,5 @@
 package main;
 
-import java.awt.Color;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
