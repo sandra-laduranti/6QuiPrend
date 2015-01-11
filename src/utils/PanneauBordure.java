@@ -40,13 +40,13 @@ public class PanneauBordure extends JPanel{
         
 		JPanel flow_panel = new JPanel();
 		flow_panel.setBorder(new EmptyBorder(25,10,30,10));
-        panel = new JPanel(new GridLayout(liste_compo.length, 1, 5, 5));   
-        panel.setOpaque(false);
-        
-        for(int i = 0; i<liste_compo.length ; i++ ){
-        	panel.add(liste_compo[i]);
-        }
-        
+	        panel = new JPanel(new GridLayout(liste_compo.length, 1, 5, 5));   
+	        panel.setOpaque(false);
+	        
+	        for(int i = 0; i<liste_compo.length ; i++ ){
+	        	if(liste_compo[i] instanceof JPanel) ((JPanel) liste_compo[i]).setOpaque(false);
+	        	panel.add(liste_compo[i]);
+	        }
         flow_panel.add(panel);
         flow_panel.setOpaque(false);
         this.add(flow_panel, BorderLayout.NORTH);

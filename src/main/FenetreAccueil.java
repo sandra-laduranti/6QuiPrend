@@ -47,7 +47,7 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 	public FenetreAccueil(){
 		
 		this.context = this;  // Pour pouvoir utiliser notre instance de fenetreAccueil partout (methodes statics, listeners, ...) lorsque this ne fonctionne pas
-	    this.setTitle("6 Qui Prend !");
+	    this.setTitle("6 Qui Prend");
 		this.setIconImage(new ImageIcon(getClass().getResource("/images/logo 6QuiPrend.png")).getImage()); // Logo
 		this.setLayout(new BorderLayout()); // Layout qui permet d'ajouter soit sur le bord, soit au centre
 	    this.setSize(900,600); // Taille de l'écran au lancement
@@ -86,7 +86,7 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 	    bouton_deconnexion.addActionListener(this);
 	    
 	    bouton_inscription = new JButton("Inscription");
-        
+	    
         // Partie centre/gauche
         ecrangauche = new EcranGauche(new ImageIcon(getClass().getResource("/images/fond 6QuiPrend.png")).getImage(), new BorderLayout());
         this.add(ecrangauche, BorderLayout.CENTER);
@@ -96,12 +96,15 @@ public class FenetreAccueil extends JFrame implements ActionListener{
         this.add(panneau, BorderLayout.EAST);
 
 	    this.setVisible(true);
+	    this.revalidate();
+	    this.repaint();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// Si c'est une connexion
 		if(e.getActionCommand().equals(item_connexion.getText()) || e.getActionCommand().equals(bouton_connexion.getText())){
+		
 
 			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
 			fenetreconnexion.setVisible(true);
@@ -113,9 +116,8 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
 				
 				// La boite contenant les infos de l'utilisateur sera modifié dans les classes d'Accueil
-
-				new AccueilCompte(context, fenetreconnexion.getCompte());
-			} else {
+		    	new AccueilCompte(context, fenetreconnexion.getCompte());
+	        } else {
 	        	is_connected=false;
 	        	if(fenetreconnexion.isCanceled()==false) {
 	        		//Boîte du message d'erreur
@@ -136,7 +138,7 @@ public class FenetreAccueil extends JFrame implements ActionListener{
     			this.remove(panneau);
     			ecrangauche.removeAll();
     			ecrangauche.changeImage(new ImageIcon(getClass().getResource("/images/fond 6QuiPrend.png")).getImage());
-    			panneau = new PanneauBordure(bouton_connexion,bouton_inscription, new JPanel());
+    			panneau = new PanneauBordure(bouton_connexion,bouton_inscription);
     			this.add(panneau, BorderLayout.EAST);
     			context.revalidate(); // A mettre toujours avant repaint
     			context.repaint(); // Mise à jour de la fenetre, a faire souvent lorsque changement
@@ -144,7 +146,6 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 		} else if (e.getActionCommand().equals(bouton_inscription.getText())){
 			// Inscription à coder (un peu comme connexion, en plus complexe, parceque faut faire des verifs)
 		}
-
 	}
 	
 	public boolean isConnected() {
@@ -162,6 +163,5 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 	public JButton getBoutonDeconnexion(){
 		return bouton_deconnexion;
 	}
-	
 	
 }

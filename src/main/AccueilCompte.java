@@ -13,7 +13,6 @@ import metier.Compte;
 import utils.EcranGauche;
 import utils.PanneauBordure;
 
-
 public class AccueilCompte{
 	
 	private FenetreAccueil context;
@@ -27,7 +26,7 @@ public class AccueilCompte{
 	// Premier formulaire : Liste événements
 	private JButton bouton_retour;
 	
-	public AccueilCompte(final FenetreAccueil context, Compte compte) {
+	public AccueilCompte(FenetreAccueil context, Compte compte) {
 		
 		this.context= context;
 		this.compte = compte;

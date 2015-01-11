@@ -10,14 +10,13 @@ import java.awt.Paint;
 
 import javax.swing.JPanel;
 
+@SuppressWarnings("serial")
 public class EcranGauche extends JPanel {
 	private Image image;
 	private Graphics g;
     public static final Color BACKGROUND_HAUT_BAS      = new Color(36,163,199);
     public static final Color BACKGROUND_CENTER    = new Color(234,236,236);
 	
-	private static final long serialVersionUID = 1L;
-
 	public EcranGauche(Image image){
 		this.image=image;
 	}

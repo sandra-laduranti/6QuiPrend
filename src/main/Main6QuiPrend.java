@@ -3,6 +3,7 @@ package main;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -25,10 +26,10 @@ public class Main6QuiPrend{
         /**
          * Create GUI and components on Event-Dispatch-Thread
          */
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-            	FenetreAccueil f = new FenetreAccueil();
+            	final FenetreAccueil f = new FenetreAccueil();
             	f.addWindowListener(new WindowListener() {
         			
         			@Override
