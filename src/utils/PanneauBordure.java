@@ -49,7 +49,7 @@ public class PanneauBordure extends JPanel{
         
         flow_panel.add(panel);
         flow_panel.setOpaque(false);
-        this.add(flow_panel, BorderLayout.CENTER);
+        this.add(flow_panel, BorderLayout.NORTH);
         
 	    this.setBackground(EcranGauche.BACKGROUND_HAUT_BAS);
 	}

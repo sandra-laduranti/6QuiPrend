@@ -41,7 +41,7 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 	
 	//Panneau
 	private PanneauBordure panneau;
-	private EcranGauche fondecran;
+	private EcranGauche ecrangauche;
 
 
 	public FenetreAccueil(){
@@ -88,8 +88,8 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 	    bouton_inscription = new JButton("Inscription");
         
         // Partie centre/gauche
-        fondecran = new EcranGauche(new ImageIcon(getClass().getResource("/images/fond 6QuiPrend.png")).getImage(), new BorderLayout());
-        this.add(fondecran, BorderLayout.CENTER);
+        ecrangauche = new EcranGauche(new ImageIcon(getClass().getResource("/images/fond 6QuiPrend.png")).getImage(), new BorderLayout());
+        this.add(ecrangauche, BorderLayout.CENTER);
 
         // On créé un nouveau panneau sur la droite (avec un JPanel vide pour espacer)
         panneau = new PanneauBordure(bouton_connexion, bouton_inscription);
@@ -102,14 +102,7 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// Si c'est une connexion
 		if(e.getActionCommand().equals(item_connexion.getText()) || e.getActionCommand().equals(bouton_connexion.getText())){
-		
-		//////////
-		// PARTIE A DECOMMENTER pour test sur votre "compte perso" (ici c'est un gérant qui a comme login julien)
-//			new AccueilGerant(context, (Gerant) DAOFactory.getCompteDAO().getCompteParTypeEtIdCompte("Gérant", 2));
-	
-		/////////////
-		// A commenter UNIQUEMENT PENDANT LES TESTS
-	    //
+
 			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
 			fenetreconnexion.setVisible(true);
 			if(fenetreconnexion.isSucceeded()){
@@ -121,8 +114,8 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 				
 				// La boite contenant les infos de l'utilisateur sera modifié dans les classes d'Accueil
 
-				//new AccueilGerant(context, (Gerant) DAOFactory.getCompteDAO().getCompteParTypeEtIdCompte("Gérant", fenetreconnexion.getIdCompte())); // Page d'acceuil du gérant (avec en paramètre la page d'acceuil, et son login)
-	        } else {
+				new AccueilCompte(context, fenetreconnexion.getCompte());
+			} else {
 	        	is_connected=false;
 	        	if(fenetreconnexion.isCanceled()==false) {
 	        		//Boîte du message d'erreur
@@ -141,8 +134,8 @@ public class FenetreAccueil extends JFrame implements ActionListener{
     			this.menu.remove(item_deconnexion); // Si la deconnexion à réussie, on l'enlève du menu
     			this.menu.add(item_connexion,0);
     			this.remove(panneau);
-    			fondecran.removeAll();
-    			fondecran.changeImage(new ImageIcon(getClass().getResource("/images/fond 6QuiPrend.png")).getImage());
+    			ecrangauche.removeAll();
+    			ecrangauche.changeImage(new ImageIcon(getClass().getResource("/images/fond 6QuiPrend.png")).getImage());
     			panneau = new PanneauBordure(bouton_connexion,bouton_inscription, new JPanel());
     			this.add(panneau, BorderLayout.EAST);
     			context.revalidate(); // A mettre toujours avant repaint
@@ -162,9 +155,9 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 		return panneau;
 	}
 	
-//	public FondEcran getFondEcran(){
-//		return fondecran;
-//	}
+	public EcranGauche getEcranGauche(){
+		return ecrangauche;
+	}
 	
 	public JButton getBoutonDeconnexion(){
 		return bouton_deconnexion;

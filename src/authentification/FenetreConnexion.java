@@ -12,7 +12,6 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -22,7 +21,6 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import metier.Compte;
-import metierDAO.CompteDAO;
 
 public class FenetreConnexion extends JDialog {
 
@@ -30,10 +28,9 @@ public class FenetreConnexion extends JDialog {
 	private Compte compte; // Id compte
 	private JTextField tfUsername;
     private JPasswordField pfPassword;
-    private JComboBox<String> liste_user;
     private JButton btnLogin;
     private JButton btnCancel;
-    private boolean succeeded;
+    private boolean succeeded = false;
     private boolean canceled = false;
 
     public FenetreConnexion(Frame parent) {
@@ -42,16 +39,6 @@ public class FenetreConnexion extends JDialog {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints cs = new GridBagConstraints();
         cs.fill = GridBagConstraints.HORIZONTAL;
-        
-        // Type utilisateur
-        cs.gridx = 0;
-        cs.gridy = 0;
-        cs.gridwidth = 1;
-        panel.add(new JLabel("Je suis : "),cs);
-        cs.gridx = 1;
-        cs.gridy = 0;
-        cs.gridwidth = 1;
-        panel.add(liste_user,cs);
         
         // Login
         cs.gridx = 0;
@@ -83,7 +70,11 @@ public class FenetreConnexion extends JDialog {
         btnLogin.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-            	compte = new CompteDAO().verifieAuthentification(getUsername(), getPassword());
+//            	En attendant la BDD, on commente et on attribue un compte bidon
+//            	compte = new CompteDAO().verifieAuthentification(getUsername(), getPassword());
+            	
+            	compte = new Compte(1,"Test Login", "Test Nom", "Test Prenom", "testmdp");
+            	
                 if (compte!=null) {
                     JOptionPane.showMessageDialog(FenetreConnexion.this,
                             "Salut " + getUsername() + " !",
@@ -91,7 +82,7 @@ public class FenetreConnexion extends JDialog {
                             JOptionPane.INFORMATION_MESSAGE);
                     succeeded = true;
                     dispose();
-                } else { // Si id_compte = 0, c'est que le compte n'existe pas
+                } else { // Si compte null, c'est qu'aucun compte contient ce Login+mdp
                     JOptionPane.showMessageDialog(FenetreConnexion.this,
                             "Login ou mot de passe invalide !",
                             "Connexion refusée",
@@ -143,10 +134,6 @@ public class FenetreConnexion extends JDialog {
 			public void windowActivated(WindowEvent e) {}
 		});
     }
-    
-    public String getTypeUser(){
-    	return (String) liste_user.getSelectedItem();
-    }
 
     public String getUsername() {
         return tfUsername.getText().trim();
@@ -162,6 +149,10 @@ public class FenetreConnexion extends JDialog {
     
     public boolean isCanceled() {
         return canceled;
+    }
+    
+    public Compte getCompte(){
+    	return compte;
     }
     
 }
