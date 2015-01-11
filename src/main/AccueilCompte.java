@@ -8,7 +8,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
 import metier.Compte;
 import utils.EcranGauche;
 import utils.PanneauBordure;
