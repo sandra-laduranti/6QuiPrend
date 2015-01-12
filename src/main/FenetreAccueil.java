@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -12,7 +13,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 import utils.EcranGauche;
 import utils.PanneauBordure;
@@ -48,7 +48,9 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 		
 		this.context = this;  // Pour pouvoir utiliser notre instance de fenetreAccueil partout (methodes statics, listeners, ...) lorsque this ne fonctionne pas
 	    this.setTitle("6 Qui Prend");
-		this.setIconImage(new ImageIcon(getClass().getResource("/images/logo 6QuiPrend.png")).getImage()); // Logo
+	    
+	    URL url_tmp = getClass().getResource("/images/logo 6QuiPrend.png");
+		if(url_tmp!=null) this.setIconImage(new ImageIcon(url_tmp).getImage()); // Logo
 		this.setLayout(new BorderLayout()); // Layout qui permet d'ajouter soit sur le bord, soit au centre
 	    this.setSize(900,600); // Taille de l'écran au lancement
 	    this.setMinimumSize(new Dimension(600,500));
@@ -88,11 +90,15 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 	    bouton_inscription = new JButton("Inscription");
 	    
         // Partie centre/gauche
-        ecrangauche = new EcranGauche(new ImageIcon(getClass().getResource("/images/fond 6QuiPrend.png")).getImage(), new BorderLayout());
+        ecrangauche = new EcranGauche(new BorderLayout());
+        url_tmp = getClass().getResource("/images/fond 6QuiPrend.png");
+        if(url_tmp!=null) ecrangauche.setImage(new ImageIcon(url_tmp).getImage());
         this.add(ecrangauche, BorderLayout.CENTER);
 
         // On créé un nouveau panneau sur la droite (avec un JPanel vide pour espacer)
         panneau = new PanneauBordure(bouton_connexion, bouton_inscription);
+        url_tmp = getClass().getResource("/images/fonddroite.png");
+        if(url_tmp!=null) ecrangauche.setImage(new ImageIcon(url_tmp).getImage());
         this.add(panneau, BorderLayout.EAST);
 
 	    this.setVisible(true);
@@ -135,11 +141,16 @@ public class FenetreAccueil extends JFrame implements ActionListener{
     			//
     			this.menu.remove(item_deconnexion); // Si la deconnexion à réussie, on l'enlève du menu
     			this.menu.add(item_connexion,0);
-    			this.remove(panneau);
+    			
     			ecrangauche.removeAll();
-    			ecrangauche.changeImage(new ImageIcon(getClass().getResource("/images/fond 6QuiPrend.png")).getImage());
+    			URL url_tmp = getClass().getResource("/images/fond 6QuiPrend.png");
+    	        if(url_tmp!=null) ecrangauche.setImage(new ImageIcon(url_tmp).getImage());
+    	        
+    			this.remove(panneau);
     			panneau = new PanneauBordure(bouton_connexion,bouton_inscription);
-    			this.add(panneau, BorderLayout.EAST);
+    			url_tmp = getClass().getResource("/images/fonddroite.png");
+    	        if(url_tmp!=null) ecrangauche.setImage(new ImageIcon(url_tmp).getImage());
+    	        this.add(panneau, BorderLayout.EAST);
     			context.revalidate(); // A mettre toujours avant repaint
     			context.repaint(); // Mise à jour de la fenetre, a faire souvent lorsque changement
     		}

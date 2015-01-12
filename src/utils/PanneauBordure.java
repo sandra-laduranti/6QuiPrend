@@ -8,11 +8,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
-import java.awt.image.BufferedImage;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -31,10 +32,10 @@ public class PanneauBordure extends JPanel{
     private int _shadowOffset = 1;
     private int _shadowAlpha = 120;
     private Color _backgroundColor = EcranGauche.BACKGROUND_CENTER;
-    private BufferedImage image = null;
+    private Image image;
 
 
-	public PanneauBordure(Component ... liste_compo) {
+	public PanneauBordure(JComponent ... liste_compo) {
 		this.setLayout(new BorderLayout(20,20));
         this.setPreferredSize(new Dimension(190,this.getPreferredSize().height));
         
@@ -44,7 +45,8 @@ public class PanneauBordure extends JPanel{
 	        panel.setOpaque(false);
 	        
 	        for(int i = 0; i<liste_compo.length ; i++ ){
-	        	if(liste_compo[i] instanceof JPanel) ((JPanel) liste_compo[i]).setOpaque(false);
+	        	liste_compo[i].setOpaque(false);
+	        	liste_compo[i].setPreferredSize(new Dimension(160, 30));
 	        	panel.add(liste_compo[i]);
 	        }
         flow_panel.add(panel);
@@ -69,6 +71,10 @@ public class PanneauBordure extends JPanel{
 	
 	public void addComposantEnBas(Component c){
 		this.add(c, BorderLayout.SOUTH);
+	}
+	
+	public void setImage(Image image){
+		this.image=image;
 	}
 
 	@Override

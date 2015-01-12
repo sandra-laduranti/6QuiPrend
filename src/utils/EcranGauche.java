@@ -17,14 +17,8 @@ public class EcranGauche extends JPanel {
     public static final Color BACKGROUND_HAUT_BAS      = new Color(36,163,199);
     public static final Color BACKGROUND_CENTER    = new Color(234,236,236);
 	
-	public EcranGauche(Image image){
-		this.image=image;
-	}
-	
-    public EcranGauche(Image image, LayoutManager layout) {
+    public EcranGauche(LayoutManager layout) {
        this.setLayout(layout);
-       this.image=image;
-       this.setOpaque(false);
     }
     
 	@Override
@@ -53,9 +47,8 @@ public class EcranGauche extends JPanel {
     	this.paintComponent(g);
     }
     
-    public void changeImage(Image image){
+    public void setImage(Image image){
     	this.image=image;
-    	this.paintComponent(g);
     }
 
    

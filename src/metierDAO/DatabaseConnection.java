@@ -15,12 +15,11 @@ public class DatabaseConnection {
 	
 	// constructeur privé car c'est un singleton
 	private DatabaseConnection(){ }
-	
-	/** Retourne une instance unique (design pattern Singleton) 
-	* de la connection à la base (évite de faire plusieurs connexions)
-	* 
-	* @return instance unique de GestionBar
-	*/
+
+	/**
+	 * 
+	 * @return
+	 */
 	public static Connection getInstance(){
 	  if(connect == null){
 	    synchronized (DatabaseConnection.class) {
