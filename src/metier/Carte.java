@@ -17,7 +17,7 @@ public class Carte {
 			beefHead=2;
 		} else if(value%10==0){
 			beefHead=3;
-		} else if(value <100 && value%11==0){		/*verifier si les 2 chiffres sont les memes*/
+		} else if(value%11==0){		/*verifier si les 2 chiffres sont les memes*/
 			beefHead=5;
 		} else {			   // Cartes normales (23,84,..)
 			beefHead = 1;
