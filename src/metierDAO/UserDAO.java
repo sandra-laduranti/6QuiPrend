@@ -13,7 +13,7 @@ import metier.User;
 
 public class UserDAO {
 	
-	private final Connection connect = DatabaseConnection.getInstance();
+	private static final Connection connect = DatabaseConnection.getInstance();
 	
 	public boolean creationNouveauCompte( User e )
 	{
@@ -37,14 +37,14 @@ public class UserDAO {
 	 * @param pass
 	 * @return Compte_Id, ou null si compte inexistant
 	 */
-	public User verifieAuthentification(String login, String pass) {
+	public static User verifieAuthentification(String login, String pass) {
 		PreparedStatement statement;
 		String requete;
 		try{
 			
 			requete = "SELECT * FROM "+DatabaseUtils.TABLE_COMPTE+" WHERE Compte_Login = ? AND Compte_Mdp = ?";
 
-			statement = this.connect.prepareStatement(requete);
+			statement = connect.prepareStatement(requete);
 			statement.setString(1, login);		// Rempli le premier "?" avec une valeur
 			statement.setString(2, pass);
 			ResultSet result = statement.executeQuery();

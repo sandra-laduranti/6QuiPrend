@@ -21,6 +21,7 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import metier.User;
+import metierDAO.UserDAO;
 
 public class FenetreConnexion extends JDialog {
 
@@ -73,8 +74,7 @@ public class FenetreConnexion extends JDialog {
 //            	En attendant la BDD, on commente et on attribue un compte bidon
 //            	compte = new CompteDAO().verifieAuthentification(getUsername(), getPassword());
             	
-            	compte = new User(1,"Test Login", "Test Email", "Test Password");
-            	
+            	compte = UserDAO.verifieAuthentification(getUsername(), getPassword());
                 if (compte!=null) {
                     JOptionPane.showMessageDialog(FenetreConnexion.this,
                             "Salut " + getUsername() + " !",
@@ -135,11 +135,11 @@ public class FenetreConnexion extends JDialog {
 		});
     }
 
-    public String getUsername() {
+    private String getUsername() {
         return tfUsername.getText().trim();
     }
 
-    public String getPassword() {
+    private String getPassword() {
         return new String(pfPassword.getPassword());
     }
 
