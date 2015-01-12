@@ -39,12 +39,13 @@ public class PanneauBordure extends JPanel{
 
 	public PanneauBordure(JFrame context, JComponent ... liste_compo) {
 		this.context=context;
-		this.setLayout(new BorderLayout());
+		this.setLayout(new GridLayout(3,1));
 		this.setPreferredSize(new Dimension(190,this.getPreferredSize().height));
         
 		JPanel flow_panel = new JPanel();
-		flow_panel.setBorder(new EmptyBorder(context.getHeight()/2,10,30,10));
-	        panel = new JPanel(new GridLayout(liste_compo.length, 1, 5, 35));   
+		flow_panel.setBorder(new EmptyBorder(40,10,30,10));
+		System.out.println();
+	        panel = new JPanel(new GridLayout(liste_compo.length, 1, 5, 60));   
 	        panel.setOpaque(false);
 	        
 	        for(int i = 0; i<liste_compo.length ; i++ ){
@@ -52,9 +53,14 @@ public class PanneauBordure extends JPanel{
 	        	liste_compo[i].setPreferredSize(new Dimension(160, 30));
 	        	panel.add(liste_compo[i]);
 	        }
-        flow_panel.add(panel);
+	    
+	    flow_panel.add(panel);
         flow_panel.setOpaque(false);
-        this.add(flow_panel);
+
+        JPanel espace = new JPanel(); // Espace pour être sur de centrer les 3 boutons (le panneau est lui meme en gridlayout de 3 lignes)
+	    espace.setVisible(false);
+	    this.add(espace);  // Pos 1
+        this.add(flow_panel); // Pos 2
         
 	    this.setBackground(EcranGauche.BACKGROUND_HAUT_BAS);
 	}

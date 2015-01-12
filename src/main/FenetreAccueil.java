@@ -16,6 +16,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import metier.User;
 import utils.EcranGauche;
 import utils.PanneauBordure;
 import authentification.FenetreConnexion;
@@ -117,18 +118,19 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 		// Si c'est une connexion
 		if(e.getActionCommand().equals(item_connexion.getText()) || e.getActionCommand().equals(bouton_connexion.getText())){
 		
-
-			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
-			fenetreconnexion.setVisible(true);
-			if(fenetreconnexion.isSucceeded()){
+//			Pour les tests, commenter les 3 lignes suivantes et laisser décommenté la 4 eme ligne
+//			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
+//			fenetreconnexion.setVisible(true);
+//			if(fenetreconnexion.isSucceeded()){
+			if(true){
 		    	is_connected=true; // Flag pouvant servir plus tard
 		    	
 				// Réorganisation des menus
 				this.menu.remove(item_connexion); // Si la connexion à réussie, on l'enlève du menu
 				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
 				
-				// La boite contenant les infos de l'utilisateur sera modifié dans les classes d'Accueil
-		    	new AccueilCompte(context, fenetreconnexion.getUser());
+// 				Pour les tests, remplacer fenetreconnexion.getUser() par un new User contenant les valeurs que vous désirez
+		    	new AccueilCompte(context, new User("Julien", "julien.margarido@gmail.com", "mdp"));
 	        } else {
 	        	is_connected=false;
 	        }

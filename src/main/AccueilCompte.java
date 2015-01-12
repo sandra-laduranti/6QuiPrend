@@ -50,6 +50,7 @@ public class AccueilCompte{
 	    // On vide le panneau de droite et on met la boite d'infos
 	    panneau = context.getPanneauBordure();
 	    panneau.removeAll();
+	    panneau.setLayout(new BorderLayout());
 	    panneau.add(container_infos, BorderLayout.NORTH);
 		
 		ecrangauche = context.getEcranGauche();

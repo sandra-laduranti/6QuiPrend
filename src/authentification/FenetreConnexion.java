@@ -67,9 +67,8 @@ public class FenetreConnexion extends JDialog {
         panel.setBorder(new LineBorder(Color.GRAY));
 
         btnLogin = new JButton("Connexion");
-
         btnLogin.addActionListener(new ActionListener() {
-
+        	
             public void actionPerformed(ActionEvent e) {
 
             	user = UserDAO.verifieAuthentification(getUsername(), getPassword());
