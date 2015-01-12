@@ -17,7 +17,6 @@ public class Compte
 
 	public Compte(int compte_Id, String compte_Login, String compte_Nom,
 			String compte_Prenom, String compte_mdp) {
-		super();
 		this.compte_Id = compte_Id;
 		this.compte_Login = compte_Login;
 		this.compte_Nom = compte_Nom;
