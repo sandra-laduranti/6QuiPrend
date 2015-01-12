@@ -20,12 +20,12 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
-import metier.Compte;
+import metier.User;
 
 public class FenetreConnexion extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private Compte compte; // Id compte
+	private User compte; // Id compte
 	private JTextField tfUsername;
     private JPasswordField pfPassword;
     private JButton btnLogin;
@@ -73,7 +73,7 @@ public class FenetreConnexion extends JDialog {
 //            	En attendant la BDD, on commente et on attribue un compte bidon
 //            	compte = new CompteDAO().verifieAuthentification(getUsername(), getPassword());
             	
-            	compte = new Compte(1,"Test Login", "Test Nom", "Test Prenom", "testmdp");
+            	compte = new User(1,"Test Login", "Test Email", "Test Password");
             	
                 if (compte!=null) {
                     JOptionPane.showMessageDialog(FenetreConnexion.this,
@@ -151,7 +151,7 @@ public class FenetreConnexion extends JDialog {
         return canceled;
     }
     
-    public Compte getCompte(){
+    public User getCompte(){
     	return compte;
     }
     

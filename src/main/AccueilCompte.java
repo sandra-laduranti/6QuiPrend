@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import metier.Compte;
+import metier.User;
 import utils.EcranGauche;
 import utils.PanneauBordure;
 
@@ -19,17 +19,17 @@ public class AccueilCompte{
 	private PanneauBordure panneau;
 	private EcranGauche ecrangauche;
 	
-	Compte compte;
+	User compte;
 	int nb_parties_gagnees;
 	int nb_parties_perdues;
 	
 	// Premier formulaire : Liste événements
 	private JButton bouton_retour;
 	
-	public AccueilCompte(FenetreAccueil context, Compte compte) {
+	public AccueilCompte(FenetreAccueil context, User user) {
 		
 		this.context= context;
-		this.compte = compte;
+		this.compte = user;
 		
 		JPanel container_infos = new JPanel();
 		container_infos.setBorder(new EmptyBorder(20,15,0,20));
@@ -40,7 +40,7 @@ public class AccueilCompte{
 		    
 	        JLabel texte;
 	        texte = new JLabel("<html><font color='black'><u>Compte</u> : "+
-	        		compte.getCompte_Login()+"<br><br><br>Nombre de parties gagnées: "+nb_parties_gagnees+"<br><br>Nombre de parties perdues : "+nb_parties_perdues+"<br><br></font></html>");
+	        		user.getUserNickname()+"<br><br><br>Nombre de parties gagnées: "+nb_parties_gagnees+"<br><br>Nombre de parties perdues : "+nb_parties_perdues+"<br><br></font></html>");
 	    
 	        infos.add(texte,BorderLayout.NORTH); // texte en blanc
 		    infos.add(context.getBoutonDeconnexion(),BorderLayout.SOUTH);

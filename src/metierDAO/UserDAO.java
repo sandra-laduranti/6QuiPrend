@@ -5,27 +5,27 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import metier.Compte;
+import metier.User;
 
 /**
  * @(#) CompteDAO.java
  */
 
-public class CompteDAO {
+public class UserDAO {
 	
 	private final Connection connect = DatabaseConnection.getInstance();
 	
-	public boolean creationNouveauCompte( Compte e )
+	public boolean creationNouveauCompte( User e )
 	{
 		return false;
 	}
 	
-	public boolean modificationCompteParId( int id_Compte, Compte e )
+	public boolean modificationCompteParId( int id_Compte, User e )
 	{
 		return false;
 	}
 	
-	public boolean suppressionCompteParId( int id_Compte, Compte e )
+	public boolean suppressionCompteParId( int id_Compte, User e )
 	{
 		return false;
 	}
@@ -37,7 +37,7 @@ public class CompteDAO {
 	 * @param pass
 	 * @return Compte_Id, ou null si compte inexistant
 	 */
-	public Compte verifieAuthentification(String login, String pass) {
+	public User verifieAuthentification(String login, String pass) {
 		PreparedStatement statement;
 		String requete;
 		try{
@@ -52,8 +52,8 @@ public class CompteDAO {
 			// Une fois que l'on a récupéré l'id du compte
 			if(result!= null && result.first()==true){
 				
-				Compte compte = new Compte(); // Ici remplir le constructeur avec les champs récupérés (exemple: result.getString("Compte_Stats"),...)
-				return compte;
+				User user = new User(result.getInt("id"), result.getString("nickname"), result.getString("email"), result.getString("password")); // Ici remplir le constructeur avec les champs récupérés (exemple: result.getString("Compte_Stats"),...)
+				return user;
 			}
 				
 		} catch (SQLException e) {
