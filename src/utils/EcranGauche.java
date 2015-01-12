@@ -34,7 +34,7 @@ public class EcranGauche extends JPanel {
 	        graphics.fillRect(0, midY, getWidth(), getHeight());
 	        
 	        if (image!=null){
-	            g.drawImage(image, (int) (getWidth()/4), (int) (getHeight()/4), g.getClipBounds().width/2, g.getClipBounds().height/2, null);
+	            g.drawImage(image, (int) (getWidth()/3), (int) (getHeight()/4), g.getClipBounds().width/3, g.getClipBounds().height/2, null);
 	    	}
 	    	this.setOpaque(false);
 	        

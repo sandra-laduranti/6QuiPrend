@@ -1,11 +1,13 @@
 package main;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.net.URL;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,12 +19,14 @@ import javax.swing.JOptionPane;
 import utils.EcranGauche;
 import utils.PanneauBordure;
 import authentification.FenetreConnexion;
+import authentification.FenetreInscription;
 
 public class FenetreAccueil extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private static final String texte_connexion = "Connexion";
 	private static final String texte_deconnexion = "Déconnexion";
+	private static final String texte_inscription = "Inscription";
 	private static final String texte_quitter = "Quitter";
 	private FenetreAccueil context;
 	private JMenuBar menuBar;;
@@ -52,8 +56,8 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 	    URL url_tmp = getClass().getResource("/images/logo 6QuiPrend.png");
 		if(url_tmp!=null) this.setIconImage(new ImageIcon(url_tmp).getImage()); // Logo
 		this.setLayout(new BorderLayout()); // Layout qui permet d'ajouter soit sur le bord, soit au centre
-	    this.setSize(900,600); // Taille de l'écran au lancement
-	    this.setMinimumSize(new Dimension(600,500));
+	    this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+	    this.setMinimumSize(new Dimension(800,600));
 
 	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    this.setLocationRelativeTo(null);
@@ -87,7 +91,9 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 	    bouton_deconnexion = new JButton(texte_deconnexion);
 	    bouton_deconnexion.addActionListener(this);
 	    
-	    bouton_inscription = new JButton("Inscription");
+	    bouton_inscription = new JButton(texte_inscription);
+	    bouton_inscription.addActionListener(this);
+	    
 	    
         // Partie centre/gauche
         ecrangauche = new EcranGauche(new BorderLayout());
@@ -96,7 +102,7 @@ public class FenetreAccueil extends JFrame implements ActionListener{
         this.add(ecrangauche, BorderLayout.CENTER);
 
         // On créé un nouveau panneau sur la droite (avec un JPanel vide pour espacer)
-        panneau = new PanneauBordure(bouton_connexion, bouton_inscription);
+        panneau = new PanneauBordure(this, bouton_connexion, bouton_inscription);
         url_tmp = getClass().getResource("/images/fonddroite.jpg");
         if(url_tmp!=null) panneau.setImage(new ImageIcon(url_tmp).getImage());
         this.add(panneau, BorderLayout.EAST);
@@ -122,15 +128,10 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
 				
 				// La boite contenant les infos de l'utilisateur sera modifié dans les classes d'Accueil
-		    	new AccueilCompte(context, fenetreconnexion.getCompte());
+		    	new AccueilCompte(context, fenetreconnexion.getUser());
 	        } else {
 	        	is_connected=false;
-	        	if(fenetreconnexion.isCanceled()==false) {
-	        		//Boîte du message d'erreur
-	            	JOptionPane.showMessageDialog(null, "Erreur de connexion", "Erreur", JOptionPane.ERROR_MESSAGE);
-	        	}
 	        }
-			//FIN TEST
 	    
 	    // Si c'est une déconnexion
 		} else if (e.getActionCommand().equals(item_deconnexion.getText()) || e.getActionCommand().equals(bouton_deconnexion.getText())){
@@ -147,7 +148,7 @@ public class FenetreAccueil extends JFrame implements ActionListener{
     	        if(url_tmp!=null) ecrangauche.setImage(new ImageIcon(url_tmp).getImage());
     	        
     			this.remove(panneau);
-    			panneau = new PanneauBordure(bouton_connexion,bouton_inscription);
+    			panneau = new PanneauBordure(context, bouton_connexion,bouton_inscription);
     			url_tmp = getClass().getResource("/images/fonddroite.jpg");
     	        if(url_tmp!=null) panneau.setImage(new ImageIcon(url_tmp).getImage());
     	        this.add(panneau, BorderLayout.EAST);
@@ -155,8 +156,23 @@ public class FenetreAccueil extends JFrame implements ActionListener{
     			context.repaint(); // Mise à jour de la fenetre, a faire souvent lorsque changement
     		}
 		} else if (e.getActionCommand().equals(bouton_inscription.getText())){
-			// Inscription à coder (un peu comme connexion, en plus complexe, parceque faut faire des verifs)
+			FenetreInscription fenetreinscription = new FenetreInscription(context);
+			fenetreinscription.setVisible(true);
+			if(fenetreinscription.isSucceeded()){
+		    	is_connected=true; // Flag pouvant servir plus tard
+		    	
+				// Réorganisation des menus
+				this.menu.remove(item_connexion); // Si la connexion à réussie, on l'enlève du menu
+				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
+				
+				// La boite contenant les infos de l'utilisateur sera modifié dans les classes d'Accueil
+		    	new AccueilCompte(context, fenetreinscription.getUser());
+	        } else {
+	        	is_connected=false;
+	        }
 		}
+		this.revalidate();
+		this.repaint();
 	}
 	
 	public boolean isConnected() {

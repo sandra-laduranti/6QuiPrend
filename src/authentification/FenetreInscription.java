@@ -9,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -20,15 +22,16 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import metier.User;
+import metierDAO.UserDAO;
 
 public class FenetreInscription extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private User User; // Id User
+	private User user; // Id User
 	private JTextField tfUsername;
     private JPasswordField pfPassword;
 	private JTextField tfMail;
-    private JButton btnLogin;
+    private JButton btnInscription;
     private JButton btnCancel;
     private boolean succeeded = false;
     private boolean canceled = false;
@@ -40,11 +43,11 @@ public class FenetreInscription extends JDialog {
         GridBagConstraints cs = new GridBagConstraints();
         cs.fill = GridBagConstraints.HORIZONTAL;
         
-        // Login
+        // Inscription
         cs.gridx = 0;
         cs.gridy = 2;
         cs.gridwidth = 1;
-        panel.add(new JLabel("Login: "), cs);
+        panel.add(new JLabel("Inscription: "), cs);
 
         tfUsername = new JTextField(20);
         cs.gridx = 1;
@@ -77,32 +80,59 @@ public class FenetreInscription extends JDialog {
         cs.gridwidth = 2;
         panel.add(tfMail, cs);
 
-        btnLogin = new JButton("S'inscrire");
-
-        btnLogin.addActionListener(new ActionListener() {
+        btnInscription = new JButton("S'inscrire");
+        btnInscription.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-//            	En attendant la BDD, on commente et on attribue un User bidon
-//            	User = new UserDAO().verifieAuthentification(getUsername(), getPassword());
             	
-            	User = null;
-            	
-                if (User!=null) {
-                    JOptionPane.showMessageDialog(FenetreInscription.this,
-                            "Salut " + getUsername() + " !",
-                            "Connexion réussie", 
-                            JOptionPane.INFORMATION_MESSAGE);
-                    succeeded = true;
-                    dispose();
-                } else { // Si User null, c'est qu'aucun User contient ce Login+mdp
-                    JOptionPane.showMessageDialog(FenetreInscription.this,
-                            "Login ou mot de passe invalide !",
-                            "Connexion refusée",
+            	Pattern VALID_EMAIL_ADDRESS_REGEX = 
+            		    Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+            	if(getUsername().isEmpty() || getPassword().isEmpty() || getMail().isEmpty()){
+            		JOptionPane.showMessageDialog(FenetreInscription.this,
+                            "Tous les champs doivent être remplis",
+                            "Erreur", 
                             JOptionPane.ERROR_MESSAGE);
-                    tfUsername.setText("");
-                    pfPassword.setText("");
-                    succeeded = false;
-                }
+            		succeeded = false;
+            	} else if( getUsername().contains(" ") ){
+            		JOptionPane.showMessageDialog(FenetreInscription.this,
+                            "Votre login contient un ou plusieurs espaces\n"
+                            + "Veuillez les retirer.",
+                            "Erreur", 
+                            JOptionPane.ERROR_MESSAGE);
+            		succeeded = false;
+            	}else if( !VALID_EMAIL_ADDRESS_REGEX .matcher(getMail()).matches() ){
+            		JOptionPane.showMessageDialog(FenetreInscription.this,
+                            "Votre adresse mail est incorrecte.",
+                            "Erreur", 
+                            JOptionPane.ERROR_MESSAGE);
+            		succeeded = false;
+            	} else {
+            		if( UserDAO.existLogin(getUsername())){
+            			JOptionPane.showMessageDialog(FenetreInscription.this,
+                            "Login " + getUsername() + " déjà existant !",
+                            "Erreur", 
+                            JOptionPane.ERROR_MESSAGE);
+            			succeeded = false;
+            		} else {
+            			user = new User(getUsername(),getPassword(),getMail());
+                    	UserDAO.createUser(user);
+                        if ( UserDAO.createUser(user) ) {
+                            JOptionPane.showMessageDialog(FenetreInscription.this,
+                                    "Salut " + getUsername() + " !",
+                                    "Connexion réussie", 
+                                    JOptionPane.INFORMATION_MESSAGE);
+                            succeeded = true;
+                            dispose();
+                        } else {
+                        	JOptionPane.showMessageDialog(FenetreInscription.this,
+                                    "Problème en base ... Votre compte ne s'est pas crée.",
+                                    "Erreur", 
+                                    JOptionPane.ERROR_MESSAGE);
+                    			succeeded = false;
+                        }
+            		}
+            	}
             }
         });
         
@@ -115,7 +145,7 @@ public class FenetreInscription extends JDialog {
             }
         });
         JPanel bp = new JPanel();
-        bp.add(btnLogin);
+        bp.add(btnInscription);
         bp.add(btnCancel);
 
         getContentPane().add(panel, BorderLayout.CENTER);
@@ -155,6 +185,14 @@ public class FenetreInscription extends JDialog {
     public String getPassword() {
         return new String(pfPassword.getPassword());
     }
+    
+    public String getMail() {
+        return tfMail.getText().trim();
+    }
+    
+    public User getUser() {
+        return user;
+    }
 
     public boolean isSucceeded() {
         return succeeded;
@@ -163,9 +201,6 @@ public class FenetreInscription extends JDialog {
     public boolean isCanceled() {
         return canceled;
     }
-    
-    public User getUser(){
-    	return User;
-    }
+
     
 }

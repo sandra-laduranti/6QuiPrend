@@ -14,12 +14,14 @@ import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 @SuppressWarnings("serial")
 public class PanneauBordure extends JPanel{
 
+	private JFrame context;
     private JPanel panel;
 	
     // Le contour
@@ -35,13 +37,14 @@ public class PanneauBordure extends JPanel{
     private Image image;
 
 
-	public PanneauBordure(JComponent ... liste_compo) {
-		this.setLayout(new BorderLayout(20,20));
-        this.setPreferredSize(new Dimension(190,this.getPreferredSize().height));
+	public PanneauBordure(JFrame context, JComponent ... liste_compo) {
+		this.context=context;
+		this.setLayout(new BorderLayout());
+		this.setPreferredSize(new Dimension(190,this.getPreferredSize().height));
         
 		JPanel flow_panel = new JPanel();
-		flow_panel.setBorder(new EmptyBorder(25,10,30,10));
-	        panel = new JPanel(new GridLayout(liste_compo.length, 1, 5, 5));   
+		flow_panel.setBorder(new EmptyBorder(context.getHeight()/2,10,30,10));
+	        panel = new JPanel(new GridLayout(liste_compo.length, 1, 5, 35));   
 	        panel.setOpaque(false);
 	        
 	        for(int i = 0; i<liste_compo.length ; i++ ){
@@ -51,7 +54,7 @@ public class PanneauBordure extends JPanel{
 	        }
         flow_panel.add(panel);
         flow_panel.setOpaque(false);
-        this.add(flow_panel, BorderLayout.NORTH);
+        this.add(flow_panel);
         
 	    this.setBackground(EcranGauche.BACKGROUND_HAUT_BAS);
 	}

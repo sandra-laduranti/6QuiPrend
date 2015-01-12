@@ -26,7 +26,7 @@ import metierDAO.UserDAO;
 public class FenetreConnexion extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private User compte; // Id compte
+	private User user; // Id user
 	private JTextField tfUsername;
     private JPasswordField pfPassword;
     private JButton btnLogin;
@@ -34,9 +34,9 @@ public class FenetreConnexion extends JDialog {
     private boolean succeeded = false;
     private boolean canceled = false;
 
-    public FenetreConnexion(Frame parent) {
+    public FenetreConnexion(Frame context) {
 
-    	super(parent, "Login", true);
+    	super(context, "Login", true);
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints cs = new GridBagConstraints();
         cs.fill = GridBagConstraints.HORIZONTAL;
@@ -71,25 +71,15 @@ public class FenetreConnexion extends JDialog {
         btnLogin.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-//            	En attendant la BDD, on commente et on attribue un compte bidon
-//            	compte = new CompteDAO().verifieAuthentification(getUsername(), getPassword());
-            	
-            	compte = UserDAO.verifieAuthentification(getUsername(), getPassword());
-                if (compte!=null) {
+
+            	user = UserDAO.verifieAuthentification(getUsername(), getPassword());
+                if (user!=null) {
                     JOptionPane.showMessageDialog(FenetreConnexion.this,
                             "Salut " + getUsername() + " !",
                             "Connexion réussie", 
                             JOptionPane.INFORMATION_MESSAGE);
                     succeeded = true;
                     dispose();
-                } else { // Si compte null, c'est qu'aucun compte contient ce Login+mdp
-                    JOptionPane.showMessageDialog(FenetreConnexion.this,
-                            "Login ou mot de passe invalide !",
-                            "Connexion refusée",
-                            JOptionPane.ERROR_MESSAGE);
-                    tfUsername.setText("");
-                    pfPassword.setText("");
-                    succeeded = false;
                 }
             }
         });
@@ -110,7 +100,7 @@ public class FenetreConnexion extends JDialog {
 
         pack();
         setResizable(false);
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(context);
         
         this.addWindowListener(new WindowListener() {
 			
@@ -151,8 +141,8 @@ public class FenetreConnexion extends JDialog {
         return canceled;
     }
     
-    public User getCompte(){
-    	return compte;
+    public User getUser(){
+    	return user;
     }
     
 }
