@@ -42,7 +42,7 @@ public class UserDAO {
 		String requete;
 		try{
 			
-			requete = "SELECT * FROM "+DatabaseUtils.TABLE_COMPTE+" WHERE Compte_Login = ? AND Compte_Mdp = ?";
+			requete = "SELECT * FROM "+DatabaseUtils.TABLE_USER+" WHERE nickname = ? AND password = ?";
 
 			statement = connect.prepareStatement(requete);
 			statement.setString(1, login);		// Rempli le premier "?" avec une valeur
