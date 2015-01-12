@@ -25,6 +25,10 @@ public class User
 		this.userId = userId;
 	}
 	
+	public User(User user){
+		this(user.getUserNickname(), user.getUserEmail(), user.getUserPassword());
+	}
+	
 	public int getUserId() {
 		return userId;
 	}
