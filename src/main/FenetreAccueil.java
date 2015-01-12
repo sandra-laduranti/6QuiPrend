@@ -97,8 +97,8 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 
         // On créé un nouveau panneau sur la droite (avec un JPanel vide pour espacer)
         panneau = new PanneauBordure(bouton_connexion, bouton_inscription);
-        url_tmp = getClass().getResource("/images/fonddroite.png");
-        if(url_tmp!=null) ecrangauche.setImage(new ImageIcon(url_tmp).getImage());
+        url_tmp = getClass().getResource("/images/fonddroite.jpg");
+        if(url_tmp!=null) panneau.setImage(new ImageIcon(url_tmp).getImage());
         this.add(panneau, BorderLayout.EAST);
 
 	    this.setVisible(true);
