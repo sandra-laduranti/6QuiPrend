@@ -1,9 +1,15 @@
 package metier;
 
+import java.awt.Image;
+import java.net.URL;
+
+import javax.swing.ImageIcon;
+
 public class Carte {
 
 	private int value;
 	private int beefHead;
+	private Image image;
 
 	/**
 	 * Crée une Carte, avec son BeefHead calculé suivant sa valeur
@@ -22,6 +28,8 @@ public class Carte {
 		} else {			   // Cartes normales (23,84,..)
 			beefHead = 1;
 		}
+		URL url_tmp = getClass().getResource("/images/cards/"+value+".png"); // Choisis l'image suivant la valeur de la carte
+		if(url_tmp!=null) this.image = new ImageIcon(url_tmp).getImage(); // Logo
 	}
 
 	
@@ -31,5 +39,9 @@ public class Carte {
 
 	public int getBeefHead() {
 		return beefHead;
+	}
+	
+	public Image getImage() {
+		return image;
 	}
 }

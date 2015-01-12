@@ -130,7 +130,7 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
 				
 // 				Pour les tests, remplacer fenetreconnexion.getUser() par un new User contenant les valeurs que vous désirez
-		    	new AccueilCompte(context, new User("Julien", "julien.margarido@gmail.com", "mdp"));
+		    	new AccueilUser(context, new User("Julien", "julien.margarido@gmail.com", "mdp"));
 	        } else {
 	        	is_connected=false;
 	        }
@@ -168,7 +168,7 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
 				
 				// La boite contenant les infos de l'utilisateur sera modifié dans les classes d'Accueil
-		    	new AccueilCompte(context, fenetreinscription.getUser());
+		    	new AccueilUser(context, fenetreinscription.getUser());
 	        } else {
 	        	is_connected=false;
 	        }
