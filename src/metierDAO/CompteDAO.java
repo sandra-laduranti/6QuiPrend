@@ -11,14 +11,10 @@ import metier.Compte;
  * @(#) CompteDAO.java
  */
 
-public class CompteDAO extends DAO<Compte>
-{
-	protected static final Connection conn = DatabaseConnection.getInstance();
+public class CompteDAO {
 	
-	public CompteDAO() {
-		super(conn);
-	}
-
+	private final Connection connect = DatabaseConnection.getInstance();
+	
 	public boolean creationNouveauCompte( Compte e )
 	{
 		return false;
