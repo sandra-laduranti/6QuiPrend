@@ -35,7 +35,7 @@ public class FenetreConnexion extends JDialog {
     private boolean succeeded = false;
     private boolean canceled = false;
 
-    public FenetreConnexion(final FenetreAccueil context) {
+    public FenetreConnexion(final FenetrePrincipale context) {
 
     	super(context, "Login", true);
     	new MonLog(MonLog.CLIENT).add("Tentative de connexion");

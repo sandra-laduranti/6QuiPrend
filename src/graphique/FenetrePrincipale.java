@@ -27,7 +27,7 @@ import utils.MonLog;
 import utils.PanneauBordure;
 
 
-public class FenetreAccueil extends JFrame implements ActionListener{
+public class FenetrePrincipale extends JFrame implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -40,7 +40,7 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 	
 	private static final String texte_rafraichir = "Rafraichir les parties";
 	private static final String texte_creerPartie = "Creer une nouvelle partie";
-	private FenetreAccueil context;
+	private FenetrePrincipale context;
 	private JMenuBar menuBar;;
 	private JMenu menu;
 	private JMenuItem item_connexion; // Apparait si non connecté
@@ -62,7 +62,7 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 	private User user;
 
 
-	public FenetreAccueil(){
+	public FenetrePrincipale(){
 		
 		this.context = this;  // Pour pouvoir utiliser notre instance de fenetreAccueil partout (methodes statics, listeners, ...) lorsque this ne fonctionne pas
 	    this.setTitle("6 Qui Prend");

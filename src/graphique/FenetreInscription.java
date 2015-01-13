@@ -35,7 +35,7 @@ public class FenetreInscription extends JDialog {
     private boolean succeeded = false;
     private boolean canceled = false;
 
-    public FenetreInscription(final FenetreAccueil context) {
+    public FenetreInscription(final FenetrePrincipale context) {
 
     	super(context, "Inscription", true);
     	new MonLog(MonLog.CLIENT).add("Tentative d'inscription");

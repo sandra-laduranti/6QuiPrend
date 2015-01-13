@@ -1,0 +1,9 @@
+Tue Jan 13 23:03:05 CET 2015 : Application lancée :)
+Tue Jan 13 23:03:06 CET 2015 : Tentative de connexion
+Tue Jan 13 23:03:11 CET 2015 : Connection à la base réussie
+Tue Jan 13 23:03:11 CET 2015 : Récupération du compte depuis la base de données (après authentification)
+Tue Jan 13 23:03:12 CET 2015 : Connecté !
+Tue Jan 13 23:03:16 CET 2015 : Déconnecté :(
+Tue Jan 13 23:03:18 CET 2015 : Fermeture de l'application !
+
+

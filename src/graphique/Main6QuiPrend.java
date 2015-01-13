@@ -52,7 +52,7 @@ public class Main6QuiPrend{
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-            	final FenetreAccueil f = new FenetreAccueil();
+            	final FenetrePrincipale f = new FenetrePrincipale();
             	f.addWindowListener(new WindowListener() {
         			
         			@Override

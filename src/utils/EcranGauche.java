@@ -1,6 +1,6 @@
 package utils;
 
-import graphique.FenetreAccueil;
+import graphique.FenetrePrincipale;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,13 +24,13 @@ import metier.User;
 @SuppressWarnings("serial")
 public class EcranGauche extends JPanel {
 	
-	private FenetreAccueil context;
+	private FenetrePrincipale context;
 	private Image image;
 	private Graphics g;
     public static final Color BACKGROUND_HAUT_BAS      = new Color(36,163,199);
     public static final Color BACKGROUND_CENTER    = new Color(234,236,236);
 	
-    public EcranGauche(FenetreAccueil context, LayoutManager layout) {
+    public EcranGauche(FenetrePrincipale context, LayoutManager layout) {
     	this.context = context;
         this.setLayout(layout);
     }
