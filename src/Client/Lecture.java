@@ -9,9 +9,9 @@ import java.net.Socket;
 public class Lecture extends Thread {
 	
 	private Socket socket;
-	private InputStreamReader isr;
-	private BufferedReader br;
-	private InputStream is;
+	private InputStreamReader inputStreamReader;
+	private BufferedReader bufferedReader;
+	private InputStream inputStream;
 	
 	public Lecture(Socket socket) {
 		this.socket = socket;
@@ -21,12 +21,12 @@ public class Lecture extends Thread {
 	public void run() {
 		try {
 			String message;
-			this.is = this.socket.getInputStream();
-			this.isr = new InputStreamReader(this.is);
-			this.br = new BufferedReader(this.isr);
+			this.inputStream = this.socket.getInputStream();
+			this.inputStreamReader = new InputStreamReader(this.inputStream);
+			this.bufferedReader = new BufferedReader(this.inputStreamReader);
 			
 			while(true) {
-				message = br.readLine();
+				message = bufferedReader.readLine();
 				if (message == null) { // Deconnexion du serveur
 					socket.close();
 					System.out.println("> Deconnexion du serveur...");
