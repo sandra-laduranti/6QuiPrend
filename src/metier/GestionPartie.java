@@ -1,6 +1,7 @@
 package metier;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class GestionPartie {
@@ -72,6 +73,11 @@ public class GestionPartie {
 		return newCards.get(posTmp);
 	}
 
+	/**
+	 * Compte le nombre de tete de boeuf cumulé par le joueur
+	 * @param cards
+	 * @return
+	 */
 	public static int countBeef(List<Carte> cards){
 		int nbBeef = 0;
 		for (Carte card : cards) {
@@ -80,18 +86,53 @@ public class GestionPartie {
 		return nbBeef;
 	}
 	
-	public static void disturb(List<Carte> deck, Player player){
+	/**
+	 * Distribue les cartes à un joueur
+	 * @param deck
+	 * @param player
+	 */
+	public static List<Carte> disturb(List<Carte> deck){
 		int idCard;
 		int deckSize = deck.size()-1;
+		List<Carte> playerCards = new ArrayList<Carte>();
 		for(int i = 0; i<10; i++){
 			idCard = (int) (Math.random()*deckSize);
 			Carte card = deck.get(idCard);
-			player.getListCard().add(card);
+			playerCards.add(card);
 			deck.remove(card);
 			deckSize = deck.size()-1;
 		}
+		return playerCards;
 	}
 	
+	// Joueur qui choisit une carte
 	
-
+	// Trier la main du joueur
+	
+	// Compare les 4 cartes et les placés dans le jeu
+	
+	// Méthode qui vérifie si un joueur a atteint 66 points
+	public static boolean checkPlayerReach66(){
+		return false;
+	}
+	
+	// Méthode qui va ajouter a la fin de la manche les tetes de boeuf aux compteurs des joueurs
+	
+	// Méthode qui attribue le nombre de boeuf encaisse a un joueur
+	public static void addBeefToPlayer(List<Carte> rowCard, User user){
+		
+	}
+	
+	/**
+	 * Permet au joueur de selectionne sa carte
+	 * @param cards la main du joueurs
+	 * @return la carte selectionner par le joueur
+	 * 
+	 * TODO : A voir avec l'interface graphique
+	 */
+	public static Carte chooseCardFromHand(List<Carte> cards, int selectICard){
+		return cards.get(selectICard);
+	}
+	
 }
+

@@ -12,12 +12,15 @@ public class User
 	private String userEmail;
 	
 	private String userPassword;
+	
+	private int currentBeef;
 
 	public User(String userNickname, String userEmail,
 			String userPassword) {
 		this.userNickname = userNickname;
 		this.userEmail = userEmail;
 		this.userPassword = userPassword;
+		this.currentBeef = 0;
 	}
 	
 	public User(int userId, String userNickname, String userEmail, String userPassword){	
@@ -58,5 +61,11 @@ public class User
 		this.userPassword = userPassword;
 	}
 
+	public int getCurrentBeef() {
+		return currentBeef;
+	}
 	
+	public void setCurrentBeef(int currentBeef) {
+		this.currentBeef = currentBeef;
+	}
 }

@@ -28,7 +28,7 @@ public class Carte {
 		} else {			   // Cartes normales (23,84,..)
 			beefHead = 1;
 		}
-		URL url_tmp = getClass().getResource("/images/cards/"+value+".png"); // Choisis l'image suivant la valeur de la carte
+		URL url_tmp = getClass().getResource("/images/cards/"+val+".png"); // Choisis l'image suivant la valeur de la carte
 		if(url_tmp!=null) this.image = new ImageIcon(url_tmp).getImage(); // Logo
 	}
 
