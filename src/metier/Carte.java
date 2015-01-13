@@ -5,7 +5,7 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-public class Carte {
+public class Carte implements Comparable<Carte>{
 
 	private int value;
 	private int beefHead;
@@ -44,4 +44,17 @@ public class Carte {
 	public Image getImage() {
 		return image;
 	}
+
+
+	@Override
+	public int compareTo(Carte card) {
+		if(this.getValue()>card.getValue()){
+			return -1;
+		} else if(this.getValue()<card.getValue()){
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
 }

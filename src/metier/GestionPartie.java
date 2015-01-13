@@ -117,6 +117,37 @@ public class GestionPartie {
 	}
 	
 	public static void getWinnerAndLoser(List<User> users){
+		
+	}
+	
+	public static List<Carte> initializeDeck(int nbJoueursMax, boolean isProMode){
+		List<Carte> listCard = new ArrayList<Carte>();
+		if(isProMode){
+			for(int i = 1; i<=(10*nbJoueursMax+4); i++){
+				listCard.add(new Carte(i));
+			}
+		} else {
+			for(int i = 1; i<105; i++){
+				listCard.add(new Carte(i));
+			}
+		}
+		
+		return listCard;
+	}
+	
+	public static void iniatializeRowsFirstCard(List<List<Carte>> rows, List<Carte> deck){
+		for(int i = 0; i<4; i++){
+			rows.get(i).add(deck.get(i));
+		}
+	}
+	
+	public static List<Carte> getLastCardRows(List<List<Carte>> rows){
+		List<Carte> lastCardsRows = new ArrayList<Carte>();
+		for(int i = 0; i<rows.size(); i++){
+			List<Carte> listCardRow = rows.get(i);
+			lastCardsRows.add(listCardRow.get(listCardRow.size()-1));
+		}
+		return lastCardsRows;
 	}
 	
 }
