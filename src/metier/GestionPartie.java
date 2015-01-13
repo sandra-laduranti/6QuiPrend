@@ -105,24 +105,6 @@ public class GestionPartie {
 		return playerCards;
 	}
 	
-	// Joueur qui choisit une carte
-	
-	// Trier la main du joueur
-	
-	// Compare les 4 cartes et les placés dans le jeu
-	
-	// Méthode qui vérifie si un joueur a atteint 66 points
-	public static boolean checkPlayerReach66(){
-		return false;
-	}
-	
-	// Méthode qui va ajouter a la fin de la manche les tetes de boeuf aux compteurs des joueurs
-	
-	// Méthode qui attribue le nombre de boeuf encaisse a un joueur
-	public static void addBeefToPlayer(List<Carte> rowCard, User user){
-		
-	}
-	
 	/**
 	 * Permet au joueur de selectionne sa carte
 	 * @param cards la main du joueurs
@@ -132,6 +114,9 @@ public class GestionPartie {
 	 */
 	public static Carte chooseCardFromHand(List<Carte> cards, int selectICard){
 		return cards.get(selectICard);
+	}
+	
+	public static void getWinnerAndLoser(List<User> users){
 	}
 	
 }

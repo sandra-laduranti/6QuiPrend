@@ -15,16 +15,26 @@ public class Partie {
 	private int nbJoueursMax;
 	private boolean isProMode;
 	private List<List<Carte>> rows;
+	private String nom;
 
 	public Partie(String nom, int nbJoueurs, boolean isProMode, User user){
 		this.listCard=new ArrayList<Carte>();
 		this.nbJoueursMax = nbJoueurs;
 		this.isProMode = isProMode;
+		this.nom = nom;
 		comptes.put(user, null);
-		initializeGame();
 	}
 
-	private void initializeGame(){
+	
+	
+	public void startGame(){
+		boolean isPlayerReach66 = false;
+		while(!isPlayerReach66){
+			initializeRound(isPlayerReach66);
+		}
+	}
+	
+	private void initializeRound(boolean isPlayerReach66){
 		initializeDeck();
 		initializeRows();
 		// On distribue les cartes pour chaque joueur
@@ -39,8 +49,8 @@ public class Partie {
 
 		//Représente le déroulement d'une manche
 		List<Carte> selectedCardByPlayer = new ArrayList<Carte>();
-		boolean isPlayerReach66 = false;
-		while(!isPlayerReach66){
+		int cptTurn = 0;
+		while(!isPlayerReach66 || cptTurn <10){
 			Carte selectedCard;
 			// Faire en sorte que chaque joueur selectionne une carte chacun a leur tour
 			for(int i = 0; i<comptes.size(); i++){
@@ -85,7 +95,8 @@ public class Partie {
 					}
 
 					//Enleve la ligne selectRow et ajoute la carte du joueur
-					
+					rows.get(selectRow).clear();
+					rows.get(selectRow).add(cardToPlace);
 					//rows.get(selectRow);
 				} else {
 					int selectRow = GestionPartie.selectRow(cardToPlace, fourLastCardRows);
@@ -93,6 +104,7 @@ public class Partie {
 					fourLastCardRows = lastCardsRows();
 				}
 			}
+			cptTurn++;
 		}
 	}
 	
@@ -151,4 +163,11 @@ public class Partie {
 		return lastCardsRows;
 	}
 
+	public String getNom() {
+		return nom;
+	}
+	
+	public List<List<Carte>> getRows() {
+		return rows;
+	}
 }
