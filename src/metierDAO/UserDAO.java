@@ -64,8 +64,8 @@ public class UserDAO {
 
 				statement = DatabaseConnection.getInstance().prepareStatement(requete);
 				statement.setString(1, user.getUserNickname());		// Rempli le premier "?" avec une valeur
-				statement.setString(2, user.getUserPassword());
-				statement.setString(3, user.getUserEmail());
+				statement.setString(2, user.getUserEmail());
+				statement.setString(3, user.getUserPassword());
 				statement.executeQuery();
 				return true;
 			}

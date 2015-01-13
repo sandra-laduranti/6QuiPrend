@@ -119,10 +119,10 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 		if(e.getActionCommand().equals(item_connexion.getText()) || e.getActionCommand().equals(bouton_connexion.getText())){
 		
 //			Pour les tests, commenter les 3 lignes suivantes et laisser décommenté la 4 eme ligne
-//			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
-//			fenetreconnexion.setVisible(true);
-//			if(fenetreconnexion.isSucceeded()){
-			if(true){
+			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
+			fenetreconnexion.setVisible(true);
+			if(fenetreconnexion.isSucceeded()){
+			//if(true){
 		    	is_connected=true; // Flag pouvant servir plus tard
 		    	
 				// Réorganisation des menus
@@ -130,7 +130,7 @@ public class FenetreAccueil extends JFrame implements ActionListener{
 				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
 				
 // 				Pour les tests, remplacer fenetreconnexion.getUser() par un new User contenant les valeurs que vous désirez
-		    	new AccueilUser(context, new User("Julien", "julien.margarido@gmail.com", "mdp"));
+		    	new AccueilUser(context, fenetreconnexion.getUser());
 	        } else {
 	        	is_connected=false;
 	        }

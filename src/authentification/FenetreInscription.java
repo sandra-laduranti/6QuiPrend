@@ -115,7 +115,7 @@ public class FenetreInscription extends JDialog {
                             JOptionPane.ERROR_MESSAGE);
             			succeeded = false;
             		} else {
-            			user = new User(getUsername(),getPassword(),getMail());
+            			user = new User(getUsername(),getMail(),getPassword());
                     	UserDAO.createUser(user);
                         if ( UserDAO.createUser(user) ) {
                             JOptionPane.showMessageDialog(FenetreInscription.this,
