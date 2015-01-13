@@ -6,6 +6,8 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
+import utils.MonLog;
+
 public class DatabaseConnection {
 	  
 	private static String url = "jdbc:mysql://37.59.110.237:3306/"; // ici 3306 correspond au port que MYSQL Installer m'a désigné (ça peut être un autre pour vous)
@@ -27,10 +29,10 @@ public class DatabaseConnection {
 		    	try {
 		    		url += DatabaseUtils.BASE;
 			        connect = DriverManager.getConnection(url, user, passwd);
-			        System.out.println("Connexion à la base réussie !");
+			        new MonLog(MonLog.CLIENT).add("Connection à la base réussie");
 			    } catch (SQLException e) {
-			    	// LOG !
-			    	JOptionPane.showMessageDialog(null, e.getMessage(), "ERREUR DE CONNEXION A LA BASE ! ", JOptionPane.ERROR_MESSAGE);
+			    	new MonLog(MonLog.CLIENT).add("Problème d'accès à la base distante"+e.getMessage());
+			    	JOptionPane.showMessageDialog(null, "Message reçu : "+e.getMessage(), "Erreur de connexion à la base distante", JOptionPane.ERROR_MESSAGE);
 			    }
 	    	}
 		}
