@@ -120,7 +120,7 @@ public class FenetreInscription extends JDialog {
                         if ( UserDAO.createUser(user) ) {
                             JOptionPane.showMessageDialog(FenetreInscription.this,
                                     "Salut " + getUsername() + " !",
-                                    "Connexion réussie", 
+                                    "Connexion réussie",
                                     JOptionPane.INFORMATION_MESSAGE);
                             succeeded = true;
                             dispose();
