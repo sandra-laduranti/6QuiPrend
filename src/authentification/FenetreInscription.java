@@ -107,7 +107,7 @@ public class FenetreInscription extends JDialog {
                             "Erreur", 
                             JOptionPane.ERROR_MESSAGE);
             		succeeded = false;
-            	} else {
+            	} else { 
             		if( UserDAO.existLogin(getUsername())){
             			JOptionPane.showMessageDialog(FenetreInscription.this,
                             "Login " + getUsername() + " déjà existant !",
