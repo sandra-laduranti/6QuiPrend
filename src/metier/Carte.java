@@ -1,6 +1,5 @@
 package metier;
 
-import java.awt.Image;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
@@ -9,7 +8,7 @@ public class Carte implements Comparable<Carte>{
 
 	private int value;
 	private int beefHead;
-	private Image image;
+	private ImageIcon imageIcon;
 
 	/**
 	 * Crée une Carte, avec son BeefHead calculé suivant sa valeur
@@ -28,8 +27,8 @@ public class Carte implements Comparable<Carte>{
 		} else {			   // Cartes normales (23,84,..)
 			beefHead = 1;
 		}
-		URL url_tmp = getClass().getResource("/images/cards/"+val+".png"); // Choisis l'image suivant la valeur de la carte
-		if(url_tmp!=null) this.image = new ImageIcon(url_tmp).getImage(); // Logo
+		URL url_tmp = getClass().getResource("/images/cards/"+val+".png"); // Choisis l'ImageIcon suivant la valeur de la carte
+		if(url_tmp!=null) this.imageIcon = new ImageIcon(url_tmp); // Logo
 	}
 
 	
@@ -41,20 +40,22 @@ public class Carte implements Comparable<Carte>{
 		return beefHead;
 	}
 	
-	public Image getImage() {
-		return image;
+	public ImageIcon getImageIcon() {
+		return imageIcon;
 	}
 
 
 	@Override
-	public int compareTo(Carte card) {
-		if(this.getValue()>card.getValue()){
+	public int compareTo(Carte o) {
+		if(this.getValue()>o.getValue()){
 			return -1;
-		} else if(this.getValue()<card.getValue()){
+		} else if(this.getValue()<o.getValue()){
 			return 1;
 		} else {
 			return 0;
 		}
 	}
+
+
 
 }

@@ -1,5 +1,7 @@
 package metierDAO;
 
+import graphique.FenetreConnexion;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,7 +9,7 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
-import authentification.FenetreConnexion;
+import utils.MonLog;
 import metier.User;
 
 /**
@@ -38,6 +40,7 @@ public class UserDAO {
 				
 				// Une fois que l'on a récupéré l'id du compte
 				if(result!= null && result.first()==true){
+					new MonLog(MonLog.CLIENT).add("Récupération du compte depuis la base de données (après authentification)");
 					return new User(result.getInt("id"), result.getString("nickname"), 
 							result.getString("email"), result.getString("password")); 
 				
@@ -67,6 +70,7 @@ public class UserDAO {
 				statement.setString(2, user.getUserEmail());
 				statement.setString(3, user.getUserPassword());
 				statement.executeQuery();
+				new MonLog(MonLog.CLIENT).add("Création du nouveau compte pour "+user.getUserNickname());
 				return true;
 			}
 		} catch (SQLException e) {
@@ -92,6 +96,7 @@ public class UserDAO {
 				ResultSet result = statement.executeQuery();
 				
 				if(result!= null && result.first()==true){ // Si y'a un résultat
+					new MonLog(MonLog.CLIENT).add("Le login est bien unique");
 					return true;
 				}
 			}
