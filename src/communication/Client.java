@@ -1,5 +1,8 @@
 package communication;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -42,9 +45,15 @@ public class Client extends WebSocketClient {
 		// if the error is fatal then onClose will be called additionally
 	}
 
-	public static void main( String[] args ) throws URISyntaxException {
-		Client c = new Client( new URI( "ws://localhost:8887" ), new Draft_10() ); // more about drafts here: http://github.com/TooTallNate/Java-WebSocket/wiki/Drafts
+	public static void main( String[] args ) throws URISyntaxException, IOException {
+		Client c = new Client( new URI( "ws://localhost:12345" )); 
 		c.connect();
+		
+		BufferedReader sysin = new BufferedReader( new InputStreamReader( System.in ) );
+		while(true){
+			String in = sysin.readLine();
+			c.onMessage(in);
+		}
 	}
 
 }
