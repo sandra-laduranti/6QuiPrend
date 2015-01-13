@@ -1,4 +1,4 @@
-package Client;
+package communication;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -18,11 +18,6 @@ public class Client {
 				System.out.println("> Connexion etablie avec succes...");
 				connexion = true;
 				
-				Lecture lecture = new Lecture(socket);
-				lecture.start();
-				
-				Ecriture ecriture = new Ecriture(socket);
-				ecriture.start();
 			} catch (IOException e) {
 				try {
 					Thread.sleep(attente);
