@@ -11,11 +11,11 @@ import java.net.Socket;
 public class Ecriture extends Thread {
 	
 	private Socket socket;
-	private InputStreamReader isr;
-	private BufferedReader br;
-	private OutputStream os;
-	private OutputStreamWriter osw;
-	private BufferedWriter bw;
+	private InputStreamReader inputStreamReader;
+	private BufferedReader bufferedReader;
+	private OutputStream outputStream;
+	private OutputStreamWriter outputStreamWriter;
+	private BufferedWriter bufferedWriter;
 	
 	public Ecriture(Socket socket) {
 		this.socket = socket;
@@ -24,23 +24,23 @@ public class Ecriture extends Thread {
 	@Override
 	public void run() {
 		if (!this.socket.isClosed()) {
-			this.isr = new InputStreamReader(System.in);
-			this.br = new BufferedReader(isr);
+			this.inputStreamReader = new InputStreamReader(System.in);
+			this.bufferedReader = new BufferedReader(inputStreamReader);
 	
 			try {
-				this.os = this.socket.getOutputStream();
-				this.osw = new OutputStreamWriter(os);
-				this.bw = new BufferedWriter(osw);
+				this.outputStream = this.socket.getOutputStream();
+				this.outputStreamWriter = new OutputStreamWriter(outputStream);
+				this.bufferedWriter = new BufferedWriter(outputStreamWriter);
 			} catch (IOException e1) {
 				System.err.println("> Erreur d'ouverture du flux...");
 			}
 	
 			try {
 				String texte;
-				while ((texte = br.readLine()) != null) {
-					bw.write(texte);
-					bw.newLine();
-					bw.flush();
+				while ((texte = bufferedReader.readLine()) != null) {
+					bufferedWriter.write(texte);
+					bufferedWriter.newLine();
+					bufferedWriter.flush();
 				}
 			}
 			catch(IOException e) {

@@ -38,6 +38,7 @@ public class Serveur {
 		return INSTANCE;
 	}
 	
+	/* methode permettant au serveur de tourner */
 	public void handleServer(){
 		try {
 			serveur = new ServerSocket(55555);
