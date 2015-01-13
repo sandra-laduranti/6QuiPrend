@@ -18,19 +18,23 @@ public class Serveur {
 	private List<Socket> clients;
 
 	/* Singleton */
-	/* Instance unique non préinitialisée */
-	private static Serveur INSTANCE = null;
+	/* Instance unique non préinitialisée, volatile pour gerer le multithread*/
+	private static volatile Serveur INSTANCE = null;
 
 	/* Constructeur privé */
 	private Serveur() {
 		clients = new LinkedList <Socket>();
 	}
-
+	
 	/* Point d'accès pour l'instance unique du singleton */
 	public static Serveur getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new Serveur();
-		}
+		 if (INSTANCE == null) {
+	            synchronized (Serveur.class) {
+	                if (INSTANCE == null) {
+	                    INSTANCE = new Serveur();
+	                }
+	            }
+		 }
 		return INSTANCE;
 	}
 	
