@@ -36,7 +36,7 @@ public class Partie implements Serializable{
 		comptes = new HashMap<User, List<Carte>>();
 		comptes.put(user, new ArrayList<Carte>());
 	}
-	
+
 	public Partie(int id, String nom, int nbJoueurs, boolean isProMode, List<User> users){
 		this.listCard=new ArrayList<Carte>();
 		this.nbJoueursMax = nbJoueurs;
@@ -57,9 +57,11 @@ public class Partie implements Serializable{
 		while(!isPlayerReach66){
 			initializeRound(isPlayerReach66);
 		}
+		//TODO : Revoir l'algo dans le cas ou y'a un egalite
 		List<User> listWinnerAndLoser = GestionPartie.getWinnerAndLoser(getListUser());
 		System.out.println("Le gagnant est : "+listWinnerAndLoser.get(0).getUserNickname());
 		System.out.println("Le perdant est : "+listWinnerAndLoser.get(1).getUserNickname());
+		//TODO : UserDao.addPartieGagnant(user) set le user gagnant, same pour le loser 
 	}
 
 	/*
@@ -95,7 +97,7 @@ public class Partie implements Serializable{
 			for(int i = 0; i<comptes.size(); i++){
 				//Méthode qui propose a chaque joueur de choisir sa carte, retourne une carte
 				int valueCard=0;
-
+				Scanner sc=new Scanner(System.in);
 				int j=0;
 				//Affiche la liste des cartes du joueur
 				System.out.print(getListUser().get(i).getUserNickname()+" : [ ");
@@ -108,13 +110,17 @@ public class Partie implements Serializable{
 
 				try{
 					System.out.println("Au tour de " + getListUser().get(i).getUserNickname()+" : ");
-					Scanner sc=new Scanner(System.in); 
 					String ch="";
-					ch=sc.nextLine();
+					boolean cardValid = false;
+					while((ch=sc.nextLine()) == null){
+						System.err.println("Recommence la saisie");
+
+					}
 					valueCard = Integer.parseInt(ch);
 					//sc.close();
 				}catch(NumberFormatException | IllegalStateException e){
 					e.printStackTrace();
+					System.err.println("Saisissez un nombre");
 				}
 
 				if(GestionPartie.chooseCardFromHand(comptes.get(getListUser().get(i)),valueCard) != null){ 
@@ -146,17 +152,17 @@ public class Partie implements Serializable{
 			Carte cardToPlace;
 			for(int i=0; i<sortedCardsSelection.size();i++){
 				cardToPlace = sortedCardsSelection.get(i);
-				int selectRow = GestionPartie.selectRow(cardToPlace, fourLastCardRows);
+				int selectRow;
 				//Si la carte est plus petite que les dernières cartes de chaque rangée
 				//Le joueur prend alors la ligne
 				if(GestionPartie.isPlusPetit(selectedCardByPlayer.get(i), fourLastCardRows)){
 					int selectRowCollect = GestionPartie.getRowToCollect();
 					attributeBeef(selectRowCollect, cardToPlace, selectedCardByPlayer);
-
-				} else if (rows.get(selectRow).size()==5){
+				} else if ((selectRow = rows.get(GestionPartie.selectRow(cardToPlace, fourLastCardRows)).size())==5){
 					// Si le joueur place la 6eme carte alors il prend la rangée
 					attributeBeef(selectRow, cardToPlace, selectedCardByPlayer);
 				} else {
+					selectRow  = GestionPartie.selectRow(cardToPlace, fourLastCardRows);
 					rows.get(selectRow).add(cardToPlace);
 					fourLastCardRows = lastCardsRows();
 				}
@@ -246,7 +252,7 @@ public class Partie implements Serializable{
 		rows.get(indexRow).clear();
 		rows.get(indexRow).add(card);
 	}
-	
+
 	public boolean isProMode(){
 		return isProMode;
 	}
