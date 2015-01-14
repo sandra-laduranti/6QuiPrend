@@ -28,6 +28,10 @@ public class Client extends WebSocketClient {
 		this.user = user;
 	}
 	
+	public User getUser(){
+		return user;
+	}
+	
 	@Override
 	public void onOpen( ServerHandshake handshakedata ) {
 		System.out.println( "opened connection" );

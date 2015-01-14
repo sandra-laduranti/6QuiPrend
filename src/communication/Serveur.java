@@ -9,12 +9,20 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import metier.Carte;
 import metier.Partie;
+import metier.User;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.cedarsoftware.util.io.JsonReader;
+import com.cedarsoftware.util.io.JsonWriter;
+import com.google.gson.Gson;
 
 
 public class Serveur extends WebSocketServer{
@@ -58,25 +66,56 @@ public class Serveur extends WebSocketServer{
 		this.sendToAll( conn + " has left the room!" );
 		System.out.println( conn + " has left the room!" );
 	}
+	
+	public void addPartie(String[] param){
+		//String nom, int nbJoueurs, boolean isProMode, User user
+		
+		
+	}
+	
+	public static void testJSON() throws IOException{
+		JSONObject testJson = new JSONObject();
+		List<Carte> test= new ArrayList<Carte>();
+		test.add(new Carte(1));
+		test.add(new Carte(2));
+		Carte carte = new Carte(1);
+		String json = JsonWriter.objectToJson(test);
+		//JSONArray jsonA = JSONArray.fromObject(test);
+		//System.out.println(jsonA);
+		System.out.println("JSON " + json);
+		
+		Object obj = JsonReader.jsonToJava(json);
+		String json2 = new Gson().toJson(test );
+		System.out.println("Test:: "+ json2);
+		
+		
+		
+		//System.out.println("JSONArray :: "+(JSONArray)JSONSerializer.toJSON(test));
+		
+		//System.out.println("getValue: "+ ((Carte) obj).getValue());
+
+	}
 
 	
 	/* on parse le message afin de récuperer tout ce qui se trouve avant : */
+	/* puis switch en fonction du flag */
 	@Override
 	public void onMessage( WebSocket conn, String message ) {
 		String delims = "[:]";
 		String[] tokens = message.split(delims);
 		
 		switch (tokens[0]) {
-        case "newP":
+        case "newP":												//créer Partie
+        	//parties.add(new Partie(tokens[1],tokens[2],tokens[3],tokens[4]));
             System.out.println("newP");
             break;
-        case "joinP":
+        case "joinP":												//rejoindre Partie
             System.out.println("joinP");
             break;
-        case "quitP":
+        case "quitP":												//quitter Partie
             System.out.println("quitP");
             break;
-        case "getP":
+        case "getList":												//récupérer Liste Parties non lancées
             System.out.println("getList");
             break;
         default:
@@ -114,7 +153,8 @@ public class Serveur extends WebSocketServer{
 	
 	
 	public static void main( String[] args ) throws InterruptedException , IOException {
-		WebSocketImpl.DEBUG = true;
+		testJSON();
+		/*WebSocketImpl.DEBUG = true;
 		int port = 12345; 
 		try {
 			port = Integer.parseInt( args[ 0 ] );
@@ -137,6 +177,6 @@ public class Serveur extends WebSocketServer{
 				s.start();
 				break;
 			}
-		}
+		}*/
 	}
 }
