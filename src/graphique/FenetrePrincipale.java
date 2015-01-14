@@ -27,6 +27,7 @@ import metier.Partie;
 import metier.User;
 import utils.EcranGauche;
 import utils.MonLog;
+import utils.MonLogClient;
 import utils.PanneauBordure;
 
 import communication.Client;
@@ -135,7 +136,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	    this.revalidate();
 	    this.repaint();
 	    
-	    log_client = new MonLog(MonLog.CLIENT);
+	    log_client = new MonLogClient();
 	    log_client.add("Application lancée :)");
 	}
 
@@ -271,7 +272,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try{
-						context.afficherToutesLesParties(client.recupereListParties());
+						//context.afficherToutesLesParties(client.recupereListParties());
 					} catch (NullPointerException exc){
 						/// TODO : TESTs
 						ArrayList<Partie> parties = new ArrayList<Partie>();
@@ -368,7 +369,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						try{
-							client.rejoindrePartie(context.getUser().getUserNickname(), ((JButton)e.getSource()).getName());
+//							client.rejoindrePartie(context.getUser().getUserNickname(), ((JButton)e.getSource()).getName());
 						} catch (NullPointerException exc){
 							log_client.add("Le client est null (afficherToutesLesParties, FenetrePrincipale)");
 						}

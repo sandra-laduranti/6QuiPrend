@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
-import utils.MonLog;
+import utils.MonLogClient;
 
 public class DatabaseConnection {
 	  
@@ -29,9 +29,9 @@ public class DatabaseConnection {
 		    	try {
 		    		url += DatabaseUtils.BASE;
 			        connect = DriverManager.getConnection(url, user, passwd);
-			        new MonLog(MonLog.CLIENT).add("Connection à la base réussie");
+			        new MonLogClient().add("Connection à la base réussie");
 			    } catch (SQLException e) {
-			    	new MonLog(MonLog.CLIENT).add("Problème d'accès à la base distante"+e.getMessage());
+			    	new MonLogClient().add("Problème d'accès à la base distante"+e.getMessage());
 			    	JOptionPane.showMessageDialog(null, "Message reçu : "+e.getMessage(), "Erreur de connexion à la base distante", JOptionPane.ERROR_MESSAGE);
 			    }
 	    	}

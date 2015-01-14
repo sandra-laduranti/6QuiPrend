@@ -21,7 +21,7 @@ import javax.swing.border.LineBorder;
 
 import metier.User;
 import metierDAO.UserDAO;
-import utils.MonLog;
+import utils.MonLogClient;
 
 public class FenetreInscription extends JDialog {
 
@@ -37,7 +37,7 @@ public class FenetreInscription extends JDialog {
     public FenetreInscription(final FenetrePrincipale context) {
 
     	super(context, "Inscription", true);
-    	new MonLog(MonLog.CLIENT).add("Tentative d'inscription");
+    	new MonLogClient().add("Tentative d'inscription");
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints cs = new GridBagConstraints();
         cs.fill = GridBagConstraints.HORIZONTAL;

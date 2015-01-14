@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import utils.MonLog;
+import utils.MonLogClient;
 
 public class Main6QuiPrend{
 
@@ -54,7 +54,7 @@ public class Main6QuiPrend{
         			
         			@Override
         			public void windowClosing(WindowEvent e) {
-        				new MonLog(MonLog.CLIENT).add("Fermeture de l'application !\n\n");
+        				new MonLogClient().add("Fermeture de l'application !\n\n");
         				
         				System.out.println("\n************************************************************************************************************************************************************\n"
         							   	   + "**************************************************** Fermeture du 6 Qui Prend ... **************************************************************************\n"

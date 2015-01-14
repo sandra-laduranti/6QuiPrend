@@ -2,32 +2,26 @@ package graphique;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 
 import javax.swing.ButtonGroup;
-import javax.swing.ButtonModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import metier.Partie;
-import metier.User;
-import metierDAO.UserDAO;
-import utils.MonLog;
+import utils.MonLogClient;
+import utils.MonLogPartie;
 
 public class FenetreCreationPartie extends JDialog {
 
@@ -43,7 +37,7 @@ public class FenetreCreationPartie extends JDialog {
     public FenetreCreationPartie(final FenetrePrincipale context) {
 
     	super(context, "Nouvelle partie", true);
-    	new MonLog(MonLog.CLIENT).add("Tentative de création d'une nouvelle partie");
+    	new MonLogClient().add("Tentative de création d'une nouvelle partie");
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints cs = new GridBagConstraints();
         cs.fill = GridBagConstraints.HORIZONTAL;
@@ -109,7 +103,8 @@ public class FenetreCreationPartie extends JDialog {
                             JOptionPane.ERROR_MESSAGE);
             		succeeded = false;
             	} else { 
-            		new MonLog(MonLog.PARTIE).add("Création de la partie "+nomPartie.getText()+" réussie !");
+            		new MonLogPartie(new Partie(getNamePartie(),getNbMaxJoueurs(),getProMode(),context.getUser()))
+            										.add("Création de la partie "+nomPartie.getText()+" réussie !");
                     JOptionPane.showMessageDialog(context,
                             "Création de la partie "+nomPartie.getText()+" réussie !",
                             "Connexion réussie",

@@ -18,7 +18,7 @@ import javax.swing.border.LineBorder;
 
 import metier.User;
 import metierDAO.UserDAO;
-import utils.MonLog;
+import utils.MonLogClient;
 
 public class FenetreConnexion extends JDialog {
 
@@ -33,7 +33,7 @@ public class FenetreConnexion extends JDialog {
     public FenetreConnexion(final FenetrePrincipale context) {
 
     	super(context, "Login", true);
-    	new MonLog(MonLog.CLIENT).add("Tentative de connexion");
+    	new MonLogClient().add("Tentative de connexion");
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints cs = new GridBagConstraints();
         cs.fill = GridBagConstraints.HORIZONTAL;
