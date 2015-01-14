@@ -14,7 +14,7 @@ public class MainPartie {
 		User user = new User("Nourdine", "nourdine@gmail.com", "ghansum");
 		User user2 = new User("Patrick", "patrick@gmail.com", "pol");
 		List<Carte> listC = new ArrayList<>();
-		Partie partie = new Partie("Partie1", 1, false, user);
+		Partie partie = new Partie("Partie1", 2, false, user);
 		partie.addPlayer(user2, listC);
 		
 		System.out.println("Nom de la partie : "+partie.getNom());

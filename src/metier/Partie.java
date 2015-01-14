@@ -25,7 +25,7 @@ public class Partie {
 	private List<List<Carte>> rows;
 	private String nom;
 	private boolean isPlayerReach66=false;
-
+	
 	public Partie(String nom, int nbJoueurs, boolean isProMode, User user){
 		this.listCard=new ArrayList<Carte>();
 		this.nbJoueursMax = nbJoueurs;
@@ -68,13 +68,10 @@ public class Partie {
 			}
 			System.out.println("]");	
 		}
-		comptes.get(null);
+		
 		// On récupére les 4 premières cartes et on les ajoute a chacune des rangées 
 		GestionPartie.iniatializeRowsFirstCard(rows, listCard);
-		
-		for (Entry<User, List<Carte>> entry : comptes.entrySet()) {
-	        entry.getValue().addAll(playerCards);
-	    }
+	
 		//Représente le déroulement d'une manche
 		List<Carte> selectedCardByPlayer = null;
 		int cptTurn = 0;
@@ -97,6 +94,7 @@ public class Partie {
 				if(!GestionPartie.chooseCardFromHand(comptes.get(user),a).equals(new Carte(0))){ 
 					selectedCard = GestionPartie.chooseCardFromHand(comptes.get(user), a);
 					comptes.get(user).remove(selectedCard);
+					selectedCardByPlayer.add(selectedCard);
 					System.out.println("\n*****************************************");
 					for(int r=0; r<rows.size();r++){
 						listCard = rows.get(r);
@@ -125,7 +123,7 @@ public class Partie {
 				System.out.print(" ]");
 				List<Carte> listCard = new ArrayList<Carte>();
 				//On l'ajoute dans une liste de carte qui représente l'ensemble des cartes selectionne par les joueurs
-				selectedCardByPlayer.add(selectedCard);
+				
 				
 			}
 			List<Carte> sortedCardsSelection = selectedCardByPlayer;
