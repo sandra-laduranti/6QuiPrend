@@ -14,11 +14,10 @@ import metier.Carte;
 import metier.GestionPartie;
 import metier.User;
 
-import com.mysql.fabric.xmlrpc.base.Array;
-
 public class Partie {
 
 	private List<Carte> listCard;
+	private int id;
 	// HashMap contient la clé du joueur ainsi que la liste de ses cartes actuels
 	private HashMap<User, List<Carte>> comptes;
 	private int nbJoueursMax;
@@ -31,6 +30,7 @@ public class Partie {
 		this.nbJoueursMax = nbJoueurs;
 		this.isProMode = isProMode;
 		this.nom = nom;
+		this.id++;
 		comptes = new HashMap<User, List<Carte>>();
 		comptes.put(user, new ArrayList<Carte>());
 	}
@@ -48,7 +48,7 @@ public class Partie {
 	 * TODO  : Ajout des println et d'un Scanner pour la saisie sur console
 	 */
 	public void initializeRound(boolean isPlayerReach66){
-		initializeDeck();
+		this.listCard = GestionPartie.initializeDeck(nbJoueursMax, isProMode);
 		initializeRows();
 		User user = null;
 		// On distribue les cartes pour chaque joueur
@@ -68,7 +68,7 @@ public class Partie {
 		}
 
 		// On récupére les 4 premières cartes et on les ajoute a chacune des rangées 
-		initRowsCard();
+		GestionPartie.iniatializeRowsFirstCard(rows, listCard);
 
 		for (Entry<User, List<Carte>> entry : comptes.entrySet()) {
 	        entry.getValue().addAll(playerCards);
@@ -217,24 +217,6 @@ public class Partie {
 			rows.add(new ArrayList<Carte>());
 		}
 	}
-
-	private void initializeDeck(){
-		if(isProMode){
-			for(int i = 1; i<(10*nbJoueursMax+4); i++){
-				this.listCard.add(new Carte(i));
-			}
-		} else {
-			for(int i = 1; i<105; i++){
-				this.listCard.add(new Carte(i));
-			}
-		}
-	}
-
-	private void initRowsCard(){
-		for(int i = 0; i<4; i++){
-			rows.get(i).add(listCard.get(i));
-		}
-	}
 	
 	private List<Carte> lastCardsRows(){
 		List<Carte> lastCardsRows = new ArrayList<Carte>();
@@ -255,6 +237,10 @@ public class Partie {
 	
 	public HashMap<User, List<Carte>> getPlayers(){
 		return this.comptes;
+	}
+	
+	public int getIdParty(){
+		return this.id;
 	}
 	
 }
