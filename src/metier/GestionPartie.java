@@ -104,16 +104,20 @@ public class GestionPartie {
 		}
 		return playerCards;
 	}
-	
+
 	/**
-	 * Permet au joueur de selectionne sa carte
-	 * @param cards la main du joueurs
-	 * @return la carte selectionner par le joueur
-	 * 
-	 * TODO : A voir avec l'interface graphique
+	 * Retourne la carte joué par le joueur
+	 * @param cards la main du joueur
+	 * @param cardValue 
+	 * @return
 	 */
-	public static Carte chooseCardFromHand(List<Carte> cards, int selectICard){
-		return cards.get(selectICard);
+	public static Carte chooseCardFromHand(List<Carte> cards, int cardValue){
+		for (Carte carte : cards) {
+			if(carte.getValue()==cardValue){
+				return carte;
+			}
+		}
+		return null;
 	}
 	
 	public static void getWinnerAndLoser(List<User> users){

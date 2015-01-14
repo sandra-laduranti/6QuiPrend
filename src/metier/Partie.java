@@ -50,6 +50,7 @@ public class Partie {
 		List<Carte> selectedCardByPlayer = new ArrayList<Carte>();
 		int cptTurn = 0;
 		while(!isPlayerReach66 || cptTurn <10){
+			
 			Carte selectedCard;
 			// Faire en sorte que chaque joueur selectionne une carte chacun a leur tour
 			for(int i = 0; i<comptes.size(); i++){
