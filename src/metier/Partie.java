@@ -47,7 +47,7 @@ public class Partie {
 	/*
 	 * TODO  : Ajout des println et d'un Scanner pour la saisie sur console
 	 */
-	public void initializeRound(boolean isPlayerReach66){
+	private void initializeRound(boolean isPlayerReach66){
 		this.listCard = GestionPartie.initializeDeck(nbJoueursMax, isProMode);
 		initializeRows();
 		User user = null;
@@ -55,21 +55,23 @@ public class Partie {
 		List<Carte> playerCards=new ArrayList<Carte>();
 		for(int i = 0; i<nbJoueursMax; i++){				// Ajout des system.out.println()
 			playerCards =  GestionPartie.disturb(listCard);
+			user=getListUser().get(i);
+			comptes.put(user, playerCards);
 			/*
 			 * TODO : Ajout du while permettant de voir la liste des cartes distribuées
 			 */
 			int j=0;
 			System.out.print(getListUser().get(i).getUserNickname()+" : [ ");
-			while(j<=comptes.getOrDefault(j, playerCards).size()-1){
-				System.out.print(comptes.getOrDefault(i, playerCards).get(j).getValue()+"  ");
+			while(j<=comptes.get(user).size()-1){
+				System.out.print(comptes.get(user).get(j).getValue()+"  ");
 				j++;
 			}
-			System.out.println("]");
+			System.out.println("]");	
 		}
-
+		comptes.get(null);
 		// On récupére les 4 premières cartes et on les ajoute a chacune des rangées 
 		GestionPartie.iniatializeRowsFirstCard(rows, listCard);
-
+		
 		for (Entry<User, List<Carte>> entry : comptes.entrySet()) {
 	        entry.getValue().addAll(playerCards);
 	    }
@@ -92,9 +94,9 @@ public class Partie {
 					e.printStackTrace();
 				}
 				
-				if(!GestionPartie.chooseCardFromHand(comptes.getOrDefault(i, playerCards), a).equals(new Carte(0))){
-					selectedCard = GestionPartie.chooseCardFromHand(comptes.getOrDefault(i, playerCards), a);
-					comptes.getOrDefault(i, playerCards).remove(selectedCard);
+				if(!GestionPartie.chooseCardFromHand(comptes.get(user),a).equals(null)){
+					selectedCard = GestionPartie.chooseCardFromHand(comptes.get(user), a);
+					comptes.get(user).remove(selectedCard);
 					System.out.println("\n*****************************************");
 					for(int r=0; r<rows.size();r++){
 						listCard = rows.get(r);
@@ -116,8 +118,8 @@ public class Partie {
 			 */
 				int k=0;
 				System.out.print("[ ");
-				while(k<comptes.getOrDefault(k, playerCards).size()){
-					System.out.print(comptes.getOrDefault(k, playerCards).get(k).getValue()+" ");
+				while(k<comptes.get(user).size()){
+					System.out.print(comptes.get(user).get(k).getValue()+" ");
 					k++;
 				}
 				System.out.print(" ]");
@@ -127,21 +129,7 @@ public class Partie {
 				
 			}
 			List<Carte> sortedCardsSelection = selectedCardByPlayer;
-			// Trier la liste
-			sortedCardsSelection.sort(new Comparator<Carte>() {
-
-				@Override
-				public int compare(Carte card1, Carte card2) {
-					if(card1.getValue()>card2.getValue()){
-						return -1;
-					} else if(card1.getValue()<card2.getValue()){
-						return 1;
-					} else {
-						return 0;
-					}
-				}
-			});
-			
+			Collections.sort(sortedCardsSelection);
 			// Pour chaque carte de la liste selectedCardByPlayer on regarde si on peut la jouer
 			List<Carte> fourLastCardRows = lastCardsRows();
 			Carte cardToPlace;
