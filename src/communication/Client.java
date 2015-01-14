@@ -6,12 +6,15 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import metier.User;
+
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
-import org.java_websocket.drafts.Draft_10;
 import org.java_websocket.handshake.ServerHandshake;
 
 public class Client extends WebSocketClient {
+	
+	private User user;
 
 	public Client( URI serverUri , Draft draft ) {
 		super( serverUri, draft );
@@ -21,6 +24,10 @@ public class Client extends WebSocketClient {
 		super( serverURI );
 	}
 
+	public void setUser(User user){
+		this.user = user;
+	}
+	
 	@Override
 	public void onOpen( ServerHandshake handshakedata ) {
 		System.out.println( "opened connection" );
@@ -29,7 +36,20 @@ public class Client extends WebSocketClient {
 
 	@Override
 	public void onMessage( String message ) {
-		System.out.println( "received: " + message );
+		String delims = "[:]";
+		String[] tokens = message.split(delims);
+		
+		switch (tokens[0]) {
+        case "getCarte":
+            System.out.println("getCarte");
+            break;
+        case "jesaispasencorequelflag":
+            System.out.println("tata");
+            break;
+        default:
+            System.out.println("Error: ce flag n'existe pas.");
+        }
+		//System.out.println( "received: " + message );
 	}
 
 
@@ -44,6 +64,10 @@ public class Client extends WebSocketClient {
 		ex.printStackTrace();
 		// if the error is fatal then onClose will be called additionally
 	}
+	
+	public void sendWithFlag(String Text, String flag){
+		this.send(flag + ":" + Text);
+	}
 
 	public static void main( String[] args ) throws URISyntaxException, IOException {
 		Client c = new Client( new URI( "ws://localhost:12345" )); 
@@ -52,7 +76,7 @@ public class Client extends WebSocketClient {
 		BufferedReader sysin = new BufferedReader( new InputStreamReader( System.in ) );
 		while(true){
 			String in = sysin.readLine();
-			c.onMessage(in);
+			c.sendWithFlag(in,"titi");
 		}
 	}
 
