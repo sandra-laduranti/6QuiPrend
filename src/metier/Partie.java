@@ -94,7 +94,7 @@ public class Partie {
 					e.printStackTrace();
 				}
 				
-				if(!GestionPartie.chooseCardFromHand(comptes.get(user),a).equals(null)){
+				if(!GestionPartie.chooseCardFromHand(comptes.get(user),a).equals(null)){ 
 					selectedCard = GestionPartie.chooseCardFromHand(comptes.get(user), a);
 					comptes.get(user).remove(selectedCard);
 					System.out.println("\n*****************************************");
