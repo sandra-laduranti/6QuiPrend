@@ -16,7 +16,7 @@ public class Partie implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private List<Carte> listCard;
-	private int id=0;
+	private static int id=0;
 	// HashMap contient la clé du joueur ainsi que la liste de ses cartes actuels
 	private HashMap<User, List<Carte>> comptes;
 	private int nbJoueursMax;
@@ -30,7 +30,7 @@ public class Partie implements Serializable{
 		this.nbJoueursMax = nbJoueurs;
 		this.isProMode = isProMode;
 		this.nom = nom;
-		this.id++;
+		id++;
 		comptes = new HashMap<User, List<Carte>>();
 		comptes.put(user, new ArrayList<Carte>());
 	}
@@ -86,7 +86,8 @@ public class Partie implements Serializable{
 					String ch="";
 					ch=sc.nextLine();
 					a = Integer.parseInt(ch);
-				}catch(NumberFormatException e){
+					sc.close();
+				}catch(NumberFormatException | IllegalStateException e){
 					e.printStackTrace();
 				}
 				
@@ -224,8 +225,8 @@ public class Partie implements Serializable{
 		return this.comptes;
 	}
 	
-	public int getIdParty(){
-		return this.id;
+	public int getId(){
+		return id;
 	}
 	
 }
