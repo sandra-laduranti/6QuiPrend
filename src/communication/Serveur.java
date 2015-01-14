@@ -1,12 +1,15 @@
 package communication;
 
+import java.util.List;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collection;
+
+import metier.Partie;
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
@@ -14,17 +17,34 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 
-
-public class Serveur extends WebSocketServer {
+public class Serveur extends WebSocketServer{
 	
 	/*TODO: ajout Singleton */
+	private List<Partie> parties;
 	
+	/** Constructeurs privés */
 	public Serveur( int port ) throws UnknownHostException {
 		super( new InetSocketAddress( port ) );
+		parties = new ArrayList<Partie>();
 	}
-
-	public Serveur( InetSocketAddress address ) {
-		super( address );
+	
+	/** Instance unique non préinitialisée */
+	private static Serveur INSTANCE = null;
+ 
+	/** Point d'accès pour l'instance unique du singleton 
+	 * @throws UnknownHostException */
+	public static Serveur getInstance(int port) throws UnknownHostException
+	{	
+		if (INSTANCE == null)
+		{ 	
+			synchronized(Serveur.class)
+			{
+				if (INSTANCE == null)
+				{	INSTANCE = new Serveur(port);
+				}
+			}
+		}
+		return INSTANCE;
 	}
 
 	@Override
@@ -39,10 +59,31 @@ public class Serveur extends WebSocketServer {
 		System.out.println( conn + " has left the room!" );
 	}
 
+	
+	/* on parse le message afin de récuperer tout ce qui se trouve avant : */
 	@Override
 	public void onMessage( WebSocket conn, String message ) {
-		this.sendToAll( message );
-		System.out.println( conn + ": " + message );
+		String delims = "[:]";
+		String[] tokens = message.split(delims);
+		
+		switch (tokens[0]) {
+        case "newP":
+            System.out.println("newP");
+            break;
+        case "joinP":
+            System.out.println("joinP");
+            break;
+        case "quitP":
+            System.out.println("quitP");
+            break;
+        case "getP":
+            System.out.println("getList");
+            break;
+        default:
+            System.out.println("Error: ce flag n'existe pas.");
+        }
+		//this.sendToAll( message );
+		//System.out.println( conn + ": " + message + " test trallalaal");
 	}
 
 	@Override
@@ -52,6 +93,7 @@ public class Serveur extends WebSocketServer {
 			// some errors like port binding failed may not be assignable to a specific websocket
 		}
 	}
+	
 
 	/**
 	 * Sends <var>text</var> to all currently connected WebSocket clients.
@@ -78,7 +120,7 @@ public class Serveur extends WebSocketServer {
 			port = Integer.parseInt( args[ 0 ] );
 		} catch ( Exception ex ) {
 		}
-		Serveur s = new Serveur( port );
+		Serveur s = Serveur.getInstance( port );
 		s.start();
 		System.out.println( "ChatServer started on port: " + s.getPort() );
 
