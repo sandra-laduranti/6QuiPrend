@@ -6,7 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,6 +20,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import metier.Carte;
 import metier.Partie;
@@ -25,6 +28,8 @@ import metier.User;
 import utils.EcranGauche;
 import utils.MonLog;
 import utils.PanneauBordure;
+
+import communication.Client;
 
 
 public class FenetrePrincipale extends JFrame implements ActionListener{
@@ -59,12 +64,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	private PanneauBordure panneau;
 	private EcranGauche ecrangauche;
 	
+	private Client client;
 	private User user;
 
 
-	public FenetrePrincipale(){
+	public FenetrePrincipale(Client client){
 		
-		this.context = this;  // Pour pouvoir utiliser notre instance de fenetreAccueil partout (methodes statics, listeners, ...) lorsque this ne fonctionne pas
+		this.client = client; // Le client qui possède cette fenetre
+		this.context = this;  // Pour pouvoir utiliser notre instance de fenetreprincipale partout (methodes statics, listeners, classes ...) lorsque this ne fonctionne pas
 	    this.setTitle("6 Qui Prend");
 	    
 	    URL url_tmp = getClass().getResource("/images/logo 6QuiPrend.png");
@@ -93,6 +100,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 //			    		if(choix == JOptionPane.OK_OPTION){
 //			    			context.dispatchEvent(new WindowEvent(context, WindowEvent.WINDOW_CLOSING)); // On ferme l'appli
 //			    		}
+						context.afficherPartie();
                     }
         });
 	    
@@ -112,7 +120,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	    
 	    
         // Partie centre/gauche
-        ecrangauche = new EcranGauche(this, new BorderLayout());
+        ecrangauche = new EcranGauche(new BorderLayout());
         url_tmp = getClass().getResource("/images/fond 6QuiPrend.png");
         if(url_tmp!=null) ecrangauche.setImage(new ImageIcon(url_tmp).getImage());
         this.add(ecrangauche, BorderLayout.CENTER);
@@ -135,12 +143,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// Si c'est une connexion
 		if(e.getActionCommand().equals(item_connexion.getText()) || e.getActionCommand().equals(bouton_connexion.getText())){
-		
 			//Pour les tests, commenter les 3 lignes suivantes et laisser décommenté la 4 eme ligne
-			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
-			fenetreconnexion.setVisible(true);
-			if(fenetreconnexion.isSucceeded()){
-//			if(true){
+//			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
+//			fenetreconnexion.setVisible(true);
+//			if(fenetreconnexion.isSucceeded()){
+			if(true){
 		    	is_connected=true; // Flag
 		    	
 				// Réorganisation des menus
@@ -148,7 +155,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
 				
 				log_client.add("Connecté !");
-				this.modifierInterfaceConnexion();
+				// Ligne suivante à décommenter pour test
+				context.setUser(new User("JulienTest","mdp","mail"));
+				this.modifierInterfaceAfterConnexion();
 				
 	        } else {
 	        	is_connected=false;
@@ -189,7 +198,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
 				
 				log_client.add("Inscription réussie");
-				this.modifierInterfaceConnexion();
+				this.modifierInterfaceAfterConnexion();
 	        } else {
 	        	is_connected=false;
 	        	log_client.add("Inscription échouée");
@@ -221,11 +230,12 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	
 	public void setUser(User user){
 		this.user=user;
+//		client.setUser(user);
 	}
 	
 
 	/// Changement d'interfaces
-	private void modifierInterfaceConnexion(){
+	private void modifierInterfaceAfterConnexion(){
 		
 		ecrangauche.paintComponentWithoutImage();
 		
@@ -251,43 +261,133 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	    panneau.setLayout(new BorderLayout());
 	    panneau.add(container_infos, BorderLayout.NORTH);
 	    
-	    JPanel container_creer_et_rafraichir = new JPanel();
-		    JButton bouton_creerPartie = new JButton(texte_creerPartie);
-		    bouton_creerPartie.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// Interface création d'une partie
-				}
-			});
-		    
+	    
+	    JPanel container_rafraichir = new JPanel();
+	    container_rafraichir.setOpaque(false);
+	    container_rafraichir.setBorder(new EmptyBorder(130,0,0,0));
 		    JButton bouton_rafraichir = new JButton(texte_rafraichir);
 		    bouton_rafraichir.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					ecrangauche.removeAll();
-					context.afficherToutesLesParties();
+					try{
+						context.afficherToutesLesParties(client.recupereListParties());
+					} catch (NullPointerException exc){
+						/// TODO : TESTs
+						ArrayList<Partie> parties = new ArrayList<Partie>();
+						Partie p = new Partie("test", 5, false, context.getUser());
+						parties.add(p);
+						context.afficherToutesLesParties(parties);
+						log_client.add("Le client est à null (modifierInterfaceAfterConnexion, FenetrePrincipale)");
+					}
 				}
 			});
-		container_creer_et_rafraichir.add(bouton_rafraichir);
-		container_creer_et_rafraichir.add(bouton_creerPartie);
-		ecrangauche.add(container_creer_et_rafraichir);
-		 
-		this.afficherToutesLesParties();
+	    container_rafraichir.add(bouton_rafraichir);
+
+	    JPanel container_creer = new JPanel();
+	    container_creer.setBorder(new EmptyBorder(0,0,60,0));
+	    container_creer.setOpaque(false);
+		    JButton bouton_creerPartie = new JButton(texte_creerPartie);
+		    bouton_creerPartie.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+					FenetreCreationPartie fenetrecreation = new FenetreCreationPartie(context);
+					fenetrecreation.setVisible(true);
+					if(fenetrecreation.isSucceeded()){
+						log_client.add("Creation de la partie réussie");
+						fenetrecreation.getNamePartie();
+						fenetrecreation.getNbMaxJoueurs();
+						fenetrecreation.getProMode();
+						
+						//client.creationPartie(fenetrecreation.getNom(),fenetrecreation.getNbMaxJoueurs(),fenetrecreation.getProMode());
+			        } else {
+			        	log_client.add("Inscription échouée");
+			        } 
+					
+				}
+			});
+		container_creer.add(bouton_creerPartie);
+		
+		panneau.add(container_rafraichir, BorderLayout.CENTER);
+		panneau.addComposantEnBas(container_creer);
+		
+//		ArrayList<Partie> parties = new ArrayList<Partie>();
+//		Partie p = new Partie("test", 5, false, context.getUser());
+//		parties.add(p);
+//		context.afficherToutesLesParties(parties);
+		
 	}
 	
-	public void afficherToutesLesParties(/*parties*/){
-		ArrayList<Partie> list = new ArrayList<Partie>();
-		Partie p = new Partie("test", 5, false, context.getUser());
-		list.add(p);
+	public void afficherToutesLesParties(List<Partie> parties){
+		
 		ecrangauche.removeAll();
-		ecrangauche.afficheParties(list);
-		context.revalidate();
-		context.repaint();
+    	ecrangauche.setLayout(new BorderLayout());
+    	JPanel container_all_parties = new JPanel();
+    	container_all_parties.setLayout(new FlowLayout(FlowLayout.CENTER,10,10));
+    	container_all_parties.setBorder(new EmptyBorder(20,20,50,20));
+    	container_all_parties.setOpaque(false);
+    	
+    	List<User> users;
+    	for(int x=0;x<12;x++)
+    	for(int i=0; i<parties.size(); i++){ // On créer un carré par parties
+    		users = parties.get(i).getListUser();
+    		
+			JPanel container_one_partie = new JPanel(new BorderLayout(0,0));
+			TitledBorder bordure = BorderFactory.createTitledBorder("<html>"+parties.get(i).getNom()+"<br>(Max : "+parties.get(i).getNbJoueursMax()+" pers.)</html>");
+			container_one_partie.setBorder(bordure);
+			JPanel infos = new JPanel(new GridLayout(users.size()+9,1));
+				
+			for (int j=0; j<users.size(); j++){
+				JLabel joueur = new JLabel(" - "+users.get(j).getUserNickname());
+				JLabel joueur2 = new JLabel(" - Autre joueur");
+				JLabel joueur3 = new JLabel(" - Encore un autre joueur");
+				JLabel joueur4 = new JLabel(" - "+users.get(j).getUserNickname());
+				JLabel joueur5 = new JLabel(" - Autre joueur");
+				JLabel joueur6 = new JLabel(" - Encore un autre joueur");
+				JLabel joueur7 = new JLabel(" - "+users.get(j).getUserNickname());
+				JLabel joueur8 = new JLabel(" - Autre joueur");
+				JLabel joueur9 = new JLabel(" - Encore un autre joueur");
+				infos.add(joueur);
+				infos.add(joueur2);
+				infos.add(joueur3);
+				infos.add(joueur4);
+				infos.add(joueur5);
+				infos.add(joueur6);
+				infos.add(joueur7);
+				infos.add(joueur8);
+				infos.add(joueur9);
+			}
+			
+			JPanel container_bouton = new JPanel(); // Panel permettant de garder une taille raisonnable au bouton
+    			JButton bouton_rejoindre = new JButton("Rejoindre");
+    			bouton_rejoindre.setName(parties.get(i).getNom()); // On aussi au bouton rejoindre le nom de la partie.
+    			bouton_rejoindre.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						try{
+							client.rejoindrePartie(context.getUser().getUserNickname(), ((JButton)e.getSource()).getName());
+						} catch (NullPointerException exc){
+							log_client.add("Le client est null (afficherToutesLesParties, FenetrePrincipale)");
+						}
+					}
+				});
+    		container_bouton.add(bouton_rejoindre);
+    		
+			container_one_partie.add(infos,BorderLayout.NORTH);
+			container_one_partie.add(container_bouton,BorderLayout.SOUTH);
+			container_all_parties.add(container_one_partie);	
+    	}
+    	ecrangauche.add(container_all_parties, BorderLayout.CENTER);
+    	context.revalidate();
+    	context.repaint();
+    	
 	}
 	
-	public void afficherJeu(){
+	// Une partie commence !
+	public void afficherPartie(){
 		ecrangauche.setLayout(new GridLayout(6,1));
 		JPanel tas1 = new JPanel();
 		tas1.setLayout(new GridLayout(0,5));

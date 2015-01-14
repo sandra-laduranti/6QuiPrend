@@ -1,5 +1,7 @@
 package utils;
 
+import graphique.FenetrePrincipale;
+
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,14 +16,12 @@ import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 @SuppressWarnings("serial")
 public class PanneauBordure extends JPanel{
 
-	private JFrame context;
     private JPanel panel;
 	
     // Le contour
@@ -37,8 +37,7 @@ public class PanneauBordure extends JPanel{
     private Image image;
 
 
-	public PanneauBordure(JFrame context, JComponent ... liste_compo) {
-		this.context=context;
+	public PanneauBordure(FenetrePrincipale context, JComponent ... liste_compo) {
 		this.setLayout(new GridLayout(3,1));
 		this.setPreferredSize(new Dimension(190,this.getPreferredSize().height));
         

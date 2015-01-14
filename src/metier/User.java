@@ -1,10 +1,18 @@
 package metier;
+
+import java.io.Serializable;
+
 /**
  * @(#) Compte.java
  */
 
-public class User
+public class User implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private int userId;
 	
 	private String userNickname;

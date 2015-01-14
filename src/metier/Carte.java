@@ -1,11 +1,16 @@
 package metier;
 
+import java.io.Serializable;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-public class Carte implements Comparable<Carte>{
+public class Carte implements Comparable<Carte>, Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int value;
 	private int beefHead;
 	private ImageIcon imageIcon;

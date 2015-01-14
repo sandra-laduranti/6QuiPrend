@@ -2,17 +2,11 @@ package graphique;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import metier.User;
 import utils.MonLog;
 
 public class Main6QuiPrend{
@@ -36,11 +30,14 @@ public class Main6QuiPrend{
 //        try {
 //        	FileOutputStream  fout=new FileOutputStream(args.getClass()+"."+args.getClass());
 //        	ObjectOutputStream out = new ObjectOutputStream(fout);
-//        	out.writeObject(new User("thomas","mdp","mdp@mdp.com"));
+//        	User u = new User("thomas","mdp","mdp@mdp.com");
+//        	System.out.println(u.toString());
+//        	out.writeObject(u);
 //        	
 //        	FileInputStream fin = new FileInputStream(args.getClass()+"."+args.getClass());
 //        	ObjectInputStream in = new ObjectInputStream(fin);
-//			User u = (User) in.readObject();
+//			User un = (User) in.readObject();
+//			System.out.println(un.toString());
 //        	System.out.println(u.getUserNickname());
 //        	
 //		} catch (ClassNotFoundException | IOException e1) {
@@ -52,7 +49,7 @@ public class Main6QuiPrend{
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-            	final FenetrePrincipale f = new FenetrePrincipale();
+            	final FenetrePrincipale f = new FenetrePrincipale(null);
             	f.addWindowListener(new WindowListener() {
         			
         			@Override

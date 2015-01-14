@@ -1,7 +1,5 @@
 package metierDAO;
 
-import graphique.FenetreConnexion;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,8 +7,8 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
-import utils.MonLog;
 import metier.User;
+import utils.MonLog;
 
 /**
  * @(#) CompteDAO.java

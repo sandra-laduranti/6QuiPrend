@@ -1,15 +1,11 @@
 package graphique;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -20,9 +16,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
-import utils.MonLog;
 import metier.User;
 import metierDAO.UserDAO;
+import utils.MonLog;
 
 public class FenetreConnexion extends JDialog {
 
@@ -33,7 +29,6 @@ public class FenetreConnexion extends JDialog {
     private JButton btnLogin;
     private JButton btnCancel;
     private boolean succeeded = false;
-    private boolean canceled = false;
 
     public FenetreConnexion(final FenetrePrincipale context) {
 
@@ -89,7 +84,6 @@ public class FenetreConnexion extends JDialog {
         btnCancel.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-            	canceled=true;
                 dispose();
             }
         });
@@ -104,27 +98,6 @@ public class FenetreConnexion extends JDialog {
         setResizable(false);
         setLocationRelativeTo(context);
         
-        this.addWindowListener(new WindowListener() {
-			
-        	@Override
-			public void windowClosing(WindowEvent e) {
-				canceled=true;
-			}
-			@Override
-			public void windowClosed(WindowEvent e) {
-				canceled=true;
-			}
-			@Override
-			public void windowOpened(WindowEvent e) {}
-			@Override
-			public void windowIconified(WindowEvent e) {}
-			@Override
-			public void windowDeiconified(WindowEvent e) {}
-			@Override
-			public void windowDeactivated(WindowEvent e) {}
-			@Override
-			public void windowActivated(WindowEvent e) {}
-		});
     }
 
     private String getUsername() {
@@ -137,10 +110,6 @@ public class FenetreConnexion extends JDialog {
 
     public boolean isSucceeded() {
         return succeeded;
-    }
-    
-    public boolean isCanceled() {
-        return canceled;
     }
     
 }

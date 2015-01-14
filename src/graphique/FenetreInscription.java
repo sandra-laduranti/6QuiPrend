@@ -26,7 +26,6 @@ import utils.MonLog;
 public class FenetreInscription extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private User user; // Id User
 	private JTextField tfUsername;
     private JPasswordField pfPassword;
 	private JTextField tfMail;
@@ -115,13 +114,13 @@ public class FenetreInscription extends JDialog {
                             JOptionPane.ERROR_MESSAGE);
             			succeeded = false;
             		} else {
-            			user = new User(getUsername(),getMail(),getPassword());
+            			User user = new User(getUsername(),getMail(),getPassword());
                     	UserDAO.createUser(user);
                         if ( UserDAO.createUser(user) ) {
                         	context.setUser(user);
                             JOptionPane.showMessageDialog(FenetreInscription.this,
                                     "Salut " + getUsername() + " !",
-                                    "Connexion réussie",
+                                    "Inscription réussie",
                                     JOptionPane.INFORMATION_MESSAGE);
                             succeeded = true;
                             dispose();

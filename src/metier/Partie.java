@@ -1,21 +1,20 @@
 package metier;
 
-import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 
-import metier.Carte;
-import metier.GestionPartie;
-import metier.User;
+public class Partie implements Serializable{
 
-public class Partie {
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private List<Carte> listCard;
 	private int id=0;
 	// HashMap contient la clé du joueur ainsi que la liste de ses cartes actuels
