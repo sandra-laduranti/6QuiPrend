@@ -25,6 +25,7 @@ import utils.MonLogClient;
 
 public class FenetreInscription extends JDialog {
 
+	
 	private static final long serialVersionUID = 1L;
 	private JTextField tfUsername;
     private JPasswordField pfPassword;
