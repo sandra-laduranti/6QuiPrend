@@ -11,9 +11,9 @@ public class User implements Serializable, Comparable<User>
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static transient final long serialVersionUID = 1L;
 
-	private int userId;
+	private transient int userId;
 	
 	private String userNickname;
 	
@@ -23,17 +23,11 @@ public class User implements Serializable, Comparable<User>
 	
 	private int currentBeef;
 
-	public User(String userNickname, String userEmail,
-			String userPassword) {
+	public User(String userNickname, String userEmail,	String userPassword) {
 		this.userNickname = userNickname;
 		this.userEmail = userEmail;
 		this.userPassword = userPassword;
 		this.currentBeef = 0;
-	}
-	
-	public User(int userId, String userNickname, String userEmail, String userPassword){	
-		this(userNickname, userEmail, userPassword);
-		this.userId = userId;
 	}
 	
 	public User(User user){
@@ -63,10 +57,6 @@ public class User implements Serializable, Comparable<User>
 
 	public String getUserPassword() {
 		return userPassword;
-	}
-
-	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
 	}
 
 	public int getCurrentBeef() {

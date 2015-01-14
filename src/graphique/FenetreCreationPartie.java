@@ -19,9 +19,9 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import log.MonLogClient;
+import log.MonLogPartie;
 import metier.Partie;
-import utils.MonLogClient;
-import utils.MonLogPartie;
 
 public class FenetreCreationPartie extends JDialog {
 

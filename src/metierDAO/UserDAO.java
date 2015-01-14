@@ -7,8 +7,8 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
+import log.MonLogClient;
 import metier.User;
-import utils.MonLogClient;
 
 /**
  * @(#) CompteDAO.java
@@ -39,7 +39,7 @@ public class UserDAO {
 				// Une fois que l'on a récupéré l'id du compte
 				if(result!= null && result.first()==true){
 					new MonLogClient().add("Récupération du compte depuis la base de données (après authentification)");
-					return new User(result.getInt("id"), result.getString("nickname"), 
+					return new User(result.getString("nickname"), 
 							result.getString("email"), result.getString("password")); 
 				
 				} else { // aucun user existe avec ce login/mdp

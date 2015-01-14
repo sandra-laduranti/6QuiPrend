@@ -1,4 +1,4 @@
-package utils;
+package log;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -8,7 +8,7 @@ import java.util.Date;
 
 public abstract class MonLog {
 		
-	File fichier;
+	File fichier;   // package car les classes filles n'utilisent pas le même fichier (constructeurs différents)
 	private BufferedWriter writer;
 	
 	public void add(String texte){

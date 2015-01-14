@@ -22,14 +22,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import log.MonLog;
+import log.MonLogClient;
 import metier.Carte;
 import metier.Partie;
 import metier.User;
 import utils.EcranGauche;
-import utils.MonLog;
-import utils.MonLogClient;
 import utils.PanneauBordure;
-
 import communication.Client;
 
 
@@ -231,7 +230,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	
 	public void setUser(User user){
 		this.user=user;
-//		client.setUser(user);
+		client.setUser(user);
 	}
 	
 
@@ -302,7 +301,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 						fenetrecreation.getNbMaxJoueurs();
 						fenetrecreation.getProMode();
 						
-						//client.creationPartie(fenetrecreation.getNom(),fenetrecreation.getNbMaxJoueurs(),fenetrecreation.getProMode());
+//						client.creationPartie(fenetrecreation.getNamePartie(),fenetrecreation.getNbMaxJoueurs(),fenetrecreation.getProMode());
 			        } else {
 			        	log_client.add("Inscription échouée");
 			        } 

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -19,11 +18,11 @@ public class Partie implements Serializable{
 	private static int id=0;
 	// HashMap contient la clé du joueur ainsi que la liste de ses cartes actuels
 	private transient HashMap<User, List<Carte>> comptes;
-	private transient int nbJoueursMax;
-	private transient boolean isProMode;
+	private int nbJoueursMax;
+	private boolean isProMode;
 	private transient List<List<Carte>> rows;
-	private transient String nom;
-	private boolean isPlayerReach66=false;
+	private String nom;
+	private transient boolean isPlayerReach66=false;
 	private transient boolean isInGame;
 
 	public Partie(String nom, int nbJoueurs, boolean isProMode, User user){
@@ -37,6 +36,7 @@ public class Partie implements Serializable{
 		comptes.put(user, new ArrayList<Carte>());
 	}
 
+	// Utilisé uniquement par la socket pour afficher les informations utiles à l'affichage (tout n'étant pas nécessaire)
 	public Partie(int id, String nom, int nbJoueurs, boolean isProMode, List<User> users){
 		this.listCard=new ArrayList<Carte>();
 		this.nbJoueursMax = nbJoueurs;

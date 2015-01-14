@@ -2,12 +2,15 @@ package graphique;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import utils.MonLogClient;
+import log.MonLogClient;
+import communication.Client;
 
 public class Main6QuiPrend{
 
@@ -49,7 +52,13 @@ public class Main6QuiPrend{
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-            	final FenetrePrincipale f = new FenetrePrincipale(null);
+            	Client c = null;
+            	try {
+					c = new Client( new URI( "ws://localhost:12345" ));
+				} catch (URISyntaxException e1) {
+					e1.printStackTrace();
+				}
+            	final FenetrePrincipale f = new FenetrePrincipale(c);
             	f.addWindowListener(new WindowListener() {
         			
         			@Override

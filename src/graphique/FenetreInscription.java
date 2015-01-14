@@ -19,9 +19,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
+import log.MonLogClient;
 import metier.User;
 import metierDAO.UserDAO;
-import utils.MonLogClient;
 
 public class FenetreInscription extends JDialog {
 

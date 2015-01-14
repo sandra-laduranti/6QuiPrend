@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
-import utils.MonLogClient;
+import log.MonLogClient;
 
 public class DatabaseConnection {
 	  
