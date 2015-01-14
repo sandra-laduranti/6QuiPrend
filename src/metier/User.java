@@ -6,7 +6,7 @@ import java.io.Serializable;
  * @(#) Compte.java
  */
 
-public class User implements Serializable
+public class User implements Serializable, Comparable<User>
 {
 	/**
 	 * 
@@ -76,4 +76,15 @@ public class User implements Serializable
 	public void setCurrentBeef(int currentBeef) {
 		this.currentBeef = currentBeef;
 	}
+
+	public int compareTo(User user) {
+		if(this.getCurrentBeef()>user.getCurrentBeef()){
+			return 1;
+		} else if(this.getCurrentBeef()<user.getCurrentBeef()){
+			return -1;
+		} else {
+			return 0;
+		}
+	}
+
 }

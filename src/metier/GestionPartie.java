@@ -1,8 +1,10 @@
 package metier;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 public class GestionPartie {
 
@@ -28,7 +30,7 @@ public class GestionPartie {
 				indexCard = cards.indexOf(card);
 			}
 		}
-		
+
 		return indexCard;
 	}
 
@@ -85,7 +87,7 @@ public class GestionPartie {
 		}
 		return nbBeef;
 	}
-	
+
 	/**
 	 * Distribue les cartes à un joueur
 	 * @param deck
@@ -119,11 +121,26 @@ public class GestionPartie {
 		}
 		return null;
 	}
-	
-	public static void getWinnerAndLoser(List<User> users){
-		
+
+	/**
+	 * Retourne la liste composé du gagnant et du perdant
+	 * @param users
+	 * @return gagnant position 0 et perdant position 1
+	 */
+	public static List<User> getWinnerAndLoser(List<User> users){
+		List<User> winnerLoserList = new ArrayList<User>();
+		Collections.sort(users);
+		winnerLoserList.add(users.get(0));
+		winnerLoserList.add(users.get(users.size()-1));
+		return winnerLoserList;
 	}
-	
+
+	/**
+	 * Initialise les cartes du jeu en fonction du nombre de joueur, et du mode de jeu (pro ou normal)
+	 * @param nbJoueursMax
+	 * @param isProMode
+	 * @return
+	 */
 	public static List<Carte> initializeDeck(int nbJoueursMax, boolean isProMode){
 		List<Carte> listCard = new ArrayList<Carte>();
 		if(isProMode){
@@ -135,16 +152,16 @@ public class GestionPartie {
 				listCard.add(new Carte(i));
 			}
 		}
-		
+
 		return listCard;
 	}
-	
+
 	public static void iniatializeRowsFirstCard(List<List<Carte>> rows, List<Carte> deck){
 		for(int i = 0; i<4; i++){
 			rows.get(i).add(deck.get(i));
 		}
 	}
-	
+
 	public static List<Carte> getLastCardRows(List<List<Carte>> rows){
 		List<Carte> lastCardsRows = new ArrayList<Carte>();
 		for(int i = 0; i<rows.size(); i++){
@@ -153,6 +170,19 @@ public class GestionPartie {
 		}
 		return lastCardsRows;
 	}
-	
+
+	public static int getRowToCollect(){
+		try{
+			Scanner lineCollect = new Scanner(System.in);
+			String rowSelected = null;
+			rowSelected = lineCollect.nextLine();
+			lineCollect.close();
+			return Integer.parseInt(rowSelected);
+		} catch (NumberFormatException e){
+			System.err.println("Veuillez saisir un nombre");
+		}
+		return -1;
+	}
+
 }
 

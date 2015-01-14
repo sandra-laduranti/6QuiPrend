@@ -53,9 +53,9 @@ public class Carte implements Comparable<Carte>, Serializable{
 	@Override
 	public int compareTo(Carte o) {
 		if(this.getValue()>o.getValue()){
-			return -1;
-		} else if(this.getValue()<o.getValue()){
 			return 1;
+		} else if(this.getValue()<o.getValue()){
+			return -1;
 		} else {
 			return 0;
 		}
