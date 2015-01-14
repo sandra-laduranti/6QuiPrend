@@ -17,13 +17,14 @@ import metier.User;
 public class Partie {
 
 	private List<Carte> listCard;
-	private int id;
+	private int id=0;
 	// HashMap contient la clé du joueur ainsi que la liste de ses cartes actuels
 	private HashMap<User, List<Carte>> comptes;
 	private int nbJoueursMax;
 	private boolean isProMode;
 	private List<List<Carte>> rows;
 	private String nom;
+	private boolean isPlayerReach66=false;
 
 	public Partie(String nom, int nbJoueurs, boolean isProMode, User user){
 		this.listCard=new ArrayList<Carte>();
@@ -38,7 +39,6 @@ public class Partie {
 	
 	
 	public void startGame(){
-		boolean isPlayerReach66 = false;
 		while(!isPlayerReach66){
 			initializeRound(isPlayerReach66);
 		}
@@ -94,7 +94,7 @@ public class Partie {
 					e.printStackTrace();
 				}
 				
-				if(!GestionPartie.chooseCardFromHand(comptes.get(user),a).equals(null)){ 
+				if(!GestionPartie.chooseCardFromHand(comptes.get(user),a).equals(new Carte(0))){ 
 					selectedCard = GestionPartie.chooseCardFromHand(comptes.get(user), a);
 					comptes.get(user).remove(selectedCard);
 					System.out.println("\n*****************************************");
