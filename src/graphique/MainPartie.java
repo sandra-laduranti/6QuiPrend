@@ -15,6 +15,7 @@ public class MainPartie {
 		System.out.println("Nom de la partie : "+partie.getNom());
 		System.out.println("Nombre de joueurs : "+partie.getNbJoueursMax());
 		System.out.println("****************** debut de la partie ***************\n");
+		
 		partie.startGame();
 	}
 }
