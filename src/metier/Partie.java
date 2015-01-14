@@ -44,7 +44,7 @@ public class Partie implements Serializable{
 	}
 	
 	/*
-	 * TODO  : Ajout des println et d'un Scanner pour la saisie sur console
+	 * TODO : Ajout des println et d'un Scanner pour la saisie sur console
 	 */
 	private void initializeRound(boolean isPlayerReach66){
 		this.listCard = GestionPartie.initializeDeck(nbJoueursMax, isProMode);
