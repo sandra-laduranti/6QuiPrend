@@ -1,20 +1,16 @@
 package utils;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import metier.Carte;
-
-
-
 import metier.Partie;
-import metier.User;
 
-import org.json.JSONObject;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import communication.Flag;
+import communication.User;
 
 public class JSONEncode {
 

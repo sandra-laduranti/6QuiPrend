@@ -4,10 +4,11 @@ import java.util.ArrayList;
 
 import metier.Carte;
 import metier.Partie;
-import metier.User;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import communication.User;
 
 public class JSONDecode {
 
@@ -37,7 +38,7 @@ public class JSONDecode {
 			ArrayList<User> usersList = new ArrayList<User>();
 
 			for (String nickName : tokens) {
-				usersList.add(new User(nickName, "", ""));
+				// TODO usersList.add(new User(nickName, "", ""));
 			}
 			liste.add(new Partie(id, nom, nbJoueur, isPromode, usersList));
 		}

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+import communication.User;
+
 public class GestionPartie {
 
 	/**

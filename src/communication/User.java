@@ -5,32 +5,66 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-
-import metier.User;
-
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONObject;
 
-public class Client extends WebSocketClient {
-	
-	private User user;
+public class User extends WebSocketClient implements Comparable<User>{
 
-	public Client( URI serverUri , Draft draft ) {
+	private transient int userId;
+	
+	private String userNickname;
+	
+	private String userEmail;
+	
+	private String userPassword;
+	
+	private int currentBeef;
+
+	public User( URI serverUri , Draft draft ) {
 		super( serverUri, draft );
 	}
 
-	public Client( URI serverURI ) {
+	public User( URI serverURI ) {
 		super( serverURI );
 	}
-
-	public void setUser(User user){
-		this.user = user;
+	
+	public int getUserId() {
+		return this.userId;
 	}
 	
-	public User getUser(){
-		return user;
+	public String getUserNickname() {
+		return this.userNickname;
+	}
+	
+	public String getUserEmail() {
+		return this.userEmail;
+	}
+	
+	public int getCurrentBeef() {
+		return this.currentBeef;
+	}
+	
+	public void setCurrentBeef(int currentBeef) {
+		this.currentBeef = currentBeef;
+	}
+
+
+	public void setUser(int userId, String userNickname){
+		this.userId = userId;
+		this.userNickname =userNickname;
+		this.currentBeef = 0;
+	}
+	
+	public int compareTo(User user) {
+		if(this.getCurrentBeef()>user.getCurrentBeef()){
+			return 1;
+		} else if(this.getCurrentBeef()<user.getCurrentBeef()){
+			return -1;
+		} else {
+			return 0;
+		}
 	}
 	
 	@Override
@@ -78,13 +112,15 @@ public class Client extends WebSocketClient {
 	}
 
 	public static void main( String[] args ) throws URISyntaxException, IOException {
-		Client c = new Client( new URI( "ws://localhost:12345" )); 
-		c.connect();
+		
+
+		User usr = new User( new URI( "ws://localhost:12345" )); 
+		usr.connect();
 		
 		BufferedReader sysin = new BufferedReader( new InputStreamReader( System.in ) );
 		while(true){
 			String in = sysin.readLine();
-			c.sendWithFlag(in,"titi");
+			usr.sendWithFlag(in,"titi");
 		}
 	}
 

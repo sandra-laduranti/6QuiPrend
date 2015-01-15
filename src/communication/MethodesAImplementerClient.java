@@ -1,7 +1,5 @@
 package communication;
 
-import metier.Partie;
-import metier.User;
 
 public class MethodesAImplementerClient {
 

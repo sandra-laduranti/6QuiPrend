@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import communication.User;
+
 public class Partie extends Thread implements Serializable{
 
 	private static transient final long serialVersionUID = 1L;

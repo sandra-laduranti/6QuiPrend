@@ -4,7 +4,6 @@ import java.util.List;
 
 import metier.Carte;
 import metier.Partie;
-import metier.User;
 
 public class MethodesAImplementerServeur {
 	

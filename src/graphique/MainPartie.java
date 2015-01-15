@@ -1,7 +1,5 @@
 package graphique;
 
-import metier.Partie;
-import metier.User;
 
 public class MainPartie {
 	

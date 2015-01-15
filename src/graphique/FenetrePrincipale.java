@@ -30,10 +30,11 @@ import log.MonLog;
 import log.MonLogClient;
 import metier.Carte;
 import metier.Partie;
-import metier.User;
 import utils.EcranGauche;
 import utils.ImageButton;
 import utils.PanneauBordure;
+
+import communication.User;
 
 
 public class FenetrePrincipale extends JFrame implements ActionListener{
