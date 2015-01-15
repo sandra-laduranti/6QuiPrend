@@ -9,34 +9,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import metier.Carte;
 import metier.Partie;
-import metier.User;
-import utils.JSONDecode;
-import utils.JSONEncode;
-
-
-
-
-
-
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import org.json.JSONObject;
+
+import utils.JSONDecode;
 
 
 public class Serveur extends WebSocketServer{
 	
 	/*TODO: ajout Singleton */
-	private List<Partie> parties;
+	private List<Thread> parties;
+	private List<PlayerConnect> playerConnect;
 	
 	/** Constructeurs privés */
 	public Serveur( int port ) throws UnknownHostException {
 		super( new InetSocketAddress( port ) );
-		parties = new ArrayList<Partie>();
+		parties = new ArrayList<Thread>();
 	}
 	
 	/** Instance unique non préinitialisée */
@@ -58,20 +50,24 @@ public class Serveur extends WebSocketServer{
 		return INSTANCE;
 	}
 
+	/* a l'ouverture de la connection on enregistre le webSocket et l'id du joueur dans une liste*/
 	@Override
 	public void onOpen( WebSocket conn, ClientHandshake handshake ) {
 		this.sendToAll( "new connection: " + handshake.getResourceDescriptor() );
 		System.out.println( conn.getRemoteSocketAddress().getAddress().getHostAddress() + " entered the room!" );
+		playerConnect.add(new PlayerConnect(conn,"titi")); /*TODO: change titi en getUsername */
 	}
 
 	@Override
 	public void onClose( WebSocket conn, int code, String reason, boolean remote ) {
 		this.sendToAll( conn + " has left the room!" );
+		//playerConnect.remove(); //TODO: remove du client dans la liste
 		System.out.println( conn + " has left the room!" );
 	}
 	
-	public void addPartie(String[] param){
+	public void addPartie(String message){
 		//String nom, int nbJoueurs, boolean isProMode, User user
+		//String[] param = JSONDecode.createPartie();
 		
 	}
 
@@ -80,8 +76,9 @@ public class Serveur extends WebSocketServer{
 	/* puis switch en fonction du flag */
 	@Override
 	public void onMessage( WebSocket conn, String message ) {
-		String flag = JSONDecode.getFlag(message);
-
+		//String flag = JSONDecode.getFlag(message);
+		String flag = "titi";
+		System.out.println("test secours desespere: " + conn.getLocalSocketAddress());
 				/*CREATION_PARTIE = 0;
 			public static final int REFRESH_LIST_PARTIES = 1;
 			public static final int REJOINDRE_PARTIE = 2;
@@ -89,7 +86,7 @@ public class Serveur extends WebSocketServer{
 			public static final int SEND_CARTE = 4;
 			public static final int TROP_TARD_POUR_CARTE = 5;
 			public static final int SEND_LIGNE = 6;
-			public static final int TROP_TARD_POUR_LIGNE = 7;
+			public static final int  TROP_TARD_POUR_LIGNE = 7;
 			public static final int REFRESH_BEEF = 8;
 			public static final int REFRESH_LIGNES = 9;
 			public static final int CARTE_ADVERSAIRES = 10;
@@ -103,10 +100,10 @@ public class Serveur extends WebSocketServer{
 		            System.out.println("newP");
 		            break;
 		        case Flag.CREATION_PARTIE:
-		        	//parties.add(decodePartie(message));
+		        	
 		            System.out.println("joinP");
 		            break;
-		        case "quitP":
+		        case Flag.REFRESH_LIST_PARTIES:
 		            System.out.println("quitP");
 		            break;
 		        case "getList":
