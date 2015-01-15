@@ -8,11 +8,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-public class Partie implements Serializable{
+public class Partie extends Thread implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static transient final long serialVersionUID = 1L;
 	private transient List<Carte> listCard;
 	private static int id=0;
@@ -50,7 +47,11 @@ public class Partie implements Serializable{
 		}
 	}
 
-
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		super.run();
+	}
 
 	public void startGame(){
 		isInGame = true;
@@ -96,7 +97,7 @@ public class Partie implements Serializable{
 			// Faire en sorte que chaque joueur selectionne une carte chacun a leur tour
 			for(int i = 0; i<comptes.size(); i++){
 				//Méthode qui propose a chaque joueur de choisir sa carte, retourne une carte
-				int valueCard=0;
+				int valueCard;
 				Scanner sc=new Scanner(System.in);
 				int j=0;
 				//Affiche la liste des cartes du joueur
@@ -108,28 +109,27 @@ public class Partie implements Serializable{
 				System.out.println("]");
 
 
-				try{
-					System.out.println("Au tour de " + getListUser().get(i).getUserNickname()+" : ");
-					String ch="";
-					boolean cardValid = false;
-					while((ch=sc.nextLine()) == null){
-						System.err.println("Recommence la saisie");
-
+				System.out.println("Au tour de " + getListUser().get(i).getUserNickname()+" : ");
+				valueCard = GestionPartie.selectValueCardToPlay();
+				boolean saisieCard = false;
+				while(!saisieCard){
+					if(valueCard != -1){
+						if(GestionPartie.getCardFromHand(comptes.get(getListUser().get(i)),valueCard) != null){ 
+							System.out.println("Vous avez saisie la valeur "+valueCard);
+							saisieCard = true;
+						} else {
+							System.err.println("Cette carte n'est pas dans votre main");
+							System.err.println("Recommencez");
+							valueCard = GestionPartie.selectValueCardToPlay();
+						}
+					} else {
+						System.out.println("Mauvaise saisie, recommencez");
+						valueCard = GestionPartie.selectValueCardToPlay();
 					}
-					valueCard = Integer.parseInt(ch);
-					//sc.close();
-				}catch(NumberFormatException | IllegalStateException e){
-					e.printStackTrace();
-					System.err.println("Saisissez un nombre");
 				}
-
-				if(GestionPartie.chooseCardFromHand(comptes.get(getListUser().get(i)),valueCard) != null){ 
-					selectedCard = GestionPartie.chooseCardFromHand(comptes.get(getListUser().get(i)), valueCard);
-					comptes.get(getListUser().get(i)).remove(selectedCard);
-					selectedCardByPlayer.add(selectedCard);
-				} else {
-					System.err.println("Aucune carte selectionne");
-				}
+				selectedCard = GestionPartie.getCardFromHand(comptes.get(getListUser().get(i)), valueCard);
+				comptes.get(getListUser().get(i)).remove(selectedCard);
+				selectedCardByPlayer.add(selectedCard);
 
 				/*
 				 * TODO : Ajout du while pour l'affichage des cartes qui ne sont pas encore jouées
@@ -156,10 +156,18 @@ public class Partie implements Serializable{
 				//Si la carte est plus petite que les dernières cartes de chaque rangée
 				//Le joueur prend alors la ligne
 				if(GestionPartie.isPlusPetit(selectedCardByPlayer.get(i), fourLastCardRows)){
+					System.out.println("Vous devez choisir la rangé a prendre entre 1 et 4");
 					int selectRowCollect = GestionPartie.getRowToCollect();
+					int nbBeef = GestionPartie.countBeef(rows.get(i));
+					if(!(selectRowCollect>0 && selectRowCollect<5)){
+						System.out.println("Saisie entre 1 et 4 !!!!");
+						selectRowCollect = GestionPartie.getRowToCollect();
+					}
+					System.out.println("Vous avez saisie la rangée : "+selectRowCollect+" qui contient "+nbBeef+" tete de boeufs");
 					attributeBeef(selectRowCollect, cardToPlace, selectedCardByPlayer);
-				} else if ((selectRow = rows.get(GestionPartie.selectRow(cardToPlace, fourLastCardRows)).size())==5){
+				} else if (rows.get(GestionPartie.selectRow(cardToPlace, fourLastCardRows)).size()==5){
 					// Si le joueur place la 6eme carte alors il prend la rangée
+					selectRow = GestionPartie.selectRow(cardToPlace, fourLastCardRows);
 					attributeBeef(selectRow, cardToPlace, selectedCardByPlayer);
 				} else {
 					selectRow  = GestionPartie.selectRow(cardToPlace, fourLastCardRows);
@@ -167,6 +175,7 @@ public class Partie implements Serializable{
 					fourLastCardRows = lastCardsRows();
 				}
 			}
+			cptTurn++;
 		}
 		System.out.println("\nScore de "+user.getUserNickname()+" : "+user.getCurrentBeef()+" tête(s) de boeufs");
 	}
@@ -229,7 +238,7 @@ public class Partie implements Serializable{
 		return this.comptes;
 	}
 
-	public int getId(){
+	public int getIdPartie(){
 		return id;
 	}
 
