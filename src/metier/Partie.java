@@ -49,21 +49,33 @@ public class Partie extends Thread implements Serializable{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		super.run();
 	}
 
 	public void startGame(){
 		isInGame = true;
+		int cptRound = 1;
 		while(!isPlayerReach66){
 			initializeRound(isPlayerReach66);
+			currentBeefAllPlayers();
+			System.out.println("Fin de la manche "+cptRound);
+			cptRound++;
 		}
 		//TODO : Revoir l'algo dans le cas ou y'a un egalite
 		List<User> listWinnerAndLoser = GestionPartie.getWinnerAndLoser(getListUser());
-		System.out.println("Le gagnant est : "+listWinnerAndLoser.get(0).getUserNickname());
-		System.out.println("Le perdant est : "+listWinnerAndLoser.get(1).getUserNickname());
+		for(User user : getListUser()){
+			if(user.equals(listWinnerAndLoser.get(0))){
+				System.out.println(user.getUserNickname()+" (Winner) -> "+user.getCurrentBeef()+ " tete de boeufs");
+			} else if (user.equals(listWinnerAndLoser.get(1))){
+				System.out.println(user.getUserNickname()+" (Loser) -> "+user.getCurrentBeef()+ " tete de boeufs");
+			} else {
+				System.out.println(user.getUserNickname()+" -> "+user.getCurrentBeef()+" tete de boeufs");
+
+			}
+		}
 		//TODO : UserDao.addPartieGagnant(user) set le user gagnant, same pour le loser 
 	}
+
 
 	/*
 	 * TODO  : Ajout des println et d'un Scanner pour la saisie sur console
@@ -88,12 +100,12 @@ public class Partie extends Thread implements Serializable{
 		List<Carte> selectedCardByPlayer = null;
 		int cptTurn = 0;
 		Carte selectedCard = null;
-		while(cptTurn<10||!isPlayerReach66){
+		while(cptTurn<10){
 			selectedCardByPlayer=new ArrayList<Carte>();
 
 			//Affiche le plateau
 			showGameArea();
-
+			System.out.println("Tour numéro : "+(cptTurn+1));
 			// Faire en sorte que chaque joueur selectionne une carte chacun a leur tour
 			for(int i = 0; i<comptes.size(); i++){
 				//Méthode qui propose a chaque joueur de choisir sa carte, retourne une carte
@@ -144,40 +156,52 @@ public class Partie extends Thread implements Serializable{
 
 				//On l'ajoute dans une liste de carte qui représente l'ensemble des cartes selectionne par les joueurs
 			}
-			List<Carte> sortedCardsSelection = selectedCardByPlayer;
+			List<Carte> sortedCardsSelection = new ArrayList<Carte>();
+			for(Carte carte : selectedCardByPlayer){
+				sortedCardsSelection.add(carte);
+			}
 			Collections.sort(sortedCardsSelection);
 			// Pour chaque carte de la liste selectedCardByPlayer on regarde si on peut la jouer
 
-			List<Carte> fourLastCardRows = lastCardsRows();
+			List<Carte> fourLastCardRows = GestionPartie.getLastCardRows(rows);
 			Carte cardToPlace;
 			for(int i=0; i<sortedCardsSelection.size();i++){
 				cardToPlace = sortedCardsSelection.get(i);
 				int selectRow;
 				//Si la carte est plus petite que les dernières cartes de chaque rangée
 				//Le joueur prend alors la ligne
-				if(GestionPartie.isPlusPetit(selectedCardByPlayer.get(i), fourLastCardRows)){
-					System.out.println("Vous devez choisir la rangé a prendre entre 1 et 4");
+				int indexCardChoosen = selectedCardByPlayer.indexOf(cardToPlace);
+
+				if(GestionPartie.isPlusPetit(cardToPlace, fourLastCardRows)){
+					User userGetRow  = getListUser().get(indexCardChoosen);
+					System.out.println("Votre carte ne peut pas être placé");
+					System.out.println(userGetRow.getUserNickname()+" : Vous devez choisir la rangé a prendre entre 1 et 4");
 					int selectRowCollect = GestionPartie.getRowToCollect();
-					int nbBeef = GestionPartie.countBeef(rows.get(i));
-					if(!(selectRowCollect>0 && selectRowCollect<5)){
+
+					
+					while(!(selectRowCollect>0 && selectRowCollect<5)){
 						System.out.println("Saisie entre 1 et 4 !!!!");
 						selectRowCollect = GestionPartie.getRowToCollect();
 					}
+					int nbBeef = GestionPartie.countBeef(rows.get(selectRowCollect-1));
 					System.out.println("Vous avez saisie la rangée : "+selectRowCollect+" qui contient "+nbBeef+" tete de boeufs");
-					attributeBeef(selectRowCollect, cardToPlace, selectedCardByPlayer);
+					attributeBeef(selectRowCollect-1, cardToPlace, selectedCardByPlayer, userGetRow);
+					fourLastCardRows = GestionPartie.getLastCardRows(rows);
 				} else if (rows.get(GestionPartie.selectRow(cardToPlace, fourLastCardRows)).size()==5){
+					User userGetRow  = getListUser().get(indexCardChoosen);
 					// Si le joueur place la 6eme carte alors il prend la rangée
 					selectRow = GestionPartie.selectRow(cardToPlace, fourLastCardRows);
-					attributeBeef(selectRow, cardToPlace, selectedCardByPlayer);
+					System.out.println("Vous avez placé la 6ème carte de la rangée "+selectRow);
+					attributeBeef(selectRow, cardToPlace, selectedCardByPlayer, userGetRow);
+					fourLastCardRows = GestionPartie.getLastCardRows(rows);
 				} else {
 					selectRow  = GestionPartie.selectRow(cardToPlace, fourLastCardRows);
 					rows.get(selectRow).add(cardToPlace);
-					fourLastCardRows = lastCardsRows();
+					fourLastCardRows = GestionPartie.getLastCardRows(rows);
 				}
 			}
 			cptTurn++;
 		}
-		System.out.println("\nScore de "+user.getUserNickname()+" : "+user.getCurrentBeef()+" tête(s) de boeufs");
 	}
 
 	public List<User> getListUser(){
@@ -217,15 +241,6 @@ public class Partie extends Thread implements Serializable{
 		}
 	}
 
-	private List<Carte> lastCardsRows(){
-		List<Carte> lastCardsRows = new ArrayList<Carte>();
-		for(int i = 0; i<rows.size(); i++){
-			List<Carte> listCardRow = rows.get(i);
-			lastCardsRows.add(listCardRow.get(listCardRow.size()-1));
-		}
-		return lastCardsRows;
-	}
-
 	public String getNom() {
 		return nom;
 	}
@@ -246,12 +261,12 @@ public class Partie extends Thread implements Serializable{
 		return isInGame;
 	}
 
-	private void attributeBeef(int indexRow, Carte card, List<Carte> selectedCardByPlayer){
-		int indexCardChoosen = selectedCardByPlayer.indexOf(card);
+	private void attributeBeef(int indexRow, Carte card, List<Carte> selectedCardByPlayer, User userGetRow){
 		int nbBeef = GestionPartie.countBeef(rows.get(indexRow));
 
-		User userGetRow  = getListUser().get(indexCardChoosen);
 		userGetRow.setCurrentBeef(userGetRow.getCurrentBeef()+nbBeef);
+
+		System.out.println(userGetRow.getUserNickname()+ " a maintenant "+userGetRow.getCurrentBeef()+ " tete de boeufs");
 
 		if(userGetRow.getCurrentBeef()>=66){
 			isPlayerReach66 = true;
@@ -280,6 +295,12 @@ public class Partie extends Thread implements Serializable{
 
 		}
 		System.out.println("*****************************************\n");
+	}
+
+	private void currentBeefAllPlayers(){
+		for(User user : getListUser()){
+			System.out.println(user.getUserNickname()+" -> "+user.getCurrentBeef()+" tete de boeufs");
+		}
 	}
 
 }
