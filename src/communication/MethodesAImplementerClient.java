@@ -79,6 +79,8 @@ public class MethodesAImplementerClient {
 		//			dit a l'affichage qu'il est trop tard pour envoyer une carte
 		// case Flag.REFRESH_BEEF:
 		//			donne a l'affichage sa nouvelle tete de boeuf
+		// case Flag.REFRESH_LIGNES:
+		//			donne a l'affichage le nouveau contenu des lignes
 		// case Flag.CARTE_ADVERSAIRES:
 		//			donne a l'affichage la carte jouée par chaque adversaire
 		// case Flag.GAGNANT:

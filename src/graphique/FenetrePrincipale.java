@@ -1,5 +1,6 @@
 package graphique;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -9,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,6 +20,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import log.MonLog;
@@ -28,6 +29,7 @@ import metier.Carte;
 import metier.Partie;
 import metier.User;
 import utils.EcranGauche;
+import utils.ImageButton;
 import utils.PanneauBordure;
 import communication.Client;
 
@@ -313,10 +315,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		panneau.add(container_rafraichir, BorderLayout.CENTER);
 		panneau.addComposantEnBas(container_creer);
 		
-//		ArrayList<Partie> parties = new ArrayList<Partie>();
-//		Partie p = new Partie("test", 5, false, context.getUser());
-//		parties.add(p);
-//		context.afficherToutesLesParties(parties);
+		ArrayList<Partie> parties = new ArrayList<Partie>();
+		Partie p = new Partie("test", 5, false, context.getUser());
+		parties.add(p);
+		context.afficherToutesLesParties(parties);
 		
 	}
 	
@@ -388,15 +390,16 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	
 	// Une partie commence !
 	public void afficherPartie(){
+		ecrangauche.removeAll();
 		ecrangauche.setLayout(new GridLayout(6,1));
 		JPanel tas1 = new JPanel();
 		tas1.setLayout(new GridLayout(0,5));
 		tas1.setOpaque(false);
-		tas1.add(new JButton((Icon) new Carte(57).getImageIcon()));
-		tas1.add(new JButton((Icon) new Carte(30).getImageIcon()));
-		tas1.add(new JButton((Icon) new Carte(22).getImageIcon()));
-		tas1.add(new JButton((Icon) new Carte(1).getImageIcon()));
-		tas1.add(new JButton((Icon) new Carte(103).getImageIcon()));
+		tas1.add(new ImageButton( new Carte(57).getImageIcon()));
+		tas1.add(new ImageButton( new Carte(30).getImageIcon()));
+		tas1.add(new ImageButton( new Carte(22).getImageIcon()));
+		tas1.add(new ImageButton( new Carte(1).getImageIcon()));
+		tas1.add(new ImageButton( new Carte(103).getImageIcon()));
 		JPanel tasvide = new JPanel();
 		tasvide.setLayout(new GridLayout(0,5));
 		tasvide.setOpaque(false);
@@ -404,30 +407,29 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		JPanel tas2 = new JPanel();
 		tas2.setLayout(new GridLayout(0,5));
 		tas2.setOpaque(false);
-		tas2.add(new JButton((Icon) new Carte(45).getImageIcon()));
-		tas2.add(new JButton((Icon) new Carte(9).getImageIcon()));
-		tas2.add(new JButton((Icon) new Carte(1).getImageIcon()));
-		tas2.add(new JButton((Icon) new Carte(41).getImageIcon()));
-		tas2.add(new JButton((Icon) new Carte(85).getImageIcon()));
+		tas2.add(new ImageButton( new Carte(45).getImageIcon()));
+		tas2.add(new ImageButton( new Carte(9).getImageIcon()));
+		tas2.add(new ImageButton( new Carte(1).getImageIcon()));
+		tas2.add(new ImageButton( new Carte(41).getImageIcon()));
+		tas2.add(new ImageButton( new Carte(85).getImageIcon()));
 		
 		JPanel tas3 = new JPanel();
 		tas3.setLayout(new GridLayout(0,5));
 		tas3.setOpaque(false);
-		tas3.add(new JButton((Icon) new Carte(57).getImageIcon()));
-		tas3.add(new JButton((Icon) new Carte(30).getImageIcon()));
-		tas3.add(new JButton((Icon) new Carte(22).getImageIcon()));
-		tas3.add(new JButton((Icon) new Carte(1).getImageIcon()));
-		tas3.add(new JButton((Icon) new Carte(103).getImageIcon()));
+		tas3.add(new ImageButton( new Carte(57).getImageIcon()));
+		tas3.add(new ImageButton( new Carte(30).getImageIcon()));
+		tas3.add(new ImageButton( new Carte(22).getImageIcon()));
+		tas3.add(new ImageButton( new Carte(1).getImageIcon()));
+		tas3.add(new ImageButton( new Carte(103).getImageIcon()));
 
 		JPanel tas4 = new JPanel();
 		tas4.setLayout(new GridLayout(0,5));
 		tas4.setOpaque(false);
-		tas4.add(new JButton((Icon) new Carte(45).getImageIcon()));
-		tas4.add(new JButton((Icon) new Carte(9).getImageIcon()));
-		tas4.add(new JButton((Icon) new Carte(1).getImageIcon()));
-		tas4.add(new JButton((Icon) new Carte(41).getImageIcon()));
-		tas4.add(new JButton((Icon) new Carte(85).getImageIcon()));
-		
+		tas4.add(new ImageButton( new Carte(45).getImageIcon()));
+		tas4.add(new ImageButton( new Carte(9).getImageIcon()));
+		tas4.add(new ImageButton( new Carte(1).getImageIcon()));
+		tas4.add(new ImageButton( new Carte(41).getImageIcon()));
+		tas4.add(new ImageButton( new Carte(85).getImageIcon()));
 		JPanel container_ligne1 = new JPanel(new GridLayout(0,2,0,0));
 		container_ligne1.setOpaque(false);
 		container_ligne1.add(tas1);
@@ -463,35 +465,51 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		ecrangauche.add(container_ligne3);
 		ecrangauche.add(container_ligne4);
 		
-		JPanel container_ligne5 = new JPanel(new GridLayout(0,1,0,0));
-		container_ligne5.setOpaque(false);
+		JPanel container_main = new JPanel(new GridLayout(0,1,0,0));
+		container_main.setOpaque(false);
+		container_main.setBorder(new EmptyBorder(0,150,5,0));
 		JPanel tas5 = new JPanel();
 		tas5.setLayout(new GridLayout(0,10));
 		tas5.setOpaque(false);
-		tas5.add(new JButton((Icon) new Carte(45).getImageIcon()));
-		tas5.add(new JButton((Icon) new Carte(9).getImageIcon()));
-		tas5.add(new JButton((Icon) new Carte(1).getImageIcon()));
-		tas5.add(new JButton((Icon) new Carte(41).getImageIcon()));
-		tas5.add(new JButton((Icon) new Carte(85).getImageIcon()));
-		tas5.add(new JButton((Icon) new Carte(45).getImageIcon()));
-		tas5.add(new JButton((Icon) new Carte(9).getImageIcon()));
-		tas5.add(new JButton((Icon) new Carte(1).getImageIcon()));
-		tas5.add(new JButton((Icon) new Carte(41).getImageIcon()));
-		tas5.add(new JButton((Icon) new Carte(85).getImageIcon()));
-		container_ligne5.add(tas5);
-		ecrangauche.add(container_ligne5);
+		for(int i=0; i<10;i++){
+			int hasard = (int) ((Math.random()*104)+1);
+			Carte carte = new Carte(hasard);
+			int width = carte.getImageIcon().getIconWidth();
+			int heigth = carte.getImageIcon().getIconHeight();
+			JButton bouton_main = new JButton();
+			bouton_main.setIcon(new ImageIcon(carte.getImageIcon().getImage().getScaledInstance(width+8, heigth-15, 
+																								java.awt.Image.SCALE_SMOOTH)));
+			bouton_main.setName(hasard+"");
+			bouton_main.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					((JButton) e.getSource()).setBorder(new LineBorder(Color.RED,2));
+					
+					((JButton) e.getSource()).setEnabled(false);
 
-		JButton bouton_retour = new JButton("Rafraichir les parties");
-		bouton_retour.setLayout(new FlowLayout());
-		bouton_retour.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// methode déclenchée si clique
-			}
-		});
-		ecrangauche.add(bouton_retour);
+					
+					
+					System.out.println(((JButton) e.getSource()).getName());
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {
+						log_client.add(e1.getMessage());
+					}
+					((JButton) e.getSource()).setBorder(new EmptyBorder(0, 0, 0, 0));
+					context.revalidate();
+					context.repaint();
+				}
+			});
+			tas5.add(bouton_main);
+		}
+		container_main.add(tas5);
 		
+		JPanel espace = new JPanel();
+		espace.setOpaque(false);
+		ecrangauche.add(espace);
+		ecrangauche.add(container_main);
+
 		context.revalidate();
 		context.repaint();
 	}

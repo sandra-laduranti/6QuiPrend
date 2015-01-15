@@ -2,6 +2,7 @@ package communication;
 
 import java.util.List;
 
+import metier.Carte;
 import metier.Partie;
 
 public class MethodesAImplementerServeur {
@@ -45,6 +46,11 @@ public class MethodesAImplementerServeur {
 	// donne au client concerné les tetes de boeufs à ajouter pour son user
 	public void refreshBeef(int nbBeef){
 		// socket.write(Flag.REFRESH_BEEF: nbBeef);
+	}
+	
+	// donne au client concerné le nouveau contenu des lignes
+	public void refreshLignes(List<List<Carte>> lignes){
+		// socket.write(Flag.REFRESH_LIGNES: lignes);
 	}
 	
 	// affiche aux clients de la partie le ou les gagnants
