@@ -14,6 +14,8 @@ import metier.User;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import communication.Flag;
+
 public class JSONEncode {
 
 		public static JSONObject encodeCarte(){
@@ -63,5 +65,19 @@ public class JSONEncode {
 		      return flag;
 		}
 		
+		public static JSONObject encodeCreatePartie(String[] partie){
+			JSONObject flag = new JSONObject();
+			JSONArray  arr = new JSONArray();
+			//(String nom, int nbJoueurs, boolean isProMode, User user)
+		      flag.put("nomFlag", Flag.CREATION_PARTIE);
+		      JSONObject tmp = new JSONObject();
+		      tmp.put("nom", partie[0]);
+		      tmp.put("nbJoueurs", partie[1]);
+		      tmp.put("isProMode", partie[2]);
+		      
+		      flag.put("arr", arr);
+	
+		      return flag;
+		}
 
 }

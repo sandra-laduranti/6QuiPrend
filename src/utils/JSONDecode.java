@@ -54,6 +54,12 @@ public class JSONDecode {
 			liste.add(new Carte(arr.getJSONObject(i).getInt("val")));
 		}
 
+		return liste;
+	}
+	
+	public static String[] decodeCreatePartie(String message){
+		
+		
 		return null;
 	}
 }

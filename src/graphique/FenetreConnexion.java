@@ -17,13 +17,11 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import log.MonLogClient;
-import metier.User;
 import metierDAO.UserDAO;
 
 public class FenetreConnexion extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private User user; // Id user
 	private JTextField tfUsername;
     private JPasswordField pfPassword;
     private JButton btnLogin;
@@ -67,10 +65,9 @@ public class FenetreConnexion extends JDialog {
         btnLogin.addActionListener(new ActionListener() {
         	
             public void actionPerformed(ActionEvent e) {
-
-            	user = UserDAO.verifieAuthentification(getUsername(), getPassword());
-                if (user!=null) {
-                	context.setUser(user);
+            	int id = (int) UserDAO.verifieAuthentification(getUsername(), getPassword());
+                if (id != -1) {
+                	context.setIdUser(id);
                     JOptionPane.showMessageDialog(FenetreConnexion.this,
                             "Salut " + getUsername() + " !",
                             "Connexion réussie", 

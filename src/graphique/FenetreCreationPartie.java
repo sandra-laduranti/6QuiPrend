@@ -20,8 +20,6 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import log.MonLogClient;
-import log.MonLogPartie;
-import metier.Partie;
 
 public class FenetreCreationPartie extends JDialog {
 
@@ -103,8 +101,6 @@ public class FenetreCreationPartie extends JDialog {
                             JOptionPane.ERROR_MESSAGE);
             		succeeded = false;
             	} else { 
-            		new MonLogPartie(new Partie(getNamePartie(),getNbMaxJoueurs(),getProMode(),context.getUser()))
-            										.add("Création de la partie "+nomPartie.getText()+" réussie !");
                     JOptionPane.showMessageDialog(context,
                             "Création de la partie "+nomPartie.getText()+" réussie !",
                             "Connexion réussie",

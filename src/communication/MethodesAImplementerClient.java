@@ -29,7 +29,7 @@ public class MethodesAImplementerClient {
 	// et attend vrai ou faux.
 	// TODO dans Serveur.java, si ce user peut rejoindre la partie (voir avec Patrick/Nourdine pour la verif), 
 	// il l'ajoute dans la partie, et retourne vrai, sinon faux.
-	public void rejoindrePartie(Partie idPartie, User user){
+	public void rejoindrePartie(int idPartie, User user){
 		//socket.write(Flag.REJOINDRE_PARTIE : idPartie, user)
 		// return bool serait niquel, sinon faut voir dans l'écoute (voir en bas)
 	}

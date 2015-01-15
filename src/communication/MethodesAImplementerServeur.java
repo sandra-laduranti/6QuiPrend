@@ -4,6 +4,7 @@ import java.util.List;
 
 import metier.Carte;
 import metier.Partie;
+import metier.User;
 
 public class MethodesAImplementerServeur {
 	
@@ -21,6 +22,12 @@ public class MethodesAImplementerServeur {
 	// envoie au client concerné la réponse à sa demande pour rejoindre une partie
 	public void rejoindrePartie(boolean reponse){
 		// socket.write(Flag.REJOINDRE:reponse)
+	}
+	
+	// dès que Serveur reçoit un Flag.REJOINDRE_PARTIE et que sa réponse est positive, il envoie à tous les participants
+	// de sa partie le nom du joueur (pour pouvoir l'afficher)
+	public void sendNewParticipant(String nom_user){
+		// socket.write(Flag.SEND_PARTICIPANTS: nom_user);
 	}
 	
 	// demande a tous les joueurs de la partie d'envoyer une carte
