@@ -71,23 +71,23 @@ public class Serveur extends WebSocketServer{
 	}
 	
 	public static void testJSON() throws IOException{
-		ArrayList<Carte> test= new ArrayList<Carte>();
-		test.add(new Carte(1));
-		test.add(new Carte(2));
-		test.add(new Carte(3));
-		test.add(new Carte(4));
-		
+		ArrayList<Partie> test= new ArrayList<Partie>();
+		ArrayList<Partie> test2;
 		ArrayList<User> users = new ArrayList<User>();
-		users.add(new User("titi","tutu","tata"));
-		users.add(new User("titi2","tutu2","tata2"));
-		users.add(new User("titi3","tutu3","tata3"));
-		ArrayList<Partie> testPartie = new ArrayList<Partie>();
-		testPartie.add(new Partie(0,"toto1",3,true,users));
-		testPartie.add(new Partie(1,"toto2",3,true,users));
-		JSONObject jsonObject = JSONEncode.encodeListPartie(testPartie);
-		JSONDecode.decodeListPartie(jsonObject);
-		//System.out.println("getValue: "+ ((Carte) obj).getValue());
-
+		ArrayList<User> users2 = new ArrayList<User>();
+		users.add(new User("Sarah", "Sarah@youpron.com", "lol"));
+		users.add(new User("Robert", "Robert@youpron.com", "lolo"));
+		users.add(new User("PouletCitron", "PouletCitron@youpron.com", "lolol"));
+		users2.add(new User("Sarah2", "Sarah2@youpron.com", "lol"));
+		users2.add(new User("Robert2", "Robert2@youpron.com", "lolo"));
+		users2.add(new User("PouletCitron2", "PouletCitron2@youpron.com", "lolol"));
+		test.add(new Partie(1, "camion", 2, false, users));
+		test.add(new Partie(2, "voiture", 5, false, users2));
+		
+		JSONObject testpartie = JSONEncode.encodeListPartie(test);
+		System.out.println("Encode : " + testpartie);
+		test2=JSONDecode.decodeListPartie(testpartie);
+		//System.out.println(test2);
 	}
 
 	

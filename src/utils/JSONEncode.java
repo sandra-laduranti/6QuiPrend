@@ -29,23 +29,23 @@ public class JSONEncode {
 			flag.put("nomFlag", "flag");
 			for(Partie partie : liste){
 				StringBuffer usersBuff = new StringBuffer("");
-				tmp.put("id", partie.getId());
-				arr.put(tmp);
-				tmp.put("nom", partie.getNom());
-				arr.put(tmp);
-				tmp.put("nbJoueur", partie.getNbJoueursMax());
-				arr.put(tmp);
-				tmp.put("isPromode", partie.isProMode() );
-				arr.put(tmp);
+				tmp.append("id", partie.getId());
+				//arr.put(tmp);
+				tmp.append("nom", partie.getNom());
+				//arr.put(tmp);
+				tmp.append("nbJoueur", partie.getNbJoueursMax());
+				//arr.put(tmp);
+				tmp.append("isPromode", partie.isProMode() );
+				//arr.put(tmp);
 				List<User> users = partie.getListUser();
 				JSONArray arrUser = new JSONArray();
 				for(User user : users){
 					usersBuff.append(":" + user.getUserNickname());
 				}
-				tmp.put("users", usersBuff.toString());
-				arr.put(tmp);
+				tmp.append("users", usersBuff.toString());
+				//arr.put(tmp);
 			}
-			flag.put("arr", arr);
+			flag.append("arr", tmp);
 			
 			return flag;
 		}

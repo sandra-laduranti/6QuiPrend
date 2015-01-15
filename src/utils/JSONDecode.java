@@ -17,8 +17,11 @@ public class JSONDecode {
 		
 		for (int i = 0; i < arr.length(); i++) {
 			int id = arr.getJSONObject(i).getInt("id");
+			System.out.println("id :" + id);
 			String nom = arr.getJSONObject(i).getString("nom");
+			System.out.println("nom :" + nom);
 			int nbJoueur = arr.getJSONObject(i).getInt("nbJoueur");
+			System.out.println("nbJoueur :" + nbJoueur);
 			Boolean isPromode = arr.getJSONObject(i).getBoolean("isPromode");
 			String users = arr.getJSONObject(i).getString("users");
 			String delims = "[:]";
@@ -28,11 +31,10 @@ public class JSONDecode {
 			for (String nickName : tokens) {
 				usersList.add(new User(nickName, "", ""));
 			}
-
 			liste.add(new Partie(id, nom, nbJoueur, isPromode, usersList));
 		}
 
-		return null;
+		return liste;
 	}
 
 	public static ArrayList<Carte> decodeListCarte(JSONObject jsonList) {
