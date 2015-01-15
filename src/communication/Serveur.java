@@ -1,6 +1,5 @@
 package communication;
 
-import java.util.List;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,21 +7,25 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import metier.Carte;
 import metier.Partie;
 import metier.User;
+import utils.JSONDecode;
+import utils.JSONEncode;
+
+
+
+
+
+
 
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.cedarsoftware.util.io.JsonReader;
-import com.cedarsoftware.util.io.JsonWriter;
-import com.google.gson.Gson;
 
 
 public class Serveur extends WebSocketServer{
@@ -70,60 +73,52 @@ public class Serveur extends WebSocketServer{
 	public void addPartie(String[] param){
 		//String nom, int nbJoueurs, boolean isProMode, User user
 		
-		
-	}
-	
-	public static void testJSON() throws IOException{
-		JSONObject testJson = new JSONObject();
-		List<Carte> test= new ArrayList<Carte>();
-		test.add(new Carte(1));
-		test.add(new Carte(2));
-		Carte carte = new Carte(1);
-		String json = JsonWriter.objectToJson(test);
-		//JSONArray jsonA = JSONArray.fromObject(test);
-		//System.out.println(jsonA);
-		System.out.println("JSON " + json);
-		
-		Object obj = JsonReader.jsonToJava(json);
-		String json2 = new Gson().toJson(test );
-		System.out.println("Test:: "+ json2);
-		
-		
-		
-		//System.out.println("JSONArray :: "+(JSONArray)JSONSerializer.toJSON(test));
-		
-		//System.out.println("getValue: "+ ((Carte) obj).getValue());
-
 	}
 
 	
-	/* on parse le message afin de récuperer tout ce qui se trouve avant : */
+	/* on parse le message afin de récuperer le flag*/
 	/* puis switch en fonction du flag */
 	@Override
 	public void onMessage( WebSocket conn, String message ) {
-		String delims = "[:]";
-		String[] tokens = message.split(delims);
-		
-		switch (tokens[0]) {
-        case "newP":												//créer Partie
-        	//parties.add(new Partie(tokens[1],tokens[2],tokens[3],tokens[4]));
-            System.out.println("newP");
-            break;
-        case "joinP":												//rejoindre Partie
-            System.out.println("joinP");
-            break;
-        case "quitP":												//quitter Partie
-            System.out.println("quitP");
-            break;
-        case "getList":												//récupérer Liste Parties non lancées
-            System.out.println("getList");
-            break;
-        default:
-            System.out.println("Error: ce flag n'existe pas.");
-        }
-		//this.sendToAll( message );
-		//System.out.println( conn + ": " + message + " test trallalaal");
+		String flag = JSONDecode.getFlag(message);
+
+				/*CREATION_PARTIE = 0;
+			public static final int REFRESH_LIST_PARTIES = 1;
+			public static final int REJOINDRE_PARTIE = 2;
+			public static final int PARTIE_COMMENCE = 3;
+			public static final int SEND_CARTE = 4;
+			public static final int TROP_TARD_POUR_CARTE = 5;
+			public static final int SEND_LIGNE = 6;
+			public static final int TROP_TARD_POUR_LIGNE = 7;
+			public static final int REFRESH_BEEF = 8;
+			public static final int REFRESH_LIGNES = 9;
+			public static final int CARTE_ADVERSAIRES = 10;
+			public static final int GAGNANT = 11;
+			public static final int PERDANT = 12;
+			*/
+				
+				switch (flag) {
+		        case Flag.REJOINDRE_PARTIE:
+		        	//parties.add(new Partie(tokens[1],tokens[2],tokens[3],tokens[4]));
+		            System.out.println("newP");
+		            break;
+		        case Flag.CREATION_PARTIE:
+		        	//parties.add(decodePartie(message));
+		            System.out.println("joinP");
+		            break;
+		        case "quitP":
+		            System.out.println("quitP");
+		            break;
+		        case "getList":
+		            System.out.println("getList");
+		            break;
+		        default:
+		            System.out.println("Error: ce flag n'existe pas.");
+		        }
+				//this.sendToAll( message );
+				//System.out.println( conn + ": " + message + " test trallalaal");
 	}
+			
 
 	@Override
 	public void onError( WebSocket conn, Exception ex ) {
@@ -153,8 +148,7 @@ public class Serveur extends WebSocketServer{
 	
 	
 	public static void main( String[] args ) throws InterruptedException , IOException {
-		testJSON();
-		/*WebSocketImpl.DEBUG = true;
+		WebSocketImpl.DEBUG = true;
 		int port = 12345; 
 		try {
 			port = Integer.parseInt( args[ 0 ] );
@@ -177,6 +171,6 @@ public class Serveur extends WebSocketServer{
 				s.start();
 				break;
 			}
-		}*/
+		}
 	}
 }

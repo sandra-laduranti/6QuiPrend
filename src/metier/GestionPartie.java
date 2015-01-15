@@ -113,7 +113,7 @@ public class GestionPartie {
 	 * @param cardValue 
 	 * @return
 	 */
-	public static Carte chooseCardFromHand(List<Carte> cards, int cardValue){
+	public static Carte getCardFromHand(List<Carte> cards, int cardValue){
 		for (Carte carte : cards) {
 			if(carte.getValue()==cardValue){
 				return carte;
@@ -157,8 +157,14 @@ public class GestionPartie {
 	}
 
 	public static void iniatializeRowsFirstCard(List<List<Carte>> rows, List<Carte> deck){
+		int rdm;
+		int deckSize = deck.size()-1;
 		for(int i = 0; i<4; i++){
-			rows.get(i).add(deck.get(i));
+			rdm = (int) (Math.random()*deckSize);
+			Carte card = deck.get(rdm);
+			rows.get(i).add(card);
+			deck.remove(card);
+			deckSize = deck.size();
 		}
 	}
 
@@ -173,11 +179,22 @@ public class GestionPartie {
 
 	public static int getRowToCollect(){
 		try{
-			Scanner lineCollect = new Scanner(System.in);
+			Scanner scLineCollect = new Scanner(System.in);
 			String rowSelected = null;
-			rowSelected = lineCollect.nextLine();
-			lineCollect.close();
+			rowSelected = scLineCollect.nextLine();
 			return Integer.parseInt(rowSelected);
+		} catch (NumberFormatException e){
+			System.err.println("Veuillez saisir un nombre");
+		}
+		return -1;
+	}
+	
+	public static int selectValueCardToPlay(){
+		try{
+			Scanner scValueCard = new Scanner(System.in);
+			String valueCard = null;
+			valueCard = scValueCard.nextLine();
+			return Integer.parseInt(valueCard);
 		} catch (NumberFormatException e){
 			System.err.println("Veuillez saisir un nombre");
 		}

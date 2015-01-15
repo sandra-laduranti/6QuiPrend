@@ -11,6 +11,7 @@ import metier.User;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONObject;
 
 public class Client extends WebSocketClient {
 	
@@ -69,8 +70,11 @@ public class Client extends WebSocketClient {
 		// if the error is fatal then onClose will be called additionally
 	}
 	
+	
+	//pour envoyer json => json.tostring()
 	public void sendWithFlag(String Text, String flag){
-		this.send(flag + ":" + Text);
+		//this.send(flag + ":" + Text);
+		this.send(Text);
 	}
 
 	public static void main( String[] args ) throws URISyntaxException, IOException {

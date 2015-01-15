@@ -107,7 +107,7 @@ public class GestionPartieTest {
 	public void checkChooseCard(){
 		List<Carte> deck = GestionPartie.initializeDeck(4, false);
 		List<Carte> player1Cards = GestionPartie.disturb(deck);
-		Carte chooseCard =  GestionPartie.chooseCardFromHand(player1Cards, 2);
+		Carte chooseCard =  GestionPartie.getCardFromHand(player1Cards, 2);
 		
 		assertEquals(chooseCard, player1Cards.get(2));
 	}
