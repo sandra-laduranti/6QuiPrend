@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 
 import utils.Md5;
 import log.MonLogClient;
-import metier.User;
+import communication.User;
 
 /**
  * @(#) CompteDAO.java
@@ -56,7 +56,7 @@ public class UserDAO {
 		return -1;
 	}
 
-	public static boolean createUser(String nickname, String email, String password) {
+	public static int createUser(String nickname, String email, String password) {
 		PreparedStatement statement;
 		String requete;
 		String encodedPasswd = Md5.encodeMd5(password);
@@ -67,15 +67,23 @@ public class UserDAO {
 				statement = DatabaseConnection.getInstance().prepareStatement(requete);
 				statement.setString(1, nickname);		// Rempli le premier "?" avec une valeur
 				statement.setString(2, email);
-				statement.setString(3, password);
+				statement.setString(3, encodedPasswd);
 				statement.executeQuery();
 				new MonLogClient().add("Création du nouveau compte pour "+ nickname);
-				return true;
+				
+				requete = "SELECT id FROM "+DatabaseUtils.TABLE_USER+" WHERE nickname = ?";
+				statement = DatabaseConnection.getInstance().prepareStatement(requete);
+				statement.setString(1, nickname);
+				ResultSet result = statement.executeQuery();
+				
+				if(result!=null && result.first()==true){
+					return result.getInt("id");
+				}
 			}
 		} catch (SQLException e) {
-		    return false;
+		    return -1;
 		}
-		return false;
+		return -1;
 	}
 	
 	/**
