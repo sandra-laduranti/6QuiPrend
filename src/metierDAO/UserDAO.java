@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
+import utils.Md5;
 import log.MonLogClient;
 import metier.User;
 
@@ -27,13 +28,14 @@ public class UserDAO {
 	public static User verifieAuthentification(String login, String pass) {
 		PreparedStatement statement;
 		String requete;
+		String passwd = Md5.encodeMd5(pass);
 		try{
 			if(CONNECTION!=null){
 				requete = "SELECT * FROM "+DatabaseUtils.TABLE_USER+" WHERE nickname = ? AND password = ?";
 				
 				statement = CONNECTION.prepareStatement(requete);
 				statement.setString(1, login);		// Rempli le premier "?" avec une valeur
-				statement.setString(2, pass);
+				statement.setString(2, passwd);
 				ResultSet result = statement.executeQuery();
 				
 				// Une fois que l'on a récupéré l'id du compte
@@ -56,19 +58,20 @@ public class UserDAO {
 		return null;
 	}
 
-	public static boolean createUser(User user) {
+	public static boolean createUser(String nickname, String email, String password) {
 		PreparedStatement statement;
 		String requete;
+		String encodedPasswd = Md5.encodeMd5(password);
 		try{
 			if(CONNECTION!=null){
 				requete = "INSERT INTO "+DatabaseUtils.TABLE_USER+" VALUES (?,?,?)";
 
 				statement = DatabaseConnection.getInstance().prepareStatement(requete);
-				statement.setString(1, user.getUserNickname());		// Rempli le premier "?" avec une valeur
-				statement.setString(2, user.getUserEmail());
-				statement.setString(3, user.getUserPassword());
+				statement.setString(1, nickname);		// Rempli le premier "?" avec une valeur
+				statement.setString(2, email);
+				statement.setString(3, password);
 				statement.executeQuery();
-				new MonLogClient().add("Création du nouveau compte pour "+user.getUserNickname());
+				new MonLogClient().add("Création du nouveau compte pour "+ nickname);
 				return true;
 			}
 		} catch (SQLException e) {
