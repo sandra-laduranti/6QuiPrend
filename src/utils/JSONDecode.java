@@ -1,29 +1,37 @@
 package utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import metier.Carte;
 import metier.Partie;
 import metier.User;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class JSONDecode {
 
-	public static ArrayList<Partie> decodeListPartie(JSONObject jsonList) {
-		String flag = jsonList.getString("nomFlag");
-		org.json.JSONArray arr = jsonList.getJSONArray("arr");
+	
+	public static ArrayList<Partie> decodeListPartie(String List) {
 		ArrayList<Partie> liste = new ArrayList<Partie>();
-		
-		for (int i = 0; i < arr.length(); i++) {
-			int id = arr.getJSONObject(i).getInt("id");
+		JSONObject testObj = new JSONObject(List);
+		String flag = testObj.getString("nomFlag");
+		JSONArray arr = testObj.getJSONArray("arr");
+
+		for (int i = 0; i < arr.getJSONArray(0).length(); i++) {
+			JSONObject objTMP =  arr.getJSONArray(0).getJSONObject(i);
+			int id = objTMP.getInt("id");
 			System.out.println("id :" + id);
-			String nom = arr.getJSONObject(i).getString("nom");
+			String nom = objTMP.getString("nom");
 			System.out.println("nom :" + nom);
-			int nbJoueur = arr.getJSONObject(i).getInt("nbJoueur");
+			int nbJoueur = objTMP.getInt("nbJoueur");
 			System.out.println("nbJoueur :" + nbJoueur);
-			Boolean isPromode = arr.getJSONObject(i).getBoolean("isPromode");
-			String users = arr.getJSONObject(i).getString("users");
+			Boolean isPromode = objTMP.getBoolean("isPromode");
+			String users = objTMP.getString("users");
 			String delims = "[:]";
 			String[] tokens = users.split(delims);
 			ArrayList<User> usersList = new ArrayList<User>();
@@ -33,7 +41,7 @@ public class JSONDecode {
 			}
 			liste.add(new Partie(id, nom, nbJoueur, isPromode, usersList));
 		}
-
+		
 		return liste;
 	}
 

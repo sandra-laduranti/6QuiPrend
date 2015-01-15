@@ -2,18 +2,20 @@ package communication;
 
 public class Flag {
 	
-	public static final int CREATION_PARTIE = 0;
-	public static final int REFRESH_LIST_PARTIES = 1;
-	public static final int REJOINDRE_PARTIE = 2;
-	public static final int PARTIE_COMMENCE = 3;
-	public static final int SEND_CARTE = 4;
-	public static final int TROP_TARD_POUR_CARTE = 5;
-	public static final int SEND_LIGNE = 6;
-	public static final int TROP_TARD_POUR_LIGNE = 7;
-	public static final int REFRESH_BEEF = 8;
-	public static final int REFRESH_LIGNES = 9;
-	public static final int CARTE_ADVERSAIRES = 10;
-	public static final int GAGNANT = 11;
-	public static final int PERDANT = 12;
+	public static final String CREATION_PARTIE = "create";
+	public static final String REFRESH_LIST_PARTIES = "refreshListParty";
+	public static final String REJOINDRE_PARTIE = "join";
+	public static final String PARTIE_COMMENCE = "begin";
+	public static final String SEND_CARTE = "sendCard";
+	public static final String TROP_TARD_POUR_CARTE = "endTimeCard";
+	public static final String SEND_LIGNE = "sendLine";
+	public static final String TROP_TARD_POUR_LIGNE = "endTimeLine";
+	public static final String REFRESH_BEEF = "refreshBeef";
+	public static final String REFRESH_LIGNES = "refreshLine";
+	public static final String CARTE_ADVERSAIRES = "cardAdv";
+	public static final String GAGNANT = "win";
+	public static final String PERDANT = "lose";
+	public static final String SEND_PARTICIPANT = "sendParticipant";
+	public static final String QUIT_PARTIE = "quit";
 	
 }

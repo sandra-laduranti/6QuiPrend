@@ -23,29 +23,26 @@ public class JSONEncode {
 		public static JSONObject encodeListPartie(ArrayList<Partie> liste){
 			JSONObject flag = new JSONObject();
 			JSONArray  arr = new JSONArray();
-			JSONObject tmp = new JSONObject();
+			
 			
 			/* TODO: rajouter promod? */
-			flag.put("nomFlag", "flag");
+			flag.put("nomFlag", "flagtrululu");
 			for(Partie partie : liste){
+				JSONObject tmp = new JSONObject();
 				StringBuffer usersBuff = new StringBuffer("");
-				tmp.append("id", partie.getId());
-				//arr.put(tmp);
-				tmp.append("nom", partie.getNom());
-				//arr.put(tmp);
-				tmp.append("nbJoueur", partie.getNbJoueursMax());
-				//arr.put(tmp);
-				tmp.append("isPromode", partie.isProMode() );
-				//arr.put(tmp);
+				tmp.put("id", partie.getId());
+				tmp.put("nom", partie.getNom());
+				tmp.put("nbJoueur", partie.getNbJoueursMax());
+				tmp.put("isPromode", partie.isProMode() );
 				List<User> users = partie.getListUser();
 				JSONArray arrUser = new JSONArray();
 				for(User user : users){
 					usersBuff.append(":" + user.getUserNickname());
 				}
-				tmp.append("users", usersBuff.toString());
-				//arr.put(tmp);
+				tmp.put("users", usersBuff.toString());
+				arr.put(tmp);
 			}
-			flag.append("arr", tmp);
+			flag.append("arr", arr);
 			
 			return flag;
 		}

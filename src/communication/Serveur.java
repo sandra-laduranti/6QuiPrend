@@ -86,7 +86,8 @@ public class Serveur extends WebSocketServer{
 		
 		JSONObject testpartie = JSONEncode.encodeListPartie(test);
 		System.out.println("Encode : " + testpartie);
-		test2=JSONDecode.decodeListPartie(testpartie);
+		//test2=JSONDecode.decodeListPartie(testpartie);
+		test2 = JSONDecode.decodeListPartie(testpartie.toString());
 		//System.out.println(test2);
 	}
 
@@ -95,29 +96,51 @@ public class Serveur extends WebSocketServer{
 	/* puis switch en fonction du flag */
 	@Override
 	public void onMessage( WebSocket conn, String message ) {
-		String delims = "[:]";
-		String[] tokens = message.split(delims);
+			//	String delims = "[:]";
+			//	String[] tokens = message.split(delims);
+				//JSONObject messageObject = message.
+				//JSONDecode.getFlag();
+				
+		String titi = "tutu";
 		
-		switch (tokens[0]) {
-        case "newP":												//créer Partie
-        	//parties.add(new Partie(tokens[1],tokens[2],tokens[3],tokens[4]));
-            System.out.println("newP");
-            break;
-        case "joinP":												//rejoindre Partie
-            System.out.println("joinP");
-            break;
-        case "quitP":												//quitter Partie
-            System.out.println("quitP");
-            break;
-        case "getList":												//récupérer Liste Parties non lancées
-            System.out.println("getList");
-            break;
-        default:
-            System.out.println("Error: ce flag n'existe pas.");
-        }
-		//this.sendToAll( message );
-		//System.out.println( conn + ": " + message + " test trallalaal");
+		
+				/*CREATION_PARTIE = 0;
+			public static final int REFRESH_LIST_PARTIES = 1;
+			public static final int REJOINDRE_PARTIE = 2;
+			public static final int PARTIE_COMMENCE = 3;
+			public static final int SEND_CARTE = 4;
+			public static final int TROP_TARD_POUR_CARTE = 5;
+			public static final int SEND_LIGNE = 6;
+			public static final int TROP_TARD_POUR_LIGNE = 7;
+			public static final int REFRESH_BEEF = 8;
+			public static final int REFRESH_LIGNES = 9;
+			public static final int CARTE_ADVERSAIRES = 10;
+			public static final int GAGNANT = 11;
+			public static final int PERDANT = 12;
+			*/
+				
+				switch (titi) {
+		        case Flag.REJOINDRE_PARTIE:
+		        	//parties.add(new Partie(tokens[1],tokens[2],tokens[3],tokens[4]));
+		            System.out.println("newP");
+		            break;
+		        case Flag.CREATION_PARTIE:
+		        	//parties.add(decodePartie(message));
+		            System.out.println("joinP");
+		            break;
+		        case "quitP":
+		            System.out.println("quitP");
+		            break;
+		        case "getList":
+		            System.out.println("getList");
+		            break;
+		        default:
+		            System.out.println("Error: ce flag n'existe pas.");
+		        }
+				//this.sendToAll( message );
+				//System.out.println( conn + ": " + message + " test trallalaal");
 	}
+			
 
 	@Override
 	public void onError( WebSocket conn, Exception ex ) {
