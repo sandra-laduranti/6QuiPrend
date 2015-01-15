@@ -8,11 +8,22 @@ public class MonLogClient extends MonLog {
 	
 	public MonLogClient(){
 		
-		super.fichier = new File("Log"+File.separator+"client"+File.separator+"client_log.txt");
+		File dossier = new File("Log"+File.separator+"parties");
 		try {
-			fichier.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
+			if( dossier.exists() && dossier.isDirectory() ){
+		
+				super.fichier = new File("Log"+File.separator+"client"+File.separator+"client_log.txt");
+				try {
+					fichier.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				
+			} else {
+				dossier.mkdir();
+			}
+		} catch (SecurityException e) {
+			new MonLogClient().add(e.getMessage());
 		}
 	}
 	

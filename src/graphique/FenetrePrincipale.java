@@ -1,12 +1,14 @@
 package graphique;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -14,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JLayer;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -31,7 +34,6 @@ import metier.User;
 import utils.EcranGauche;
 import utils.ImageButton;
 import utils.PanneauBordure;
-import communication.Client;
 
 
 public class FenetrePrincipale extends JFrame implements ActionListener{
@@ -66,15 +68,25 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	private PanneauBordure panneau;
 	private EcranGauche ecrangauche;
 	
-	private Client client;
 	private User user;
+	private int idUser;
+	private String nomUser;
+	
+	private boolean debloqueur = false; // Permet de différencier si la sortie d'1 wait(timeout) est grace a notify ou temps écoulé (le Client va le modifier lors d'un notify)
+	public Object sync;
+	
+	// La fenetre d'attente
+	private JFrame frame_wait;
+	private WaitLayerUI layerUI;
 
 
-	public FenetrePrincipale(Client client){
+
+	public FenetrePrincipale(Object sync){
 		
-		this.client = client; // Le client qui possède cette fenetre
 		this.context = this;  // Pour pouvoir utiliser notre instance de fenetreprincipale partout (methodes statics, listeners, classes ...) lorsque this ne fonctionne pas
-	    this.setTitle("6 Qui Prend");
+	    this.sync = sync;
+		
+		this.setTitle("6 Qui Prend");
 	    
 	    URL url_tmp = getClass().getResource("/images/logo 6QuiPrend.png");
 		if(url_tmp!=null) this.setIconImage(new ImageIcon(url_tmp).getImage()); // Logo
@@ -139,6 +151,36 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	    
 	    log_client = new MonLogClient();
 	    log_client.add("Application lancée :)");
+	    this.initWaitLayer();
+	}
+
+	private void initWaitLayer() {
+		layerUI = new WaitLayerUI();
+		frame_wait = new JFrame();
+		
+		frame_wait.setIconImage(null);
+		frame_wait.setLocationRelativeTo(null);
+		JPanel panel = new JPanel() {
+
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+            public Dimension getPreferredSize() {
+                return new Dimension(300, 200);
+            }
+        };
+        panel.setOpaque(false);
+        panel.setLayout(new BorderLayout());
+        panel.add(new JLabel("En attente de réponse du serveur ..."), BorderLayout.CENTER);
+        panel.setBorder(new EmptyBorder(0,60,0,0));
+        JLayer<JPanel> jlayer = new JLayer<>(panel, layerUI);
+        frame_wait.setUndecorated(true);
+        frame_wait.add(jlayer);
+        frame_wait.pack();
+        
 	}
 
 	@Override
@@ -146,10 +188,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		// Si c'est une connexion
 		if(e.getActionCommand().equals(item_connexion.getText()) || e.getActionCommand().equals(bouton_connexion.getText())){
 			//Pour les tests, commenter les 3 lignes suivantes et laisser décommenté la 4 eme ligne
-//			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
-//			fenetreconnexion.setVisible(true);
-//			if(fenetreconnexion.isSucceeded()){
-			if(true){
+			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
+			fenetreconnexion.setVisible(true);
+			if(fenetreconnexion.isSucceeded()){
+//			if(true){
 		    	is_connected=true; // Flag
 		    	
 				// Réorganisation des menus
@@ -158,7 +200,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 				
 				log_client.add("Connecté !");
 				// Ligne suivante à décommenter pour test
-				context.setUser(new User("JulienTest","mdp","mail"));
 				this.modifierInterfaceAfterConnexion();
 				
 	        } else {
@@ -226,15 +267,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		return bouton_deconnexion;
 	}
 	
-	public User getUser(){
-		return user;
-	}
-	
-	public void setUser(User user){
-		this.user=user;
-		client.setUser(user);
-	}
-	
 
 	/// Changement d'interfaces
 	private void modifierInterfaceAfterConnexion(){
@@ -250,7 +282,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		    
 	        JLabel texte;
 	        texte = new JLabel("<html><font color='black'><u>Compte</u> : "+
-	        		user.getUserNickname()+"<br><br><br>Nombre de parties gagnées: "+0/*user.getNb_parties_gagnees()*/+"<br><br>Nombre de parties perdues : "+0/*user.getNb_parties_perdues()*/+"<br><br></font></html>");
+	        		context.getName()+"<br><br><br>Nombre de parties gagnées: "+0/*user.getNb_parties_gagnees()*/+"<br><br>Nombre de parties perdues : "+0/*user.getNb_parties_perdues()*/+"<br><br></font></html>");
 	    
 	        infos.add(texte,BorderLayout.NORTH); // texte en blanc
 		    infos.add(context.getBoutonDeconnexion(),BorderLayout.SOUTH);
@@ -276,10 +308,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 						//context.afficherToutesLesParties(client.recupereListParties());
 					} catch (NullPointerException exc){
 						/// TODO : TESTs
-						ArrayList<Partie> parties = new ArrayList<Partie>();
-						Partie p = new Partie("test", 5, false, context.getUser());
-						parties.add(p);
-						context.afficherToutesLesParties(parties);
+//						ArrayList<Partie> parties = new ArrayList<Partie>();
+//						Partie p = new Partie("test", 5, false, context.getCl);
+//						p.addPlayer(new User("test2","",""));
+//						p.addPlayer(new User("test3","",""));
+//						p.addPlayer(new User("test4","",""));
+//						p.addPlayer(new User("test5","",""));
+//						parties.add(p);
+						context.afficherToutesLesParties(null);
 						log_client.add("Le client est à null (modifierInterfaceAfterConnexion, FenetrePrincipale)");
 					}
 				}
@@ -299,13 +335,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 					fenetrecreation.setVisible(true);
 					if(fenetrecreation.isSucceeded()){
 						log_client.add("Creation de la partie réussie");
-						fenetrecreation.getNamePartie();
-						fenetrecreation.getNbMaxJoueurs();
-						fenetrecreation.getProMode();
-						
+						context.afficheSalonAttente(fenetrecreation.getNamePartie(),fenetrecreation.getNbMaxJoueurs(), context.getNomUser() );
 //						client.creationPartie(fenetrecreation.getNamePartie(),fenetrecreation.getNbMaxJoueurs(),fenetrecreation.getProMode());
 			        } else {
-			        	log_client.add("Inscription échouée");
+			        	log_client.add("Création de la partie échouée");
 			        } 
 					
 				}
@@ -316,7 +349,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		panneau.addComposantEnBas(container_creer);
 		
 		ArrayList<Partie> parties = new ArrayList<Partie>();
-		Partie p = new Partie("test", 5, false, context.getUser());
+		Partie p = new Partie("test", 5, false, context.user);
+		p.addPlayer(context.user);
+		p.addPlayer(context.user);
+		p.addPlayer(context.user);
+		p.addPlayer(context.user);
 		parties.add(p);
 		context.afficherToutesLesParties(parties);
 		
@@ -332,47 +369,66 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
     	container_all_parties.setOpaque(false);
     	
     	List<User> users;
-    	for(int x=0;x<12;x++)
+    	for(int x=0; x<12;x++)
     	for(int i=0; i<parties.size(); i++){ // On créer un carré par parties
     		users = parties.get(i).getListUser();
     		
 			JPanel container_one_partie = new JPanel(new BorderLayout(0,0));
 			TitledBorder bordure = BorderFactory.createTitledBorder("<html>"+parties.get(i).getNom()+"<br>(Max : "+parties.get(i).getNbJoueursMax()+" pers.)</html>");
 			container_one_partie.setBorder(bordure);
-			JPanel infos = new JPanel(new GridLayout(users.size()+9,1));
+			JPanel infos = new JPanel(new GridLayout(users.size(),1));
 				
 			for (int j=0; j<users.size(); j++){
 				JLabel joueur = new JLabel(" - "+users.get(j).getUserNickname());
-				JLabel joueur2 = new JLabel(" - Autre joueur");
-				JLabel joueur3 = new JLabel(" - Encore un autre joueur");
-				JLabel joueur4 = new JLabel(" - "+users.get(j).getUserNickname());
-				JLabel joueur5 = new JLabel(" - Autre joueur");
-				JLabel joueur6 = new JLabel(" - Encore un autre joueur");
-				JLabel joueur7 = new JLabel(" - "+users.get(j).getUserNickname());
-				JLabel joueur8 = new JLabel(" - Autre joueur");
-				JLabel joueur9 = new JLabel(" - Encore un autre joueur");
 				infos.add(joueur);
-				infos.add(joueur2);
-				infos.add(joueur3);
-				infos.add(joueur4);
-				infos.add(joueur5);
-				infos.add(joueur6);
-				infos.add(joueur7);
-				infos.add(joueur8);
-				infos.add(joueur9);
 			}
+			
 			
 			JPanel container_bouton = new JPanel(); // Panel permettant de garder une taille raisonnable au bouton
     			JButton bouton_rejoindre = new JButton("Rejoindre");
-    			bouton_rejoindre.setName(parties.get(i).getNom()); // On aussi au bouton rejoindre le nom de la partie.
+    			
+    			bouton_rejoindre.setName(parties.get(i).getNom()+"::"+parties.get(i).getNbJoueursMax());
+    			for(User user : parties.get(i).getListUser()){
+    				bouton_rejoindre.setName(bouton_rejoindre.getName()+"::"+user.getUserNickname());
+    			}
+    			
     			bouton_rejoindre.addActionListener(new ActionListener() {
 					
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						try{
 //							client.rejoindrePartie(context.getUser().getUserNickname(), ((JButton)e.getSource()).getName());
+							
+//					        System.out.println("start");
+//							layerUI.start();
+//							context.revalidate();
+//					        context.repaint();
+							
+//							if(debloqueur){
+								System.out.println("Débloqué par un notify");
+								String[] description = ((JButton)e.getSource()).getName().split("::");
+								
+								// Ici, je crée la partie avec les infos enregistrées dans le bouton rejoindre (grace au split)
+								try{
+									String nomPartie = description[0];
+									int nbMax = Integer.parseInt(description[1]);
+									String[] participants = Arrays.copyOfRange(description, 2, description.length);
+									afficheSalonAttente(nomPartie, nbMax, participants);
+
+								} catch (NumberFormatException nf){
+									log_client.add(nf.getMessage());
+								}
+								
+								
+//								}
+//							} else {
+//								System.out.println("Temps écoulé");
+//							}
+
 						} catch (NullPointerException exc){
 							log_client.add("Le client est null (afficherToutesLesParties, FenetrePrincipale)");
+							
+							exc.getMessage();
 						}
 					}
 				});
@@ -388,8 +444,35 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
     	
 	}
 	
+	public void afficheSalonAttente(String titre_partie, int nbMax, String ... nomsParticipants){
+		ecrangauche.removeAll();
+		
+		ecrangauche.setLayout(new BorderLayout());
+		JPanel description_partie = new JPanel(new GridLayout(10,1));
+		description_partie.setOpaque(false);
+		description_partie.setBorder(new EmptyBorder(20,50,0,0));
+		
+		JPanel nom_partie = new JPanel();
+		nom_partie.setOpaque(false);
+		JLabel nom_texte = new JLabel("<html><font color='black'><b><h2>Partie : "+titre_partie+" (en attente de joueurs - Max :"+nbMax+")</h2></b></font></html>");
+		nom_partie.add(nom_texte);
+		description_partie.add(nom_partie);
+		
+		for(String nom : nomsParticipants){
+			JLabel joueur = new JLabel("==> "+nom);
+			joueur.setOpaque(false);
+			description_partie.add(joueur);
+		}
+		
+		ecrangauche.add(description_partie,BorderLayout.CENTER);
+		context.revalidate();
+		context.repaint();
+	
+	}
+	
 	// Une partie commence !
 	public void afficherPartie(){
+		// AFFICHER MANCHE 1
 		ecrangauche.removeAll();
 		ecrangauche.setLayout(new GridLayout(6,1));
 		JPanel tas1 = new JPanel();
@@ -485,17 +568,17 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					((JButton) e.getSource()).setBorder(new LineBorder(Color.RED,2));
-					
-					((JButton) e.getSource()).setEnabled(false);
-
+					context.revalidate();
+					context.repaint();
 					
 					
 					System.out.println(((JButton) e.getSource()).getName());
 					try {
-						Thread.sleep(1000);
+						Thread.sleep(500);
 					} catch (InterruptedException e1) {
 						log_client.add(e1.getMessage());
 					}
+					((JButton) e.getSource()).setEnabled(false);
 					((JButton) e.getSource()).setBorder(new EmptyBorder(0, 0, 0, 0));
 					context.revalidate();
 					context.repaint();
@@ -512,6 +595,31 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 
 		context.revalidate();
 		context.repaint();
+	}
+
+	public void isNotify(boolean debloqueur) {
+		this.debloqueur = debloqueur;
+	}
+
+	
+	public void setIdUser(int id) {
+		idUser = id;
+	}
+	
+	public int getIdUser() {
+		return idUser;
+	}
+	
+	public void setNomUser(String nom) {
+		nomUser = nom;
+	}
+	
+	public String getNomUser() {
+		return nomUser;
+	}
+	
+	public void setUser(User user){
+		this.user = user;
 	}
 	
 	

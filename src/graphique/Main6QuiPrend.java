@@ -10,7 +10,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import log.MonLogClient;
-import communication.Client;
+import metier.User;
 
 public class Main6QuiPrend{
 
@@ -52,13 +52,13 @@ public class Main6QuiPrend{
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-            	Client c = null;
+            	User user = null;
             	try {
-					c = new Client( new URI( "ws://localhost:12345" ));
+					user = new User( new URI( "ws://localhost:12345" ));
 				} catch (URISyntaxException e1) {
 					e1.printStackTrace();
 				}
-            	final FenetrePrincipale f = new FenetrePrincipale(c);
+            	final FenetrePrincipale f = new FenetrePrincipale(null);
             	f.addWindowListener(new WindowListener() {
         			
         			@Override

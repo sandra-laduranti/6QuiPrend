@@ -20,7 +20,6 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import log.MonLogClient;
-import metier.User;
 import metierDAO.UserDAO;
 
 public class FenetreInscription extends JDialog {
@@ -47,7 +46,7 @@ public class FenetreInscription extends JDialog {
         cs.gridx = 0;
         cs.gridy = 2;
         cs.gridwidth = 1;
-        panel.add(new JLabel("Inscription: "), cs);
+        panel.add(new JLabel("Login : "), cs);
 
         tfUsername = new JTextField(20);
         cs.gridx = 1;
@@ -59,7 +58,7 @@ public class FenetreInscription extends JDialog {
         cs.gridx = 0;
         cs.gridy = 3;
         cs.gridwidth = 1;
-        panel.add(new JLabel("Password: "), cs);
+        panel.add(new JLabel("Password : "), cs);
 
         pfPassword = new JPasswordField(20);
         cs.gridx = 1;
@@ -115,10 +114,9 @@ public class FenetreInscription extends JDialog {
                             JOptionPane.ERROR_MESSAGE);
             			succeeded = false;
             		} else {
-            			User user = new User(getUsername(),getMail(),getPassword());
-                    	UserDAO.createUser(user);
-                        if ( UserDAO.createUser(user) ) {
-                        	context.setUser(user);
+            			int id = UserDAO.createUser(getUsername(),getMail(),getPassword());
+                        if ( id != -1 ) {
+                        	context.setIdUser(id);
                             JOptionPane.showMessageDialog(FenetreInscription.this,
                                     "Salut " + getUsername() + " !",
                                     "Inscription réussie",
