@@ -1,7 +1,6 @@
 package utils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import metier.Carte;
 import metier.Partie;
@@ -9,17 +8,18 @@ import metier.User;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 public class JSONDecode {
 
 	
+	public static String getFlag(String message){
+		JSONObject testObj = new JSONObject(message);
+		return(testObj.getString("nomFlag"));
+	}
+	
 	public static ArrayList<Partie> decodeListPartie(String List) {
 		ArrayList<Partie> liste = new ArrayList<Partie>();
 		JSONObject testObj = new JSONObject(List);
-		String flag = testObj.getString("nomFlag");
 		JSONArray arr = testObj.getJSONArray("arr");
 
 		for (int i = 0; i < arr.getJSONArray(0).length(); i++) {

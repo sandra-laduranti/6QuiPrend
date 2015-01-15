@@ -1,6 +1,8 @@
 package communication;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -16,7 +18,11 @@ import utils.JSONEncode;
 
 
 
+
+
+
 import org.java_websocket.WebSocket;
+import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.json.JSONObject;
@@ -67,43 +73,15 @@ public class Serveur extends WebSocketServer{
 	public void addPartie(String[] param){
 		//String nom, int nbJoueurs, boolean isProMode, User user
 		
-		
-	}
-	
-	public static void testJSON() throws IOException{
-		ArrayList<Partie> test= new ArrayList<Partie>();
-		ArrayList<Partie> test2;
-		ArrayList<User> users = new ArrayList<User>();
-		ArrayList<User> users2 = new ArrayList<User>();
-		users.add(new User("Sarah", "Sarah@youpron.com", "lol"));
-		users.add(new User("Robert", "Robert@youpron.com", "lolo"));
-		users.add(new User("PouletCitron", "PouletCitron@youpron.com", "lolol"));
-		users2.add(new User("Sarah2", "Sarah2@youpron.com", "lol"));
-		users2.add(new User("Robert2", "Robert2@youpron.com", "lolo"));
-		users2.add(new User("PouletCitron2", "PouletCitron2@youpron.com", "lolol"));
-		test.add(new Partie(1, "camion", 2, false, users));
-		test.add(new Partie(2, "voiture", 5, false, users2));
-		
-		JSONObject testpartie = JSONEncode.encodeListPartie(test);
-		System.out.println("Encode : " + testpartie);
-		//test2=JSONDecode.decodeListPartie(testpartie);
-		test2 = JSONDecode.decodeListPartie(testpartie.toString());
-		//System.out.println(test2);
 	}
 
 	
-	/* on parse le message afin de récuperer tout ce qui se trouve avant : */
+	/* on parse le message afin de récuperer le flag*/
 	/* puis switch en fonction du flag */
 	@Override
 	public void onMessage( WebSocket conn, String message ) {
-			//	String delims = "[:]";
-			//	String[] tokens = message.split(delims);
-				//JSONObject messageObject = message.
-				//JSONDecode.getFlag();
-				
-		String titi = "tutu";
-		
-		
+		String flag = JSONDecode.getFlag(message);
+
 				/*CREATION_PARTIE = 0;
 			public static final int REFRESH_LIST_PARTIES = 1;
 			public static final int REJOINDRE_PARTIE = 2;
@@ -119,7 +97,7 @@ public class Serveur extends WebSocketServer{
 			public static final int PERDANT = 12;
 			*/
 				
-				switch (titi) {
+				switch (flag) {
 		        case Flag.REJOINDRE_PARTIE:
 		        	//parties.add(new Partie(tokens[1],tokens[2],tokens[3],tokens[4]));
 		            System.out.println("newP");
@@ -170,8 +148,7 @@ public class Serveur extends WebSocketServer{
 	
 	
 	public static void main( String[] args ) throws InterruptedException , IOException {
-		testJSON();
-		/*WebSocketImpl.DEBUG = true;
+		WebSocketImpl.DEBUG = true;
 		int port = 12345; 
 		try {
 			port = Integer.parseInt( args[ 0 ] );
@@ -194,6 +171,6 @@ public class Serveur extends WebSocketServer{
 				s.start();
 				break;
 			}
-		}*/
+		}
 	}
 }
