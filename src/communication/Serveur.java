@@ -1,28 +1,25 @@
 package communication;
 
-import java.util.List;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import metier.Carte;
 import metier.Partie;
 import metier.User;
+import utils.JSONDecode;
+import utils.JSONEncode;
+
+
+
 
 import org.java_websocket.WebSocket;
-import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.cedarsoftware.util.io.JsonReader;
-import com.cedarsoftware.util.io.JsonWriter;
-import com.google.gson.Gson;
 
 
 public class Serveur extends WebSocketServer{
@@ -74,24 +71,21 @@ public class Serveur extends WebSocketServer{
 	}
 	
 	public static void testJSON() throws IOException{
-		JSONObject testJson = new JSONObject();
-		List<Carte> test= new ArrayList<Carte>();
+		ArrayList<Carte> test= new ArrayList<Carte>();
 		test.add(new Carte(1));
 		test.add(new Carte(2));
-		Carte carte = new Carte(1);
-		String json = JsonWriter.objectToJson(test);
-		//JSONArray jsonA = JSONArray.fromObject(test);
-		//System.out.println(jsonA);
-		System.out.println("JSON " + json);
+		test.add(new Carte(3));
+		test.add(new Carte(4));
 		
-		Object obj = JsonReader.jsonToJava(json);
-		String json2 = new Gson().toJson(test );
-		System.out.println("Test:: "+ json2);
-		
-		
-		
-		//System.out.println("JSONArray :: "+(JSONArray)JSONSerializer.toJSON(test));
-		
+		ArrayList<User> users = new ArrayList<User>();
+		users.add(new User("titi","tutu","tata"));
+		users.add(new User("titi2","tutu2","tata2"));
+		users.add(new User("titi3","tutu3","tata3"));
+		ArrayList<Partie> testPartie = new ArrayList<Partie>();
+		testPartie.add(new Partie(0,"toto1",3,true,users));
+		testPartie.add(new Partie(1,"toto2",3,true,users));
+		JSONObject jsonObject = JSONEncode.encodeListPartie(testPartie);
+		JSONDecode.decodeListPartie(jsonObject);
 		//System.out.println("getValue: "+ ((Carte) obj).getValue());
 
 	}
