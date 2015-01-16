@@ -112,4 +112,74 @@ public class UserDAO {
 		return false;
 	}
 	
+	
+	public static int getWin(int id){
+		PreparedStatement statement;
+		String requete;
+		try{
+			if(CONNECTION!=null){
+				requete = "SELECT nbwin FROM "+DatabaseUtils.TABLE_USER+" WHERE id = ?";
+				
+				statement = CONNECTION.prepareStatement(requete);
+				statement.setInt(1, id);
+				ResultSet result = statement.executeQuery();
+				
+				return result.getInt("nbwin");
+			}
+		} catch(SQLException e){
+			return -1;
+		}
+		return -1;
+	}
+	
+	public static int getLose(int id){
+		PreparedStatement statement;
+		String requete;
+		try{
+			if(CONNECTION!=null){
+				requete = "SELECT nblose FROM "+DatabaseUtils.TABLE_USER+" WHERE id = ?";
+				
+				statement = CONNECTION.prepareStatement(requete);
+				statement.setInt(1, id);
+				ResultSet result = statement.executeQuery();
+				
+				return result.getInt("nblose");
+			}
+		} catch(SQLException e){
+			return -1;
+		}
+		return -1;
+	}
+	
+	public static void updateStats(int id, String type){
+		PreparedStatement statement;
+		String requete;
+		
+		if(type == "win"){
+			try{
+				if(CONNECTION!=null){
+					requete = "INSERT INTO "+DatabaseUtils.TABLE_USER+" (nbwin) VALUES (?) WHERE id=?";
+					statement = DatabaseConnection.getInstance().prepareStatement(requete);
+					statement.setInt(1, getWin(id)+1);
+					statement.setInt(2, id);
+					statement.executeQuery();
+				}
+			} catch(SQLException e){
+				//TODO add log
+			}
+		}	
+		else{
+			try{
+				if(CONNECTION!=null){
+					requete = "INSERT INTO "+DatabaseUtils.TABLE_USER+" (nblose) VALUES (?) WHERE id=?";
+					statement = DatabaseConnection.getInstance().prepareStatement(requete);
+					statement.setInt(1, getLose(id)+1);
+					statement.setInt(2, id);
+					statement.executeQuery();
+				}
+			} catch(SQLException e){
+				//TODO add log
+			}
+		}
+	}
 }
