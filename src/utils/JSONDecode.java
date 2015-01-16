@@ -63,4 +63,11 @@ public class JSONDecode {
 		
 		return null;
 	}
+	
+	public static int decodeConnect(String message){
+		JSONObject messageObj = new JSONObject(message);
+		int id = messageObj.getInt("id");
+		
+		return id;
+	}
 }

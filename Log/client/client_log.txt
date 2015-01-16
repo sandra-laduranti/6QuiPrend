@@ -7,3 +7,6 @@ Tue Jan 13 23:03:16 CET 2015 : Déconnecté :(
 Tue Jan 13 23:03:18 CET 2015 : Fermeture de l'application !
 
 
+Fri Jan 16 14:28:47 CET 2015 : Problème d'accès à la base distanteCommunications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.

@@ -22,7 +22,6 @@ public class JSONEncode {
 			JSONObject flag = new JSONObject();
 			JSONArray  arr = new JSONArray();
 			
-			
 			/* TODO: rajouter promod? */
 			flag.put("nomFlag", "flagtrululu");
 			for(Partie partie : liste){
@@ -74,6 +73,16 @@ public class JSONEncode {
 		      flag.put("arr", arr);
 	
 		      return flag;
+		}
+		
+		public static JSONObject encodeConnect(int id){
+			JSONObject flag = new JSONObject();
+			
+			flag.put("nomFlag", Flag.ON_CONNECT);
+			flag.put("id", id);
+			
+			return flag;
+			
 		}
 
 }

@@ -5,10 +5,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Scanner;
+
+import metierDAO.UserDAO;
+
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONObject;
+
+import utils.JSONEncode;
 
 public class User extends WebSocketClient implements Comparable<User>{
 
@@ -28,6 +34,14 @@ public class User extends WebSocketClient implements Comparable<User>{
 
 	public User( URI serverURI ) {
 		super( serverURI );
+	}
+	
+	
+	@Override
+	public void onOpen( ServerHandshake handshakedata ) {
+		System.out.println( "opened connection" );
+		send(JSONEncode.encodeConnect(userId).toString());
+		// if you plan to refuse connection based on ip or httpfields overload: onWebsocketHandshakeReceivedAsClient
 	}
 	
 	public int getUserId() {
@@ -66,19 +80,20 @@ public class User extends WebSocketClient implements Comparable<User>{
 			return 0;
 		}
 	}
-	
-	@Override
-	public void onOpen( ServerHandshake handshakedata ) {
-		System.out.println( "opened connection" );
-		// if you plan to refuse connection based on ip or httpfields overload: onWebsocketHandshakeReceivedAsClient
-	}
+
 
 	@Override
 	public void onMessage( String message ) {
+		JSONObject obj = new JSONObject();
 		String delims = "[:]";
 		String[] tokens = message.split(delims);
 		
 		switch (tokens[0]) {
+		case "getNickName":
+			obj.put("monFlag", Flag.GET_NICKNAME);
+			obj.put("id", userId);
+			this.send(obj.toString());
+			break;
         case "getCarte":
             System.out.println("getCarte");
             break;
@@ -110,13 +125,18 @@ public class User extends WebSocketClient implements Comparable<User>{
 		//this.send(flag + ":" + Text);
 		this.send(Text);
 	}
+	
+	//julien  mdp
 
 	public static void main( String[] args ) throws URISyntaxException, IOException {
+//ici authentification;
+		//fenetre.getId
+		//fenetre .getNickName
 		
-
-		User usr = new User( new URI( "ws://localhost:12345" )); 
+		
+		User usr = new User( new URI( "ws://localhost:12345" ));
+		usr.userId = (int) Math.floor((Math.random() * 10) + 1);
 		usr.connect();
-		
 		BufferedReader sysin = new BufferedReader( new InputStreamReader( System.in ) );
 		while(true){
 			String in = sysin.readLine();
