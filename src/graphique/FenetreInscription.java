@@ -117,6 +117,7 @@ public class FenetreInscription extends JDialog {
             			int id = UserDAO.createUser(getUsername(),getMail(),getPassword());
                         if ( id != -1 ) {
                         	context.setIdUser(id);
+                        	context.setNomUser(getUsername());
                             JOptionPane.showMessageDialog(FenetreInscription.this,
                                     "Salut " + getUsername() + " !",
                                     "Inscription réussie",

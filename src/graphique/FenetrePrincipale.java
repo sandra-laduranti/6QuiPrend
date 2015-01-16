@@ -6,6 +6,10 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +26,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -31,9 +36,7 @@ import log.MonLogClient;
 import metier.Carte;
 import metier.Partie;
 import utils.EcranGauche;
-import utils.ImageButton;
 import utils.PanneauBordure;
-
 import communication.User;
 
 
@@ -86,7 +89,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		
 		this.context = this;  // Pour pouvoir utiliser notre instance de fenetreprincipale partout (methodes statics, listeners, classes ...) lorsque this ne fonctionne pas
 	    this.sync = sync;
-		
 		this.setTitle("6 Qui Prend");
 	    
 	    URL url_tmp = getClass().getResource("/images/logo 6QuiPrend.png");
@@ -115,7 +117,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 //			    		if(choix == JOptionPane.OK_OPTION){
 //			    			context.dispatchEvent(new WindowEvent(context, WindowEvent.WINDOW_CLOSING)); // On ferme l'appli
 //			    		}
-						context.afficherPartie();
+						context.startPartie();
                     }
         });
 	    
@@ -189,10 +191,13 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		// Si c'est une connexion
 		if(e.getActionCommand().equals(item_connexion.getText()) || e.getActionCommand().equals(bouton_connexion.getText())){
 			//Pour les tests, commenter les 3 lignes suivantes et laisser décommenté la 4 eme ligne
-			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
-			fenetreconnexion.setVisible(true);
-			if(fenetreconnexion.isSucceeded()){
-//			if(true){
+//			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
+//			fenetreconnexion.setVisible(true);
+//			if(fenetreconnexion.isSucceeded()){
+			if(true){
+				synchronized (sync) {
+					sync.notify();
+				}
 		    	is_connected=true; // Flag
 		    	
 				// Réorganisation des menus
@@ -200,7 +205,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
 				
 				log_client.add("Connecté !");
-				// Ligne suivante à décommenter pour test
+				//// A DECOMMENTER
+				this.setNomUser("Julien");
+				this.setIdUser(5);
+				
 				this.modifierInterfaceAfterConnexion();
 				
 	        } else {
@@ -235,6 +243,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 			FenetreInscription fenetreinscription = new FenetreInscription(context);
 			fenetreinscription.setVisible(true);
 			if(fenetreinscription.isSucceeded()){
+				synchronized (sync) {
+					sync.notify();
+				}
 		    	is_connected=true; // Flag pouvant servir plus tard
 		    	
 				// Réorganisation des menus
@@ -274,27 +285,35 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		
 		ecrangauche.paintComponentWithoutImage();
 		
-		JPanel container_infos = new JPanel();
-		container_infos.setBorder(new EmptyBorder(20,15,0,20));
-	    container_infos.setOpaque(false);
-	    
-	        JPanel infos = new JPanel(new BorderLayout(10,15));
-		    infos.setOpaque(false);
-		    
-	        JLabel texte;
-	        texte = new JLabel("<html><font color='black'><u>Compte</u> : "+
-	        		context.getName()+"<br><br><br>Nombre de parties gagnées: "+0/*user.getNb_parties_gagnees()*/+"<br><br>Nombre de parties perdues : "+0/*user.getNb_parties_perdues()*/+"<br><br></font></html>");
-	    
-	        infos.add(texte,BorderLayout.NORTH); // texte en blanc
-		    infos.add(context.getBoutonDeconnexion(),BorderLayout.SOUTH);
-	    container_infos.add(infos);
-
+		JPanel container_infos = this.initContainerInfo();
 	    
 	    // On vide le panneau de droite et on met la boite d'infos
 	    panneau = context.getPanneauBordure();
 	    panneau.removeAll();
 	    panneau.setLayout(new BorderLayout());
 	    panneau.add(container_infos, BorderLayout.NORTH);
+	    
+	    
+	    final ArrayList<Partie> parties = new ArrayList<Partie>();
+		Partie p = new Partie("Nom de partie", 5, false, context.user);
+		try {
+		User u2 = new User (new URI( "ws://localhost:12345" ));
+		u2.setUser(34, "Thomas");
+		p.addPlayer(u2);
+		User u3 = new User (new URI( "ws://localhost:12345" ));
+		u3.setUser(37, "HUgues");
+		p.addPlayer(u3);
+		User u4 = new User (new URI( "ws://localhost:12345" ));
+		u4.setUser(22, "JP");
+		p.addPlayer(u4);
+		User u5 = new User (new URI( "ws://localhost:12345" ));
+		u5.setUser(29, "Herve");
+		p.addPlayer(u5);
+		parties.add(p);
+		} catch (URISyntaxException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	    
 	    
 	    JPanel container_rafraichir = new JPanel();
@@ -309,14 +328,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 						//context.afficherToutesLesParties(client.recupereListParties());
 					} catch (NullPointerException exc){
 						/// TODO : TESTs
-//						ArrayList<Partie> parties = new ArrayList<Partie>();
-//						Partie p = new Partie("test", 5, false, context.getCl);
-//						p.addPlayer(new User("test2","",""));
-//						p.addPlayer(new User("test3","",""));
-//						p.addPlayer(new User("test4","",""));
-//						p.addPlayer(new User("test5","",""));
-//						parties.add(p);
-						context.afficherToutesLesParties(null);
+						context.afficherToutesLesParties(parties);
 						log_client.add("Le client est à null (modifierInterfaceAfterConnexion, FenetrePrincipale)");
 					}
 				}
@@ -349,13 +361,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		panneau.add(container_rafraichir, BorderLayout.CENTER);
 		panneau.addComposantEnBas(container_creer);
 		
-		ArrayList<Partie> parties = new ArrayList<Partie>();
-		Partie p = new Partie("test", 5, false, context.user);
-		p.addPlayer(context.user);
-		p.addPlayer(context.user);
-		p.addPlayer(context.user);
-		p.addPlayer(context.user);
-		parties.add(p);
 		context.afficherToutesLesParties(parties);
 		
 	}
@@ -406,7 +411,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 //					        context.repaint();
 							
 //							if(debloqueur){
-								System.out.println("Débloqué par un notify");
+								//System.out.println("Débloqué par un notify");
 								String[] description = ((JButton)e.getSource()).getName().split("::");
 								
 								// Ici, je crée la partie avec les infos enregistrées dans le bouton rejoindre (grace au split)
@@ -447,7 +452,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	
 	public void afficheSalonAttente(String titre_partie, int nbMax, String ... nomsParticipants){
 		ecrangauche.removeAll();
+		panneau.removeAll();
+		panneau.add(this.initContainerInfo());
+		bouton_deconnexion.setVisible(false);
 		
+	
 		ecrangauche.setLayout(new BorderLayout());
 		JPanel description_partie = new JPanel(new GridLayout(10,1));
 		description_partie.setOpaque(false);
@@ -455,7 +464,15 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		
 		JPanel nom_partie = new JPanel();
 		nom_partie.setOpaque(false);
-		JLabel nom_texte = new JLabel("<html><font color='black'><b><h2>Partie : "+titre_partie+" (en attente de joueurs - Max :"+nbMax+")</h2></b></font></html>");
+		JLabel nom_texte;
+		if(nomsParticipants.length == nbMax){
+			nom_texte = new JLabel("<html><font color='black'><b><h1>Que la partie ... commence !</h1></b></font></html>");
+			log_client.add("La partie "+titre_partie+" commence !");
+			System.out.println("La partie "+titre_partie+" commence !");
+		} else {
+			nom_texte = new JLabel("<html><font color='black'><b><h2>Partie : "+titre_partie+
+					" (en attente de joueurs - Max :"+nbMax+")</h2></b></font></html>");
+		}
 		nom_partie.add(nom_texte);
 		description_partie.add(nom_partie);
 		
@@ -466,138 +483,171 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		}
 		
 		ecrangauche.add(description_partie,BorderLayout.CENTER);
-		context.revalidate();
-		context.repaint();
+		
+		// Pour donner un effet d'initialisation de la partie, pour que l'affichage ne soit pas instantanné et que
+		// le joueur puisse lire le nouvel adversaire
+		if(nomsParticipants.length == nbMax){
+			final Timer timer = new Timer(3000, new ActionListener() {
+			    public void actionPerformed(ActionEvent evt) {
+			    	startPartie();
+			    	System.out.println("start");
+			        ((Timer)evt.getSource()).stop();
+			    }
+			});
+			timer.start();
+		}
 	
 	}
 	
 	// Une partie commence !
-	public void afficherPartie(){
+	public void startPartie(){
 		// AFFICHER MANCHE 1
 		ecrangauche.removeAll();
 		ecrangauche.setLayout(new GridLayout(6,1));
-		JPanel tas1 = new JPanel();
-		tas1.setLayout(new GridLayout(0,5));
-		tas1.setOpaque(false);
-		tas1.add(new ImageButton( new Carte(57).getImageIcon()));
-		tas1.add(new ImageButton( new Carte(30).getImageIcon()));
-		tas1.add(new ImageButton( new Carte(22).getImageIcon()));
-		tas1.add(new ImageButton( new Carte(1).getImageIcon()));
-		tas1.add(new ImageButton( new Carte(103).getImageIcon()));
-		JPanel tasvide = new JPanel();
-		tasvide.setLayout(new GridLayout(0,5));
-		tasvide.setOpaque(false);
+		
+		List<ArrayList<Carte>> lignes_cartes = new ArrayList<ArrayList<Carte>>();
+		for(int i = 0; i<4; i++){
+			lignes_cartes.add(new ArrayList<Carte>());
+			for(int j = 0; j<5; j++){
+				lignes_cartes.get(i).add(new Carte((int) (Math.random()*104)+1));
+			}
+		}
+		this.refreshLignes(lignes_cartes);
+		
+		List<Carte> cartes = new ArrayList<Carte>();
+		int hasard;
+		for(int i = 0; i<10; i++){
+			hasard=(int) (Math.random()*104)+1;
+			cartes.add(new Carte(hasard));
+		}
+		this.distribMain(cartes);
 
-		JPanel tas2 = new JPanel();
-		tas2.setLayout(new GridLayout(0,5));
-		tas2.setOpaque(false);
-		tas2.add(new ImageButton( new Carte(45).getImageIcon()));
-		tas2.add(new ImageButton( new Carte(9).getImageIcon()));
-		tas2.add(new ImageButton( new Carte(1).getImageIcon()));
-		tas2.add(new ImageButton( new Carte(41).getImageIcon()));
-		tas2.add(new ImageButton( new Carte(85).getImageIcon()));
+		context.revalidate();
+		context.repaint();
+	}
+	
+	
+	private void refreshLignes(List<ArrayList<Carte>> lignes_cartes) {
 		
-		JPanel tas3 = new JPanel();
-		tas3.setLayout(new GridLayout(0,5));
-		tas3.setOpaque(false);
-		tas3.add(new ImageButton( new Carte(57).getImageIcon()));
-		tas3.add(new ImageButton( new Carte(30).getImageIcon()));
-		tas3.add(new ImageButton( new Carte(22).getImageIcon()));
-		tas3.add(new ImageButton( new Carte(1).getImageIcon()));
-		tas3.add(new ImageButton( new Carte(103).getImageIcon()));
+		for(int i=0; i<lignes_cartes.size(); i++){
+			
+			JPanel ligne = new JPanel();
+			ligne.setBorder(new LineBorder(Color.BLACK, 2));
+			ligne.setLayout(new GridLayout(0,5,20,0));
+			ligne.setBackground(new Color(0,0,50,40));
+			for(int j=0; j< lignes_cartes.get(i).size(); j++){
+				JLabel bouton = new JLabel();
+				if(j==0){
+					bouton.setBorder(new EmptyBorder(0,10,0,0));
+				}
+				Carte c = lignes_cartes.get(i).get(j);
+				bouton.setIcon(new ImageIcon(c.getImageIcon().getImage().getScaledInstance(c.getImageIcon().getIconWidth()+8, 
+															c.getImageIcon().getIconHeight()-15, java.awt.Image.SCALE_SMOOTH)));
+				
+				ligne.add(bouton);
+				ligne.setName(i+1+"");
+			}
+			JPanel tasvide = new JPanel();
+			tasvide.setOpaque(false);
+			JPanel container_ligne = new JPanel(new GridLayout(0,2,20,15));
+			container_ligne.setBorder(new EmptyBorder(0,1,0,0));
+			container_ligne.setOpaque(false);
+			container_ligne.add(ligne);
+			container_ligne.add(tasvide);
+			
+			ecrangauche.add(container_ligne);
+			
+			ligne.addMouseListener(new MouseListener() {
+				
+				@Override
+				public void mouseClicked(final MouseEvent e) {
+//					if(ligne.)
+//					((JPanel) e.getSource()).setEnabled(false);
+					System.out.println( ((JPanel)e.getSource()).getName());
+					((JPanel) e.getSource()).setBorder(new LineBorder(Color.RED,3));
+					ActionListener taskPerformer = new ActionListener() {
+					      public void actionPerformed(ActionEvent evt) {
+  /////						  Ligne à envoyer
+					    	  context.revalidate();
+					    	  context.repaint();
+					    	  ((JPanel) e.getSource()).setBackground(new Color(0,0,50,40));
+					    	  ((JPanel) e.getSource()).setBorder(new LineBorder(Color.BLACK, 2));
+					    	  ((Timer)evt.getSource()).stop();
+					    	  context.revalidate();
+					    	  context.repaint();
+					      }
+				    };
+					new Timer(1000, taskPerformer).start();
+				}
+				@Override
+				public void mouseReleased(MouseEvent e) { }
+				@Override
+				public void mousePressed(MouseEvent e) { }
+				@Override
+				public void mouseExited(MouseEvent e) { }
+				@Override
+				public void mouseEntered(MouseEvent e) { }
+				
+			});
+		}
+		
+		context.revalidate();
+  	  	context.repaint();
+		
+	}
+	
+	public int soumettreCarte(){
+		return 0;  
+	}
+	
+//	public int soumettreLigne
 
-		JPanel tas4 = new JPanel();
-		tas4.setLayout(new GridLayout(0,5));
-		tas4.setOpaque(false);
-		tas4.add(new ImageButton( new Carte(45).getImageIcon()));
-		tas4.add(new ImageButton( new Carte(9).getImageIcon()));
-		tas4.add(new ImageButton( new Carte(1).getImageIcon()));
-		tas4.add(new ImageButton( new Carte(41).getImageIcon()));
-		tas4.add(new ImageButton( new Carte(85).getImageIcon()));
-		JPanel container_ligne1 = new JPanel(new GridLayout(0,2,0,0));
-		container_ligne1.setOpaque(false);
-		container_ligne1.add(tas1);
-		container_ligne1.add(tasvide);
-		
-		JPanel container_ligne2 = new JPanel(new GridLayout(0,2,0,0));
-		container_ligne2.setOpaque(false);
-		container_ligne2.add(tas2);
-		JPanel tasvide2 = new JPanel();
-		tasvide2.setOpaque(false);
-		container_ligne2.add(tasvide2);
-		
-		
-		JPanel container_ligne3 = new JPanel(new GridLayout(0,2,0,0));
-		container_ligne3.setOpaque(false);
-		container_ligne3.add(tas3);
-		
-		JPanel tasvide3 = new JPanel();
-		tasvide3.setOpaque(false);
-		container_ligne3.add(tasvide3);
-		
-		
-		JPanel container_ligne4 = new JPanel(new GridLayout(0,2,0,0));
-		container_ligne4.setOpaque(false);
-		container_ligne4.add(tas4);
-		
-		JPanel tasvide4 = new JPanel();
-		tasvide4.setOpaque(false);
-		container_ligne4.add(tasvide4);
+	private void distribMain(List<Carte> cartes) {
 
-		ecrangauche.add(container_ligne1);
-		ecrangauche.add(container_ligne2);
-		ecrangauche.add(container_ligne3);
-		ecrangauche.add(container_ligne4);
-		
 		JPanel container_main = new JPanel(new GridLayout(0,1,0,0));
 		container_main.setOpaque(false);
 		container_main.setBorder(new EmptyBorder(0,150,5,0));
-		JPanel tas5 = new JPanel();
-		tas5.setLayout(new GridLayout(0,10));
-		tas5.setOpaque(false);
-		for(int i=0; i<10;i++){
-			int hasard = (int) ((Math.random()*104)+1);
-			Carte carte = new Carte(hasard);
-			int width = carte.getImageIcon().getIconWidth();
-			int heigth = carte.getImageIcon().getIconHeight();
+		
+		JPanel main = new JPanel();
+		main.setLayout(new GridLayout(0,10));
+		main.setOpaque(false);
+		for(Carte oneCard : cartes){
+			
+			int width = oneCard.getImageIcon().getIconWidth();
+			int heigth = oneCard.getImageIcon().getIconHeight();
 			JButton bouton_main = new JButton();
-			bouton_main.setIcon(new ImageIcon(carte.getImageIcon().getImage().getScaledInstance(width+8, heigth-15, 
+			bouton_main.setIcon(new ImageIcon(oneCard.getImageIcon().getImage().getScaledInstance(width+8, heigth-15, 
 																								java.awt.Image.SCALE_SMOOTH)));
-			bouton_main.setName(hasard+"");
+			bouton_main.setName(oneCard.getBeefHead()+"");
 			bouton_main.addActionListener(new ActionListener() {
 				
 				@Override
-				public void actionPerformed(ActionEvent e) {
-					((JButton) e.getSource()).setBorder(new LineBorder(Color.RED,2));
-					context.revalidate();
-					context.repaint();
-					
+				public void actionPerformed(final ActionEvent e) {
+					((JButton) e.getSource()).setBorder(new LineBorder(Color.RED,3));
 					
 					System.out.println(((JButton) e.getSource()).getName());
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e1) {
-						log_client.add(e1.getMessage());
-					}
-					((JButton) e.getSource()).setEnabled(false);
-					((JButton) e.getSource()).setBorder(new EmptyBorder(0, 0, 0, 0));
-					context.revalidate();
-					context.repaint();
+					ActionListener taskPerformer = new ActionListener() {
+					      public void actionPerformed(ActionEvent evt) {
+					    	  // user.sendCarte( Integer.parseInt(((JButton) e.getSource()).getName()) );
+					    	  ((JButton) e.getSource()).setEnabled(false);
+					    	  ((JButton) e.getSource()).setBorder(new EmptyBorder(0, 0, 0, 0));
+					      }
+				    };
+					new Timer(1000, taskPerformer).start();
 				}
 			});
-			tas5.add(bouton_main);
+			main.add(bouton_main);
 		}
-		container_main.add(tas5);
+		container_main.add(main);
 		
 		JPanel espace = new JPanel();
 		espace.setOpaque(false);
 		ecrangauche.add(espace);
 		ecrangauche.add(container_main);
-
-		context.revalidate();
-		context.repaint();
 	}
 
+	///// Méthodes utiles
+	
 	public void isNotify(boolean debloqueur) {
 		this.debloqueur = debloqueur;
 	}
@@ -621,6 +671,26 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	
 	public void setUser(User user){
 		this.user = user;
+		this.user.setUser(idUser,nomUser);
+	}
+	
+	private JPanel initContainerInfo() {
+		JPanel container_infos = new JPanel();
+		container_infos.setBorder(new EmptyBorder(20,15,0,20));
+	    container_infos.setOpaque(false);
+	    
+	        JPanel infos = new JPanel(new BorderLayout(10,15));
+		    infos.setOpaque(false);
+		    
+	        JLabel texte;
+	        texte = new JLabel("<html><font color='black'><u>Compte</u> : "+
+	        		this.getNomUser()+"<br><br><br>Nombre de parties gagnées: "+0/*user.getNb_parties_gagnees()*/+"<br><br>Nombre de parties perdues : "+0/*user.getNb_parties_perdues()*/+"<br><br></font></html>");
+	    
+	        infos.add(texte,BorderLayout.NORTH); // texte en blanc
+	        infos.add(bouton_deconnexion).setVisible(true);
+		    infos.add(bouton_deconnexion,BorderLayout.SOUTH);
+	    container_infos.add(infos);
+	    return container_infos;
 	}
 	
 	

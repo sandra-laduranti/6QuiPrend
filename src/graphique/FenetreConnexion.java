@@ -19,7 +19,7 @@ import javax.swing.border.LineBorder;
 import log.MonLogClient;
 import metierDAO.UserDAO;
 
-public class FenetreConnexion extends JDialog {
+public class FenetreConnexion extends JDialog implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JTextField tfUsername;
@@ -27,10 +27,12 @@ public class FenetreConnexion extends JDialog {
     private JButton btnLogin;
     private JButton btnCancel;
     private boolean succeeded = false;
+    private FenetrePrincipale context;
 
     public FenetreConnexion(final FenetrePrincipale context) {
 
     	super(context, "Login", true);
+    	this.context = context;
     	new MonLogClient().add("Tentative de connexion");
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints cs = new GridBagConstraints();
@@ -62,21 +64,8 @@ public class FenetreConnexion extends JDialog {
         panel.setBorder(new LineBorder(Color.GRAY));
 
         btnLogin = new JButton("Connexion");
-        btnLogin.addActionListener(new ActionListener() {
-        	
-            public void actionPerformed(ActionEvent e) {
-            	int id = (int) UserDAO.verifieAuthentification(getUsername(), getPassword());
-                if (id != -1) {
-                	context.setIdUser(id);
-                    JOptionPane.showMessageDialog(FenetreConnexion.this,
-                            "Salut " + getUsername() + " !",
-                            "Connexion réussie", 
-                            JOptionPane.INFORMATION_MESSAGE);
-                    succeeded = true;
-                    dispose();
-                }
-            }
-        });
+        btnLogin.addActionListener(this);
+        
         btnCancel = new JButton("Annuler");
         btnCancel.addActionListener(new ActionListener() {
 
@@ -108,5 +97,26 @@ public class FenetreConnexion extends JDialog {
     public boolean isSucceeded() {
         return succeeded;
     }
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if( e.getActionCommand().equals("Connexion")){
+        	int id = (int) UserDAO.verifieAuthentification(getUsername(), getPassword());
+            if (id != -1) {
+            	context.setIdUser(id);
+            	context.setNomUser(getUsername());
+                JOptionPane.showMessageDialog(FenetreConnexion.this,
+                        "Salut " + getUsername() + " !",
+                        "Connexion réussie", 
+                        JOptionPane.INFORMATION_MESSAGE);
+                succeeded = true;
+                dispose();
+            } else {
+            	succeeded = false;
+            }
+		} else {
+
+		}
+	}
     
 }

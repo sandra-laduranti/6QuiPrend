@@ -7,9 +7,8 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
-import utils.Md5;
 import log.MonLogClient;
-import communication.User;
+import utils.Md5;
 
 /**
  * @(#) CompteDAO.java
@@ -62,15 +61,15 @@ public class UserDAO {
 		String encodedPasswd = Md5.encodeMd5(password);
 		try{
 			if(CONNECTION!=null){
-				requete = "INSERT INTO "+DatabaseUtils.TABLE_USER+" VALUES (?,?,?)";
+				requete = "INSERT INTO "+DatabaseUtils.TABLE_USER+" (nickname, email, password) VALUES (?, ?, ?)";
 
 				statement = DatabaseConnection.getInstance().prepareStatement(requete);
 				statement.setString(1, nickname);		// Rempli le premier "?" avec une valeur
 				statement.setString(2, email);
 				statement.setString(3, encodedPasswd);
-				statement.executeQuery();
+				statement.executeUpdate();
 				new MonLogClient().add("Création du nouveau compte pour "+ nickname);
-				
+
 				requete = "SELECT id FROM "+DatabaseUtils.TABLE_USER+" WHERE nickname = ?";
 				statement = DatabaseConnection.getInstance().prepareStatement(requete);
 				statement.setString(1, nickname);

@@ -220,11 +220,12 @@ public class Partie extends Thread implements Serializable{
 		return nbJoueursMax;
 	}
 
-	public void addPlayer(User user){
+	public boolean addPlayer(User user){
 		if(getListUser().size() < getNbJoueursMax()){
 			comptes.put(user, new ArrayList<Carte>());
+			return true;
 		}else{
-			System.out.println("Bonjour "+user.getUserNickname()+", le nombre de joueur maximum est atteint ! veuillez revenir l'année prochaine !");
+			return false;
 		}
 	}
 
