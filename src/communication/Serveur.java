@@ -21,7 +21,6 @@ import utils.JSONDecode;
 
 public class Serveur extends WebSocketServer{
 	
-	/*TODO: ajout Singleton */
 	private List<Thread> parties;
 	private List<PlayerConnect> playerConnect;
 	
@@ -29,6 +28,7 @@ public class Serveur extends WebSocketServer{
 	public Serveur( int port ) throws UnknownHostException {
 		super( new InetSocketAddress( port ) );
 		parties = new ArrayList<Thread>();
+		playerConnect = new ArrayList<PlayerConnect>();
 	}
 	
 	/** Instance unique non préinitialisée */
@@ -55,9 +55,11 @@ public class Serveur extends WebSocketServer{
 	public void onOpen( WebSocket conn, ClientHandshake handshake ) {
 		this.sendToAll( "new connection: " + handshake.getResourceDescriptor() );
 		System.out.println( conn.getRemoteSocketAddress().getAddress().getHostAddress() + " entered the room!" );
-		playerConnect.add(new PlayerConnect(conn,"titi")); /*TODO: change titi en getUsername */
+		//conn.send(arg0);
+	//	playerConnect.add(new PlayerConnect(conn,"titi")); /*TODO: change titi en getUsername */
 	}
 
+	
 	@Override
 	public void onClose( WebSocket conn, int code, String reason, boolean remote ) {
 		this.sendToAll( conn + " has left the room!" );
@@ -76,25 +78,14 @@ public class Serveur extends WebSocketServer{
 	/* puis switch en fonction du flag */
 	@Override
 	public void onMessage( WebSocket conn, String message ) {
-		//String flag = JSONDecode.getFlag(message);
-		String flag = "titi";
-		System.out.println("test secours desespere: " + conn.getLocalSocketAddress());
-				/*CREATION_PARTIE = 0;
-			public static final int REFRESH_LIST_PARTIES = 1;
-			public static final int REJOINDRE_PARTIE = 2;
-			public static final int PARTIE_COMMENCE = 3;
-			public static final int SEND_CARTE = 4;
-			public static final int TROP_TARD_POUR_CARTE = 5;
-			public static final int SEND_LIGNE = 6;
-			public static final int  TROP_TARD_POUR_LIGNE = 7;
-			public static final int REFRESH_BEEF = 8;
-			public static final int REFRESH_LIGNES = 9;
-			public static final int CARTE_ADVERSAIRES = 10;
-			public static final int GAGNANT = 11;
-			public static final int PERDANT = 12;
-			*/
+		String flag = JSONDecode.getFlag(message);
+		
+		System.out.println("flag" + flag);
 				
 				switch (flag) {
+				case Flag.ON_CONNECT:
+					playerConnect.add(new PlayerConnect(conn,JSONDecode.decodeConnect(message)));
+					break;
 		        case Flag.REJOINDRE_PARTIE:
 		        	//parties.add(new Partie(tokens[1],tokens[2],tokens[3],tokens[4]));
 		            System.out.println("newP");
@@ -154,12 +145,14 @@ public class Serveur extends WebSocketServer{
 		Serveur s = Serveur.getInstance( port );
 		s.start();
 		System.out.println( "ChatServer started on port: " + s.getPort() );
+		
 
 		BufferedReader sysin = new BufferedReader( new InputStreamReader( System.in ) );
 		while ( true ) {
 			String in = sysin.readLine();
 			System.out.println("in "+ in);
 			s.sendToAll( in );
+		
 			if( in.equals( "exit" ) ) {
 				s.stop();
 				break;

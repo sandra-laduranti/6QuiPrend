@@ -4,11 +4,12 @@ import org.java_websocket.WebSocket;
 
 public class PlayerConnect {
 	private WebSocket conn;
+	private int id;
 	private String nickName;
 	
-	public PlayerConnect(WebSocket conn, String nickName){
+	public PlayerConnect(WebSocket conn, int id){
 		this.conn = conn;
-		this.nickName = nickName;
+		this.id = id;
 	}
 	
 	public WebSocket getWebSocket(){
@@ -17,6 +18,10 @@ public class PlayerConnect {
 	
 	public String getNickName(){
 		return nickName;
+	}
+	
+	public int getId(){
+		return id;
 	}
 	
 }

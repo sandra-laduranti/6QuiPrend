@@ -17,5 +17,7 @@ public class Flag {
 	public static final String PERDANT = "lose";
 	public static final String SEND_PARTICIPANT = "sendParticipant";
 	public static final String QUIT_PARTIE = "quit";
+	public static final String GET_NICKNAME = "getNickname";
+	public static final String ON_CONNECT = "onConnect";
 	
 }
