@@ -51,6 +51,10 @@ public class MethodesAImplementerClient {
 		// socket.write(Flag.REFRESH_LIST_PARTIES);
 	}
 	
+	public void rafraichirLignes(){
+		// socket.write(Flag.REFRESH_LIGNES);
+	}
+	
 	
 	public void ecoute(){
 		// Ecoute ce que le serveur dit, reçoit, la plupart du temps, un Flag suivi de données.
