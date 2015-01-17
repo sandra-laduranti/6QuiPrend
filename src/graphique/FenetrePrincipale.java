@@ -291,28 +291,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	    panneau.setLayout(new BorderLayout());
 	    panneau.add(container_infos, BorderLayout.NORTH);
 	    
-	    
+	    /// TODO: FAUSSES PARTIES EN ATTENDANT
 	    final ArrayList<Partie> parties = new ArrayList<Partie>();
-		Partie p = new Partie("Nom de partie", 5, false, context.user);
-		try {
-		User u2 = new User (new URI( "ws://localhost:12345" ));
-		u2.setUser(34, "Thomas");
-		p.addPlayer(u2);
-		User u3 = new User (new URI( "ws://localhost:12345" ));
-		u3.setUser(37, "HUgues");
-		p.addPlayer(u3);
-		User u4 = new User (new URI( "ws://localhost:12345" ));
-		u4.setUser(22, "JP");
-		p.addPlayer(u4);
-		User u5 = new User (new URI( "ws://localhost:12345" ));
-		u5.setUser(29, "Herve");
-		p.addPlayer(u5);
+		Partie p = new Partie("Nom de partie", 5, false, getNomUser());
+		p.addPlayer("Thomas");
+		p.addPlayer("Hugues");
+		p.addPlayer("Jean-Hubert");
+		p.addPlayer("Dimitrikovska");
 		parties.add(p);
-		} catch (URISyntaxException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	    
 	    
 	    JPanel container_rafraichir = new JPanel();
 	    container_rafraichir.setOpaque(false);
@@ -323,9 +309,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try{
-						//context.afficherToutesLesParties(client.recupereListParties());
+						//TODO: user.sendrafraichirParties();
 					} catch (NullPointerException exc){
-						/// TODO : TESTs
+						/// test
 						context.afficherToutesLesParties(parties);
 						log_client.add("Le client est à null (modifierInterfaceAfterConnexion, FenetrePrincipale)");
 					}
