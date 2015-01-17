@@ -32,7 +32,6 @@ public class Partie extends Thread implements Serializable{
 		this.nbJoueursMax = nbJoueurs;
 		this.isProMode = isProMode;
 		this.nom = nom;
-		id++;
 		isInGame = false;
 		comptes = new HashMap<String, List<Carte>>();
 		map = new HashMap<String, Integer>();
@@ -56,10 +55,22 @@ public class Partie extends Thread implements Serializable{
 
 	@Override
 	public void run() {
-		super.run();
+		try {
+			synchronized (this) {
+				while(getListUser().size()<nbJoueursMax){
+					System.out.println("En attente de joueur...");
+					wait();
+				}
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			System.out.println("Nombre de joueurs max non atteint");
+		}
+		System.out.println("La partie commence ! Bon jeu");
+		startGame();
 	}
 
-	public void startGame(){
+	private void startGame(){
 		isInGame = true;
 		int cptRound = 1;
 		while(!isPlayerReach66){
@@ -264,11 +275,11 @@ public class Partie extends Thread implements Serializable{
 	public HashMap<String, List<Carte>> getPComptes(){
 		return this.comptes;
 	}
-	
+
 	public HashMap<String, Integer> getMap(){
 		return this.map;
 	}
-	
+
 	public int getIdPartie(){
 		return id;
 	}
@@ -281,7 +292,7 @@ public class Partie extends Thread implements Serializable{
 		int nbBeef = GestionPartie.countBeef(rows.get(indexRow));
 		int nbMapbeef = 0;
 		String name="";
-//		System.out.println("*********** Test de la map : "+map.values().size());
+		//		System.out.println("*********** Test de la map : "+map.values().size());
 		for (Entry<String, Integer> entry : map.entrySet()) {
 			name=entry.getKey();
 			if(name.equals(userGetRow)){
