@@ -226,17 +226,18 @@ public class Partie extends Thread implements Serializable{
 		return nbJoueursMax;
 	}
 
-	public boolean addPlayer(User user){
+	public boolean addPlayer(String userNickname){
 		if(getListUser().size() < getNbJoueursMax()){
-			comptes.put(user.getUserNickname(), new ArrayList<Carte>());
-			map.put(user.getUserNickname(), 0);
-			comptes.put(user.getUserNickname(), new ArrayList<Carte>());
+			comptes.put(userNickname, new ArrayList<Carte>());
+			map.put(userNickname, 0);
+			comptes.put(userNickname, new ArrayList<Carte>());
 			return true;
 		}else{
 			return false;
 		}
 	}
 
+	//TODO: probleme User ne devrait plus apparaitre et ne pas être manipulé. 
 	public void removePlayer(User user){
 		getListUser().remove(user);
 	}
