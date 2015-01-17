@@ -14,7 +14,7 @@ public class MainPartie {
 		User user = new User(new URI("ws://localhost:12345"));
 		user.setUser(1, "Patrick");
 
-		Partie game = new Partie("DANT Game", 2, false, user.getUserNickname());
+		Partie game = new Partie("DANT Game", 2, true, user.getUserNickname());
 		game.start();
 
 		User user2 = new User(new URI("ws://localhost:12345"));
