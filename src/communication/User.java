@@ -1,13 +1,18 @@
 package communication;
 
+import graphique.FenetrePrincipale;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Scanner;
 
-import metierDAO.UserDAO;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+
+import log.MonLogClient;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
@@ -129,18 +134,54 @@ public class User extends WebSocketClient implements Comparable<User>{
 	//julien  mdp
 
 	public static void main( String[] args ) throws URISyntaxException, IOException {
-//ici authentification;
-		//fenetre.getId
-		//fenetre .getNickName
 		
 		
-		User usr = new User( new URI( "ws://localhost:12345" ));
-		usr.userId = (int) Math.floor((Math.random() * 10) + 1);
-		usr.connect();
+////////////// POUR LES TESTS SUR LE GRAPHIQUES, LAISSER DECOMMENTE LES LIGNES SUIVANTES ///////////////////////		
+		/**
+         * Set look and feel of app
+         */
+        try {
+            for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // If Nimbus is not available, you can set the GUI to another look and feel.
+        }
+        
+		Object sync = new Object();
+		FenetrePrincipale fenetre = new FenetrePrincipale(sync);
+		
+		synchronized (sync) {
+			try {
+				sync.wait();
+			} catch (InterruptedException e) {
+				new MonLogClient().add(e.getMessage());
+				System.out.println(e.getMessage());
+			}
+		}
+		User user = null;
+		try {
+			user = new User( new URI( "ws://localhost:12345" ));
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		user.connect();
+		fenetre.setUser(user);
+		int id = fenetre.getIdUser();
+		
 		BufferedReader sysin = new BufferedReader( new InputStreamReader( System.in ) );
 		while(true){
-			String in = sysin.readLine();
-			usr.sendWithFlag(in,"titi");
+			String in = null;
+			try {
+				in = sysin.readLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			user.sendWithFlag(in,"titi");
 		}
 	}
 
