@@ -19,6 +19,7 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 import utils.JSONDecode;
+import utils.JSONEncode;
 
 public class Serveur extends WebSocketServer {
 
@@ -50,10 +51,11 @@ public class Serveur extends WebSocketServer {
 		}
 		return INSTANCE;
 	}
+	
+	public void 
 
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
-		this.sendToAll("new connection: " + handshake.getResourceDescriptor());
 		System.out.println(conn.getRemoteSocketAddress().getAddress()
 				.getHostAddress()
 				+ " entered the room!");
@@ -81,20 +83,26 @@ public class Serveur extends WebSocketServer {
 		System.out.println("New party: " + party.getName() + " create");
 	}
 
-	public void joinPartie(String message) {
+	public void joinPartie(WebSocket conn, String message) {
 		String[] messPart = JSONDecode.decodeJoinParty(message);
 
-		System.out.println("joinPartie");
+	
 		if (null != messPart) {
 			Partie party = parties.get(Integer.parseInt(messPart[1]));
-			System.out.println("Partie num: " + messPart[1]);
+			
 			if (null != party) {
 				if (party.addPlayer(messPart[0]) == false) {
-					System.out.println("Partie déjà pleine"); // TODO: voir avec Julien pour message à renvoyer au client
+					conn.send(JSONEncode.encodeMessage("Partie déjà pleine")); // TODO: voir avec Julien pour message à renvoyer au client
 				}
 				else{
-					System.out.println("Vous avez rejoins la partie numéro: " + messPart[1]);
+					conn.send(JSONEncode.encodeMessage("Vous avez rejoins la partie numéro: " + messPart[1]));
+					synchronized(party){
+						party.notify();
+					}
 				}
+			}
+			else{
+				conn.send(JSONEncode.encodeMessage("La partie que vous essayez de rejoindre n'existe pas"));
 			}
 		}
 	}
@@ -118,7 +126,7 @@ public class Serveur extends WebSocketServer {
 					.decodeConnect(message)));
 			break;
 		case Flag.REJOINDRE_PARTIE:
-			joinPartie(message);
+			joinPartie(conn,message);
 			break;
 		case Flag.CREATION_PARTIE:
 			createPartie(message);
@@ -182,7 +190,7 @@ public class Serveur extends WebSocketServer {
 		while (true) {
 			String in = sysin.readLine();
 			System.out.println("in " + in);
-			s.sendToAll(in);
+			//s.sendToAll(in);
 
 			if (in.equals("exit")) {
 				s.stop();

@@ -65,7 +65,7 @@ public class Partie extends Thread implements Serializable{
 			synchronized (this) {
 				while(getListUser().size()<nbJoueursMax){
 					System.out.println("En attente de joueur...");
-					wait();
+					this.wait();
 				}
 			}
 		} catch (InterruptedException e) {
@@ -111,7 +111,7 @@ public class Partie extends Thread implements Serializable{
 		// On distribue les cartes pour chaque joueur
 		List<Carte> playerCards=new ArrayList<Carte>();
 		for(int i = 0; i<nbJoueursMax; i++){				// Ajout des system.out.println()
-			playerCards =  GestionPartie.disturb(listCard);
+			playerCards =  GestionPartie.disturb(listCard); //disturb == distribué chez celui qui a écrit ça :^p
 			System.out.println(getListUser().get(i));
 			user=getListUser().get(i);
 			comptes.put(user, playerCards);
@@ -135,6 +135,7 @@ public class Partie extends Thread implements Serializable{
 			for(int i = 0; i<comptes.size(); i++){
 				//Méthode qui propose a chaque joueur de choisir sa carte, retourne une carte
 				int valueCard;
+				//TODO: demander à tous les joueurs de donner une carte
 				Scanner sc=new Scanner(System.in);
 				int j=0;
 				//Affiche la liste des cartes du joueur
@@ -151,7 +152,8 @@ public class Partie extends Thread implements Serializable{
 				boolean saisieCard = false;
 				while(!saisieCard){
 					if(valueCard != -1){
-						if(GestionPartie.getCardFromHand(comptes.get(getListUser().get(i)),valueCard) != null){ 
+						if(GestionPartie.getCardFromHand(comptes.get(getListUser().get(i)),valueCard) != null){
+							//TODO: send à la place des syso
 							System.out.println("Vous avez saisie la valeur "+valueCard);
 							saisieCard = true;
 						} else {

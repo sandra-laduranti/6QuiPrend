@@ -16,6 +16,7 @@ public class JSONDecode {
 	
 	public static String getFlag(String message){
 		JSONObject testObj = new JSONObject(message);
+		
 		return(testObj.getString("nomFlag"));
 	}
 	
@@ -89,5 +90,11 @@ public class JSONDecode {
 		messParam[1] = messageObj.getInt("idParty")+"";
 		
 		return messParam;
+	}
+	
+	public static String decodeMessage(String message){
+		JSONObject messageObj = new JSONObject(message);
+		
+		return messageObj.getString("message");
 	}
 }

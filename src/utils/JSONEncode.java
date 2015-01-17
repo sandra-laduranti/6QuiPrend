@@ -91,5 +91,13 @@ public class JSONEncode {
 			return flag.toString();
 		}
 
+		public static String encodeMessage(String message){
+			JSONObject flag = new JSONObject();
+			
+			flag.put("nomFlag", Flag.MESSAGE);
+			flag.put("message", message);
+			
+			return flag.toString();
+		}
 
 }

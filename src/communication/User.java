@@ -20,6 +20,7 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONObject;
 
+import utils.JSONDecode;
 import utils.JSONEncode;
 
 public class User extends WebSocketClient implements Comparable<User>{
@@ -90,21 +91,18 @@ public class User extends WebSocketClient implements Comparable<User>{
 
 	@Override
 	public void onMessage( String message ) {
-		JSONObject obj = new JSONObject();
-		String delims = "[:]";
-		String[] tokens = message.split(delims);
+		System.out.println("json: " + message);
+		String flag = JSONDecode.getFlag(message);
 		
-		switch (tokens[0]) {
+	
+		switch (flag) {
 		case "getNickName":
-			obj.put("monFlag", Flag.GET_NICKNAME);
-			obj.put("id", userId);
-			this.send(obj.toString());
 			break;
         case "getCarte":
             System.out.println("getCarte");
             break;
-        case "jesaispasencorequelflag":
-            System.out.println("tata");
+        case Flag.MESSAGE:
+            System.out.println(JSONDecode.decodeMessage(message));
             break;
         default:
             System.out.println("Error: ce flag n'existe pas.");
@@ -134,7 +132,7 @@ public class User extends WebSocketClient implements Comparable<User>{
 	
 	//julien  mdp
 
-///*	
+/*	
 	public static void main( String[] args ) throws URISyntaxException, IOException {
 //ici authentification;
 		//fenetre.getId
@@ -150,10 +148,12 @@ public class User extends WebSocketClient implements Comparable<User>{
 		BufferedReader sysin = new BufferedReader( new InputStreamReader( System.in ) );
 		while(true){
 			String in = sysin.readLine();
-			if (in.equals("create")){
+			if (in.equals("1")){
+				System.out.println("send create");
 				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname+"Party", 2, true, usr.userNickname));
 			}
-			if (in.equals("join")){
+			if (in.equals("2")){
+				System.out.println("send join");
 				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 1));
 			}
 			//usr.sendWithFlag(in,"titi");
@@ -161,7 +161,7 @@ public class User extends WebSocketClient implements Comparable<User>{
 	}//*/
 
 	//code déjà bien assez galère a debug sans que j'ai à fouiller 10000 ans au milieu de l'ui pour trouver ce que je veux
-/*
+///*
 	public static void main( String[] args ) throws URISyntaxException, IOException {
 		
 	
@@ -191,7 +191,7 @@ public class User extends WebSocketClient implements Comparable<User>{
 	try {
 		user = new User( new URI( "ws://localhost:12345" ));
 	} catch (URISyntaxException e1) {
-		e.printStackTrace();
+		e1.printStackTrace();
 	}
 	user.connect();
 	fenetre.setUser(user);
