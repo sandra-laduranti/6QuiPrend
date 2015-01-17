@@ -1,5 +1,7 @@
 package communication;
 
+import graphique.FenetrePrincipale;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,6 +9,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Scanner;
 
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+
+import log.MonLogClient;
 import metierDAO.UserDAO;
 
 import org.java_websocket.client.WebSocketClient;
@@ -128,6 +134,7 @@ public class User extends WebSocketClient implements Comparable<User>{
 	
 	//julien  mdp
 
+///*	
 	public static void main( String[] args ) throws URISyntaxException, IOException {
 //ici authentification;
 		//fenetre.getId
@@ -143,13 +150,19 @@ public class User extends WebSocketClient implements Comparable<User>{
 		BufferedReader sysin = new BufferedReader( new InputStreamReader( System.in ) );
 		while(true){
 			String in = sysin.readLine();
-			usr.send(JSONEncode.encodeCreatePartie(usr.userNickname+"Party", usr.userId-1, true, usr.userNickname));
+			if (in.equals("create")){
+				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname+"Party", 2, true, usr.userNickname));
+			}
+			if (in.equals("join")){
+				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 1));
+			}
 			//usr.sendWithFlag(in,"titi");
 		}
-	}
+	}//*/
 
 	//code déjà bien assez galère a debug sans que j'ai à fouiller 10000 ans au milieu de l'ui pour trouver ce que je veux
-/*	public static void main( String[] args ) throws URISyntaxException, IOException {
+/*
+	public static void main( String[] args ) throws URISyntaxException, IOException {
 		
 	
  try {
@@ -177,7 +190,7 @@ public class User extends WebSocketClient implements Comparable<User>{
 	User user = null;
 	try {
 		user = new User( new URI( "ws://localhost:12345" ));
-	} catch (URISyntaxException e) {
+	} catch (URISyntaxException e1) {
 		e.printStackTrace();
 	}
 	user.connect();
@@ -195,6 +208,6 @@ public class User extends WebSocketClient implements Comparable<User>{
 		}
 		user.sendWithFlag(in,"titi");
 	}
-}*/
+}//*/
 	
 }

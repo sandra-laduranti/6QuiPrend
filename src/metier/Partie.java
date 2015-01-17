@@ -16,7 +16,7 @@ public class Partie extends Thread implements Serializable{
 
 	private static transient final long serialVersionUID = 1L;
 	private transient List<Carte> listCard;
-	private static int id=0;
+	private int id;
 	// HashMap contient la clé du joueur ainsi que la liste de ses cartes actuels
 	private transient HashMap<String, List<Carte>> comptes;
 	private HashMap<String, Integer> map;
@@ -32,12 +32,14 @@ public class Partie extends Thread implements Serializable{
 		this.nbJoueursMax = nbJoueurs;
 		this.isProMode = isProMode;
 		this.nom = nom;
+		this.id = id;
 		isInGame = false;
 		comptes = new HashMap<String, List<Carte>>();
 		map = new HashMap<String, Integer>();
 		comptes.put(userNickname, new ArrayList<Carte>());
 		map.put(userNickname, 0);
 	}
+
 
 	// Utilisé uniquement par la socket pour afficher les informations utiles à l'affichage (tout n'étant pas nécessaire)
 	public Partie(int id, String nom, int nbJoueurs, boolean isProMode, List<String> userNicknames){
@@ -53,6 +55,10 @@ public class Partie extends Thread implements Serializable{
 		}
 	}
 
+	public void setId(int id){
+		this.id = id;
+	}
+	
 	@Override
 	public void run() {
 		try {

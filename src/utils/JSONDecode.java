@@ -64,8 +64,7 @@ public class JSONDecode {
 		boolean isPromode = messageObj.getBoolean("isPromode");
 		String userName = messageObj.getString("userName");
 
-		//return new Partie(nom, nbJoueurs, isPromode, userName);
-		return null;
+		return new Partie(nom, nbJoueurs, isPromode, userName);
 	}
 	
 	public static String decodeConnect(String message){
@@ -80,5 +79,15 @@ public class JSONDecode {
 		int id = messageObj.getInt("idPartie");
 		
 		return id;
+	}
+	
+	public static String[] decodeJoinParty(String message){
+		JSONObject messageObj = new JSONObject(message);
+		
+		String[] messParam = new String[2];
+		messParam[0] = messageObj.getString("nickName");
+		messParam[1] = messageObj.getInt("idParty")+"";
+		
+		return messParam;
 	}
 }

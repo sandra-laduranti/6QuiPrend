@@ -22,7 +22,6 @@ public class JSONEncode {
 			JSONObject flag = new JSONObject();
 			JSONArray  arr = new JSONArray();
 			
-			/* TODO: rajouter promod? */
 			flag.put("nomFlag", "flagtrululu");
 			for(Partie partie : liste){
 				JSONObject tmp = new JSONObject();
@@ -81,5 +80,16 @@ public class JSONEncode {
 			return flag.toString();
 			
 		}
+		
+		public static String encodeJoinParty(String nickName, int idParty){
+			JSONObject flag = new JSONObject();
+			
+			flag.put("nomFlag", Flag.REJOINDRE_PARTIE);
+			flag.put("nickName", nickName);
+			flag.put("idParty", idParty);
+			
+			return flag.toString();
+		}
+
 
 }
