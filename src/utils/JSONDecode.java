@@ -38,7 +38,7 @@ public class JSONDecode {
 			for (String nickName : tokens) {
 				// TODO usersList.add(new User(nickName, "", ""));
 			}
-			liste.add(new Partie(id, nom, nbJoueur, isPromode, usersList));
+		//	liste.add(new Partie(id, nom, nbJoueur, isPromode, usersList)); //TODO: corriger avec String
 		}
 		
 		return liste;

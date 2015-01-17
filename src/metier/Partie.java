@@ -27,7 +27,7 @@ public class Partie extends Thread implements Serializable{
 	private transient boolean isPlayerReach66=false;
 	private transient boolean isInGame;
 
-	public Partie(String nom, int nbJoueurs, boolean isProMode, User user){
+	public Partie(String nom, int nbJoueurs, boolean isProMode, String userNickname){
 		this.listCard=new ArrayList<Carte>();
 		this.nbJoueursMax = nbJoueurs;
 		this.isProMode = isProMode;
@@ -36,12 +36,12 @@ public class Partie extends Thread implements Serializable{
 		isInGame = false;
 		comptes = new HashMap<String, List<Carte>>();
 		map = new HashMap<String, Integer>();
-		comptes.put(user.getUserNickname(), new ArrayList<Carte>());
-		map.put(user.getUserNickname(), 0);
+		comptes.put(userNickname, new ArrayList<Carte>());
+		map.put(userNickname, 0);
 	}
 
 	// Utilisé uniquement par la socket pour afficher les informations utiles à l'affichage (tout n'étant pas nécessaire)
-	public Partie(int id, String nom, int nbJoueurs, boolean isProMode, List<User> users){
+	public Partie(int id, String nom, int nbJoueurs, boolean isProMode, List<String> userNicknames){
 		this.listCard=new ArrayList<Carte>();
 		this.nbJoueursMax = nbJoueurs;
 		this.isProMode = isProMode;
@@ -49,8 +49,8 @@ public class Partie extends Thread implements Serializable{
 		this.id = id;
 		isInGame = false;
 		comptes = new HashMap<String, List<Carte>>();
-		for(User user : users){
-			comptes.put(user.getUserNickname(), new ArrayList<Carte>());
+		for(String userNickname : userNicknames){
+			comptes.put(userNickname, new ArrayList<Carte>());
 		}
 	}
 
@@ -325,3 +325,4 @@ public class Partie extends Thread implements Serializable{
 		}
 	}
 }
+
