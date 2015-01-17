@@ -31,10 +31,10 @@ public class JSONEncode {
 				tmp.put("nom", partie.getNom());
 				tmp.put("nbJoueur", partie.getNbJoueursMax());
 				tmp.put("isPromode", partie.isProMode() );
-				List<User> users = partie.getListUser();
+				List<String> users = partie.getListUser();
 				JSONArray arrUser = new JSONArray();
-				for(User user : users){
-					usersBuff.append(":" + user.getUserNickname());
+				for(String user : users){
+					usersBuff.append(":" + user);
 				}
 				tmp.put("users", usersBuff.toString());
 				arr.put(tmp);

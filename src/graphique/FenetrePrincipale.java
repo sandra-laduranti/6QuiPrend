@@ -374,7 +374,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
     	container_all_parties.setBorder(new EmptyBorder(20,20,50,20));
     	container_all_parties.setOpaque(false);
     	
-    	List<User> users;
+    	List<String> users;
     	for(int x=0; x<12;x++)
     	for(int i=0; i<parties.size(); i++){ // On créer un carré par parties
     		users = parties.get(i).getListUser();
@@ -385,7 +385,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 			JPanel infos = new JPanel(new GridLayout(users.size(),1));
 				
 			for (int j=0; j<users.size(); j++){
-				JLabel joueur = new JLabel(" - "+users.get(j).getUserNickname());
+				JLabel joueur = new JLabel(" - "+users.get(j));
 				infos.add(joueur);
 			}
 			
@@ -394,8 +394,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
     			JButton bouton_rejoindre = new JButton("Rejoindre");
     			
     			bouton_rejoindre.setName(parties.get(i).getNom()+"::"+parties.get(i).getNbJoueursMax());
-    			for(User user : parties.get(i).getListUser()){
-    				bouton_rejoindre.setName(bouton_rejoindre.getName()+"::"+user.getUserNickname());
+    			for(String user : parties.get(i).getListUser()){
+    				bouton_rejoindre.setName(bouton_rejoindre.getName()+"::"+user);
     			}
     			
     			bouton_rejoindre.addActionListener(new ActionListener() {

@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
 
+import metier.Carte;
 import communication.User;
 
 public class Partie extends Thread implements Serializable{
@@ -16,7 +18,8 @@ public class Partie extends Thread implements Serializable{
 	private transient List<Carte> listCard;
 	private static int id=0;
 	// HashMap contient la clé du joueur ainsi que la liste de ses cartes actuels
-	private transient HashMap<User, List<Carte>> comptes;
+	private transient HashMap<String, List<Carte>> comptes;
+	private HashMap<String, Integer> map;
 	private int nbJoueursMax;
 	private boolean isProMode;
 	private transient List<List<Carte>> rows;
@@ -31,8 +34,10 @@ public class Partie extends Thread implements Serializable{
 		this.nom = nom;
 		id++;
 		isInGame = false;
-		comptes = new HashMap<User, List<Carte>>();
-		comptes.put(user, new ArrayList<Carte>());
+		comptes = new HashMap<String, List<Carte>>();
+		map = new HashMap<String, Integer>();
+		comptes.put(user.getUserNickname(), new ArrayList<Carte>());
+		map.put(user.getUserNickname(), 0);
 	}
 
 	// Utilisé uniquement par la socket pour afficher les informations utiles à l'affichage (tout n'étant pas nécessaire)
@@ -43,9 +48,9 @@ public class Partie extends Thread implements Serializable{
 		this.nom = nom;
 		this.id = id;
 		isInGame = false;
-		comptes = new HashMap<User, List<Carte>>();
+		comptes = new HashMap<String, List<Carte>>();
 		for(User user : users){
-			comptes.put(user, new ArrayList<Carte>());
+			comptes.put(user.getUserNickname(), new ArrayList<Carte>());
 		}
 	}
 
@@ -58,20 +63,20 @@ public class Partie extends Thread implements Serializable{
 		isInGame = true;
 		int cptRound = 1;
 		while(!isPlayerReach66){
-			initializeRound(isPlayerReach66);
+			initializeRound();
 			currentBeefAllPlayers();
 			System.out.println("Fin de la manche "+cptRound);
 			cptRound++;
 		}
 		//TODO : Revoir l'algo dans le cas ou y'a un egalite
-		List<User> listWinnerAndLoser = GestionPartie.getWinnerAndLoser(getListUser());
-		for(User user : getListUser()){
+		List<String> listWinnerAndLoser = GestionPartie.getWinnerAndLoser(getListUser());
+		for(String user : getListUser()){
 			if(user.equals(listWinnerAndLoser.get(0))){
-				System.out.println(user.getUserNickname()+" (Winner) -> "+user.getCurrentBeef()+ " tete de boeufs");
+				System.out.println(user+" (Winner) -> "+user+ " tete de boeufs");
 			} else if (user.equals(listWinnerAndLoser.get(1))){
-				System.out.println(user.getUserNickname()+" (Loser) -> "+user.getCurrentBeef()+ " tete de boeufs");
+				System.out.println(user+" (Loser) -> "+user+ " tete de boeufs");
 			} else {
-				System.out.println(user.getUserNickname()+" -> "+user.getCurrentBeef()+" tete de boeufs");
+				System.out.println(user+" -> "+user+" tete de boeufs");
 
 			}
 		}
@@ -82,14 +87,15 @@ public class Partie extends Thread implements Serializable{
 	/*
 	 * TODO  : Ajout des println et d'un Scanner pour la saisie sur console
 	 */
-	private void initializeRound(boolean isPlayerReach66){
+	private void initializeRound(){
 		this.listCard = GestionPartie.initializeDeck(nbJoueursMax, isProMode);
 		initializeRows();
-		User user = null;
+		String user = null;
 		// On distribue les cartes pour chaque joueur
 		List<Carte> playerCards=new ArrayList<Carte>();
 		for(int i = 0; i<nbJoueursMax; i++){				// Ajout des system.out.println()
 			playerCards =  GestionPartie.disturb(listCard);
+			System.out.println(getListUser().get(i));
 			user=getListUser().get(i);
 			comptes.put(user, playerCards);
 
@@ -115,7 +121,7 @@ public class Partie extends Thread implements Serializable{
 				Scanner sc=new Scanner(System.in);
 				int j=0;
 				//Affiche la liste des cartes du joueur
-				System.out.print(getListUser().get(i).getUserNickname()+" : [ ");
+				System.out.print(getListUser().get(i)+" : [ ");
 				while(j<=comptes.get(getListUser().get(i)).size()-1){
 					System.out.print(comptes.get(getListUser().get(i)).get(j).getValue()+"  ");
 					j++;
@@ -123,7 +129,7 @@ public class Partie extends Thread implements Serializable{
 				System.out.println("]");
 
 
-				System.out.println("Au tour de " + getListUser().get(i).getUserNickname()+" : ");
+				System.out.println("Au tour de " + getListUser().get(i)+" : ");
 				valueCard = GestionPartie.selectValueCardToPlay();
 				boolean saisieCard = false;
 				while(!saisieCard){
@@ -175,12 +181,12 @@ public class Partie extends Thread implements Serializable{
 				int indexCardChoosen = selectedCardByPlayer.indexOf(cardToPlace);
 
 				if(GestionPartie.isPlusPetit(cardToPlace, fourLastCardRows)){
-					User userGetRow  = getListUser().get(indexCardChoosen);
+					String userGetRow  = getListUser().get(indexCardChoosen);
 					System.out.println("Votre carte ne peut pas être placé");
-					System.out.println(userGetRow.getUserNickname()+" : Vous devez choisir la rangé a prendre entre 1 et 4");
+					System.out.println(userGetRow+" : Vous devez choisir la rangé a prendre entre 1 et 4");
 					int selectRowCollect = GestionPartie.getRowToCollect();
 
-					
+
 					while(!(selectRowCollect>0 && selectRowCollect<5)){
 						System.out.println("Saisie entre 1 et 4 !!!!");
 						selectRowCollect = GestionPartie.getRowToCollect();
@@ -190,7 +196,7 @@ public class Partie extends Thread implements Serializable{
 					attributeBeef(selectRowCollect-1, cardToPlace, selectedCardByPlayer, userGetRow);
 					fourLastCardRows = GestionPartie.getLastCardRows(rows);
 				} else if (rows.get(GestionPartie.selectRow(cardToPlace, fourLastCardRows)).size()==5){
-					User userGetRow  = getListUser().get(indexCardChoosen);
+					String userGetRow  = getListUser().get(indexCardChoosen);
 					// Si le joueur place la 6eme carte alors il prend la rangée
 					selectRow = GestionPartie.selectRow(cardToPlace, fourLastCardRows);
 					System.out.println("Vous avez placé la 6ème carte de la rangée "+selectRow);
@@ -206,14 +212,14 @@ public class Partie extends Thread implements Serializable{
 		}
 	}
 
-	public List<User> getListUser(){
-		Set<User> users = comptes.keySet();
-		List<User> listUser = new ArrayList<User>();
-		for(User user : users){
-			listUser.add(user);
+	public List<String> getListUser(){
+		Set<String> users = comptes.keySet();
+		List<String> listUserName = new ArrayList<String>();
+		for(String name : users){
+			listUserName.add(name);
 		}
 
-		return listUser;
+		return listUserName;
 	}
 
 	public int getNbJoueursMax() {
@@ -222,7 +228,9 @@ public class Partie extends Thread implements Serializable{
 
 	public boolean addPlayer(User user){
 		if(getListUser().size() < getNbJoueursMax()){
-			comptes.put(user, new ArrayList<Carte>());
+			comptes.put(user.getUserNickname(), new ArrayList<Carte>());
+			map.put(user.getUserNickname(), 0);
+			comptes.put(user.getUserNickname(), new ArrayList<Carte>());
 			return true;
 		}else{
 			return false;
@@ -252,10 +260,14 @@ public class Partie extends Thread implements Serializable{
 		return rows;
 	}
 
-	public HashMap<User, List<Carte>> getPlayers(){
+	public HashMap<String, List<Carte>> getPComptes(){
 		return this.comptes;
 	}
-
+	
+	public HashMap<String, Integer> getMap(){
+		return this.map;
+	}
+	
 	public int getIdPartie(){
 		return id;
 	}
@@ -264,14 +276,21 @@ public class Partie extends Thread implements Serializable{
 		return isInGame;
 	}
 
-	private void attributeBeef(int indexRow, Carte card, List<Carte> selectedCardByPlayer, User userGetRow){
+	private void attributeBeef(int indexRow, Carte card, List<Carte> selectedCardByPlayer, String userGetRow){
 		int nbBeef = GestionPartie.countBeef(rows.get(indexRow));
+		int nbMapbeef = 0;
+		String name="";
+//		System.out.println("*********** Test de la map : "+map.values().size());
+		for (Entry<String, Integer> entry : map.entrySet()) {
+			name=entry.getKey();
+			if(name.equals(userGetRow)){
+				nbMapbeef=entry.getValue()+nbBeef;
+				entry.setValue(nbMapbeef);
+				System.out.println(userGetRow+ " a maintenant :  "+entry.getValue()+ " tete de boeufs");
+			}
+		}
 
-		userGetRow.setCurrentBeef(userGetRow.getCurrentBeef()+nbBeef);
-
-		System.out.println(userGetRow.getUserNickname()+ " a maintenant "+userGetRow.getCurrentBeef()+ " tete de boeufs");
-
-		if(userGetRow.getCurrentBeef()>=66){
+		if(nbMapbeef>=66){
 			isPlayerReach66 = true;
 		}
 
@@ -301,9 +320,8 @@ public class Partie extends Thread implements Serializable{
 	}
 
 	private void currentBeefAllPlayers(){
-		for(User user : getListUser()){
-			System.out.println(user.getUserNickname()+" -> "+user.getCurrentBeef()+" tete de boeufs");
+		for (Entry<String, Integer> entry : map.entrySet()) {
+			System.out.println(entry.getKey() + " -> " + entry.getValue()) ;
 		}
 	}
-
 }

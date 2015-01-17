@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
+import metier.Carte;
 import communication.User;
 
 public class GestionPartie {
@@ -129,8 +130,8 @@ public class GestionPartie {
 	 * @param users
 	 * @return gagnant position 0 et perdant position 1
 	 */
-	public static List<User> getWinnerAndLoser(List<User> users){
-		List<User> winnerLoserList = new ArrayList<User>();
+	public static List<String> getWinnerAndLoser(List<String> users){
+		List<String> winnerLoserList = new ArrayList<String>();
 		Collections.sort(users);
 		winnerLoserList.add(users.get(0));
 		winnerLoserList.add(users.get(users.size()-1));
