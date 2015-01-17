@@ -52,7 +52,7 @@ public class Serveur extends WebSocketServer {
 		return INSTANCE;
 	}
 	
-	public void 
+	
 
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
