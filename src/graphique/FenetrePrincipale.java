@@ -55,10 +55,18 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	private static final String texte_creerPartie = "Creer une nouvelle partie";
 	private FenetrePrincipale context;
 	private JMenuBar menuBar;;
+	
 	private JMenu menu;
 	private JMenuItem item_connexion; // Apparait si non connecté
 	private JMenuItem item_deconnexion; // Apparait si connecté
 	private JMenuItem item_exit;
+	
+	private JMenu menu_test;
+	private JMenuItem item_choix_carte;
+	private JMenuItem item_choix_ligne;
+	private JMenuItem item_gagnant;
+	private JMenuItem item_perdant;
+	private JMenuItem item_tete_boeuf;
 	
 	// Connexion
 	private JButton bouton_connexion;
@@ -102,6 +110,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	    
 	    //On initialise nos menus     
 		menuBar = new JMenuBar();
+		
 		menu = new JMenu("Menu");
 		item_connexion = new JMenuItem(texte_connexion); // Apparait si non connecté
 		item_deconnexion = new JMenuItem(texte_deconnexion); // Apparait si connecté
@@ -115,6 +124,29 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	    item_exit.addActionListener(this);
 	    
 	    menuBar.add(menu);
+	    
+	    ///////// Menu pour les tests
+	    item_choix_carte = new JMenuItem("Choix carte"); 
+		item_choix_ligne = new JMenuItem("Choix ligne");
+		item_tete_boeuf = new JMenuItem("Tetes de boeufs");
+		item_gagnant = new JMenuItem("Gagnant");
+		item_perdant = new JMenuItem("Perdant");
+		
+	    menu_test = new JMenu("Tests");
+	    menu_test.add(item_choix_carte);
+	    menu_test.add(item_choix_ligne);
+	    menu_test.add(item_tete_boeuf);
+	    menu_test.add(item_gagnant);
+	    menu_test.add(item_perdant);
+	    menuBar.add(menu_test);
+	    
+	    item_choix_carte.addActionListener(this);
+	    item_choix_ligne.addActionListener(this);
+	    item_tete_boeuf.addActionListener(this);
+	    item_gagnant.addActionListener(this);
+	    item_perdant.addActionListener(this);
+	    ///////// Fin menu pour tests
+	    
 	    this.setJMenuBar(menuBar);
 	    
 	    // On créé nos boutons et ajoutons les listeners
@@ -149,133 +181,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	    log_client.add("Application lancée :)");
 	    this.initWaitLayer();
 	}
-
-	private void initWaitLayer() {
-		layerUI = new WaitLayerUI();
-		frame_wait = new JFrame();
-		
-		frame_wait.setIconImage(null);
-		frame_wait.setLocationRelativeTo(null);
-		JPanel panel = new JPanel() {
-
-            /**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			@Override
-            public Dimension getPreferredSize() {
-                return new Dimension(300, 200);
-            }
-        };
-        panel.setOpaque(false);
-        panel.setLayout(new BorderLayout());
-        panel.add(new JLabel("En attente de réponse du serveur ..."), BorderLayout.CENTER);
-        panel.setBorder(new EmptyBorder(0,60,0,0));
-        JLayer<JPanel> jlayer = new JLayer<>(panel, layerUI);
-        frame_wait.setUndecorated(true);
-        frame_wait.add(jlayer);
-        frame_wait.pack();
-        
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// Si c'est une connexion
-	if(e.getSource().equals(item_deconnexion)){
-			this.soumettreCarte();
-		} else 	if(e.getSource().equals(item_exit)){
-			this.soumettreLigne();
-		} else 	if(e.getActionCommand().equals(item_connexion.getText()) || e.getActionCommand().equals(bouton_connexion.getText())){
-			//Pour les tests, commenter les 3 lignes suivantes et laisser décommenté la 4 eme ligne
-			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
-			fenetreconnexion.setVisible(true);
-			if(fenetreconnexion.isSucceeded()){
-//			if(true){
-				synchronized (sync) {
-					sync.notify();
-				}
-		    	is_connected=true; // Flag
-		    	
-				// Réorganisation des menus
-				this.menu.remove(item_connexion); // Si la connexion à réussie, on l'enlève du menu
-				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
-				
-				log_client.add("Connecté !");
-				//// A DECOMMENTER
-				this.setNomUser("Julien");
-				this.setIdUser(5);
-				
-				this.modifierInterfaceAfterConnexion();
-				
-	        } else {
-	        	is_connected=false;
-	        	log_client.add("Connexion échouée");
-	        }
-	    
-	    // Si c'est une déconnexion
-		} else if (e.getActionCommand().equals(item_deconnexion.getText()) || e.getActionCommand().equals(bouton_deconnexion.getText())){
-			
-			int choix = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir vous déconnecter ?", "Deconnexion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-    		if(choix == JOptionPane.OK_OPTION){
-
-    			this.menu.remove(item_deconnexion); // Si la deconnexion à réussie, on l'enlève du menu
-    			this.menu.add(item_connexion,0);
-    			
-    			ecrangauche.removeAll();
-    			URL url_tmp = getClass().getResource("/images/fond 6QuiPrend.png");
-    	        if(url_tmp!=null) ecrangauche.setImage(new ImageIcon(url_tmp).getImage());
-    	        
-    			this.remove(panneau);
-    			panneau = new PanneauBordure(context, bouton_connexion,bouton_inscription);
-    			url_tmp = getClass().getResource("/images/fonddroite.jpg");
-    	        if(url_tmp!=null) panneau.setImage(new ImageIcon(url_tmp).getImage());
-    	        this.add(panneau, BorderLayout.EAST);
-    			context.revalidate(); // A mettre toujours avant repaint
-    			context.repaint(); // Mise à jour de la fenetre, a faire souvent lorsque changement
-			
-				log_client.add("Déconnecté :(");
-    		}
-		} else if (e.getActionCommand().equals(bouton_inscription.getText())){
-			FenetreInscription fenetreinscription = new FenetreInscription(context);
-			fenetreinscription.setVisible(true);
-			if(fenetreinscription.isSucceeded()){
-				synchronized (sync) {
-					sync.notify();
-				}
-		    	is_connected=true; // Flag pouvant servir plus tard
-		    	
-				// Réorganisation des menus
-				this.menu.remove(item_connexion); // Si la connexion à réussie, on l'enlève du menu
-				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
-				
-				log_client.add("Inscription réussie");
-				this.modifierInterfaceAfterConnexion();
-	        } else {
-	        	is_connected=false;
-	        	log_client.add("Inscription échouée");
-	        }
-		}
-		this.revalidate();
-		this.repaint();
-	}
-	
-	public boolean isConnected() {
-		return is_connected;
-	}
-	
-	public PanneauBordure getPanneauBordure(){
-		return panneau;
-	}
-	
-	public EcranGauche getEcranGauche(){
-		return ecrangauche;
-	}
-	
-	public JButton getBoutonDeconnexion(){
-		return bouton_deconnexion;
-	}
-	
 
 	
 	/// Changement d'interfaces
@@ -348,8 +253,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		context.afficherToutesLesParties(parties);
 		
 	}
-	
-	
 	
 	public void afficherToutesLesParties(List<Partie> parties){
 		
@@ -495,6 +398,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		ecrangauche.removeAll();
 		ecrangauche.setLayout(new GridLayout(6,1));
 		
+		panneau.removeAll();
+		panneau.add(this.containerInfoDuringPartie(0));
 //////////// POUR LES TESTS, ON CREE DE FAUSSES CARTES
 		List<ArrayList<Carte>> lignes_cartes = new ArrayList<ArrayList<Carte>>();
 		for(int i = 0; i<4; i++){
@@ -584,7 +489,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 			});
 		
 			JPanel container_ligne = new JPanel(new GridLayout(0,2,25,15));
-			container_ligne.setBorder(new EmptyBorder(0,1,0,0));
 			container_ligne.setOpaque(false);
 			container_ligne.add(ligne);
 			container_ligne.add(tasvide);
@@ -627,11 +531,20 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 
 		JPanel container_main = new JPanel(new GridLayout(0,1,0,0));
 		container_main.setOpaque(false);
-		container_main.setBorder(new EmptyBorder(0,150,5,0));
+		container_main.setBorder(new EmptyBorder(0,3,5,0));
 		
 		JPanel main = new JPanel();
-		main.setLayout(new GridLayout(0,10));
+		main.setLayout(new GridLayout(0,11));
 		main.setOpaque(false);
+		
+		JPanel container_text = new JPanel(new BorderLayout());
+		container_text.setOpaque(false);
+		JLabel text = new JLabel("<html><h2><font color='black'><b>Votre main :</b></font></h2></html>");
+		text.setBorder(new LineBorder(Color.BLACK,1));
+		text.setOpaque(false);
+		container_text.add(text, BorderLayout.WEST);
+		main.add(container_text);
+
 		for(Carte oneCard : cartes){
 			
 			int width = oneCard.getImageIcon().getIconWidth();
@@ -670,6 +583,46 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		ecrangauche.add(espace);
 		ecrangauche.add(container_main);
 	}
+	
+	/**
+	 * affiche un popup avec le/les gagnant(s)
+	 * @param liste_nom
+	 */
+	public void afficheGagnant(String ... liste_nom){
+		if(liste_nom.length>1){
+			String noms_concat = "";
+			for(String nom : liste_nom){
+				noms_concat+= "-  "+nom+"\n";
+			}
+			JOptionPane.showMessageDialog(this,
+	                "Les gagnants sont : \n"+noms_concat,
+	                "Bravo", 
+	                JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(this,
+	                "Le gagnant est "+liste_nom[0]+" !!",
+	                "Bravo", 
+	                JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+	
+	/**
+	 * affiche un popup avec le perdant
+	 * @param nom
+	 */
+	public void affichePerdant(String nom){
+		if(nom.equals(this.getNomUser())){
+			JOptionPane.showMessageDialog(this,
+	                "Vous avez perdu !!\n Vous êtes vraiment null ...",
+	                "Pfff, j'vous dit pas bravo ...", 
+	                JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(this,
+	                "Le perdant est "+nom+". \nVous avez le droit de le huer \net de vous moquer de lui !",
+	                "Vous avez de la chance ...", 
+	                JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
 
 	
 	
@@ -700,6 +653,51 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		this.user.setUser(idUser,nomUser);
 	}
 	
+	private void initWaitLayer() {  // Le popup d'attente
+		layerUI = new WaitLayerUI();
+		frame_wait = new JFrame();
+		
+		frame_wait.setIconImage(null);
+		frame_wait.setLocationRelativeTo(null);
+		JPanel panel = new JPanel() {
+
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
+			@Override
+            public Dimension getPreferredSize() {
+                return new Dimension(300, 200);
+            }
+        };
+        panel.setOpaque(false);
+        panel.setLayout(new BorderLayout());
+        panel.add(new JLabel("En attente de réponse du serveur ..."), BorderLayout.CENTER);
+        panel.setBorder(new EmptyBorder(0,60,0,0));
+        JLayer<JPanel> jlayer = new JLayer<>(panel, layerUI);
+        frame_wait.setUndecorated(true);
+        frame_wait.add(jlayer);
+        frame_wait.pack();
+        
+	}
+
+	public boolean isConnected() {
+		return is_connected;
+	}
+	
+	public PanneauBordure getPanneauBordure(){
+		return panneau;
+	}
+	
+	public EcranGauche getEcranGauche(){
+		return ecrangauche;
+	}
+	
+	public JButton getBoutonDeconnexion(){
+		return bouton_deconnexion;
+	}
+	
 	private JPanel initContainerInfo() {
 		JPanel container_infos = new JPanel();
 		container_infos.setBorder(new EmptyBorder(20,15,0,20));
@@ -713,10 +711,123 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	        		this.getNomUser()+"<br><br><br>Nombre de parties gagnées: "+0/*user.getNb_parties_gagnees()*/+"<br><br>Nombre de parties perdues : "+0/*user.getNb_parties_perdues()*/+"<br><br></font></html>");
 	    
 	        infos.add(texte,BorderLayout.NORTH); // texte en blanc
-	        infos.add(bouton_deconnexion).setVisible(true);
 		    infos.add(bouton_deconnexion,BorderLayout.SOUTH);
 	    container_infos.add(infos);
 	    return container_infos;
+	}
+	
+	private JPanel containerInfoDuringPartie(int nbTetesBoeuf) {
+		JPanel container_infos = new JPanel();
+		container_infos.setBorder(new EmptyBorder(20,15,0,20));
+	    container_infos.setOpaque(false);
+	    
+	        JPanel infos = new JPanel(new BorderLayout(10,15));
+		    infos.setOpaque(false);
+		    
+	        JLabel texte;
+	        texte = new JLabel("<html><font color='black'><u>Compte</u> : "+this.getNomUser()+"<br><br>Nombre de têtes de boeuf <br>actuel : <h1><b><font color='red'>"+nbTetesBoeuf+"</b></font></h1></font></html>");
+	    
+	        infos.add(texte,BorderLayout.NORTH); // texte en blanc
+	    container_infos.add(infos);
+	    return container_infos;
+	}
+	
+	
+	/////////// LES ACTIONS DES BOUTONS (Listeners) //////////////
+	@Override
+	public void actionPerformed(ActionEvent e) {
+
+		if(e.getActionCommand().equals(item_connexion.getText()) || e.getActionCommand().equals(bouton_connexion.getText())){
+			//Pour les tests, commenter les 3 lignes suivantes et laisser décommenté la 4 eme ligne
+			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
+			fenetreconnexion.setVisible(true);
+			if(fenetreconnexion.isSucceeded()){
+//			if(true){
+				synchronized (sync) {
+					sync.notify();
+				}
+		    	is_connected=true; // Flag
+		    	
+				// Réorganisation des menus
+				this.menu.remove(item_connexion); // Si la connexion à réussie, on l'enlève du menu
+				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
+				
+				log_client.add("Connecté !");
+				//// A DECOMMENTER
+				this.setNomUser("Julien");
+				this.setIdUser(5);
+				
+				this.modifierInterfaceAfterConnexion();
+				
+	        } else {
+	        	is_connected=false;
+	        	log_client.add("Connexion échouée");
+	        }
+	    
+	    // Si c'est une déconnexion
+		} else if (e.getActionCommand().equals(item_deconnexion.getText()) || e.getActionCommand().equals(bouton_deconnexion.getText())){
+			
+			int choix = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir vous déconnecter ?", "Deconnexion", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    		if(choix == JOptionPane.OK_OPTION){
+
+    			this.menu.remove(item_deconnexion); // Si la deconnexion à réussie, on l'enlève du menu
+    			this.menu.add(item_connexion,0);
+    			
+    			ecrangauche.removeAll();
+    			URL url_tmp = getClass().getResource("/images/fond 6QuiPrend.png");
+    	        if(url_tmp!=null) ecrangauche.setImage(new ImageIcon(url_tmp).getImage());
+    	        
+    			this.remove(panneau);
+    			panneau = new PanneauBordure(context, bouton_connexion,bouton_inscription);
+    			url_tmp = getClass().getResource("/images/fonddroite.jpg");
+    	        if(url_tmp!=null) panneau.setImage(new ImageIcon(url_tmp).getImage());
+    	        this.add(panneau, BorderLayout.EAST);
+    			context.revalidate(); // A mettre toujours avant repaint
+    			context.repaint(); // Mise à jour de la fenetre, a faire souvent lorsque changement
+			
+				log_client.add("Déconnecté :(");
+    		}
+		} else if (e.getActionCommand().equals(bouton_inscription.getText())){
+			FenetreInscription fenetreinscription = new FenetreInscription(context);
+			fenetreinscription.setVisible(true);
+			if(fenetreinscription.isSucceeded()){
+				synchronized (sync) {
+					sync.notify();
+				}
+		    	is_connected=true; // Flag pouvant servir plus tard
+		    	
+				// Réorganisation des menus
+				this.menu.remove(item_connexion); // Si la connexion à réussie, on l'enlève du menu
+				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
+				
+				log_client.add("Inscription réussie");
+				this.modifierInterfaceAfterConnexion();
+	        } else {
+	        	is_connected=false;
+	        	log_client.add("Inscription échouée");
+	        }
+		} else if (e.getActionCommand().equals(item_choix_carte.getText())){
+			this.soumettreCarte();
+		} else if (e.getActionCommand().equals(item_choix_ligne.getText())){
+			this.soumettreLigne();
+		} else if (e.getActionCommand().equals(item_gagnant.getText())){
+			this.afficheGagnant("Julien","Patrick");
+		} else if (e.getActionCommand().equals(item_perdant.getText())){
+			this.affichePerdant("Aniela");
+		} else if (e.getActionCommand().equals(item_tete_boeuf.getText())){	
+			panneau.remove(0);
+			panneau.add(this.containerInfoDuringPartie(15));
+			
+		} else if (e.getActionCommand().equals(item_exit.getText())){
+			int choix = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir quitter ?", "Quitter", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+    		if(choix == JOptionPane.OK_OPTION){
+    			System.exit(0);
+    		}
+			
+		}
+			
+		this.revalidate();
+		this.repaint();
 	}
 	
 	
