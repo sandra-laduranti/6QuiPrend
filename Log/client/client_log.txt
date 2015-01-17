@@ -10,3 +10,8 @@ Tue Jan 13 23:03:18 CET 2015 : Fermeture de l'application !
 Fri Jan 16 14:28:47 CET 2015 : Problème d'accès à la base distanteCommunications link failure
 
 The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+Fri Jan 16 22:33:10 CET 2015 : Application lancée :)
+Fri Jan 16 22:33:19 CET 2015 : Tentative d'inscription
+Fri Jan 16 22:33:35 CET 2015 : Connection à la base réussie
+Fri Jan 16 22:33:38 CET 2015 : Inscription échouée
+Fri Jan 16 22:48:01 CET 2015 : Application lancée :)

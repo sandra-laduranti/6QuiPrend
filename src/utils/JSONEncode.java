@@ -31,11 +31,11 @@ public class JSONEncode {
 				tmp.put("nom", partie.getNom());
 				tmp.put("nbJoueur", partie.getNbJoueursMax());
 				tmp.put("isPromode", partie.isProMode() );
-				List<String> users = partie.getListUser();
+				//List<User> users = partie.getListUser();
 				JSONArray arrUser = new JSONArray();
-				for(String user : users){
-					usersBuff.append(":" + user);
-				}
+				/*for(User user : users){
+					usersBuff.append(":" + user.getUserNickname());
+				}*/
 				tmp.put("users", usersBuff.toString());
 				arr.put(tmp);
 			}
@@ -60,28 +60,25 @@ public class JSONEncode {
 		      return flag;
 		}
 		
-		public static JSONObject encodeCreatePartie(String[] partie){
+		public static String encodeCreatePartie(String nom, int nbJoueurs, boolean isPromode, String userName){
 			JSONObject flag = new JSONObject();
-			JSONArray  arr = new JSONArray();
-			//(String nom, int nbJoueurs, boolean isProMode, User user)
+
 		      flag.put("nomFlag", Flag.CREATION_PARTIE);
-		      JSONObject tmp = new JSONObject();
-		      tmp.put("nom", partie[0]);
-		      tmp.put("nbJoueurs", partie[1]);
-		      tmp.put("isProMode", partie[2]);
-		      
-		      flag.put("arr", arr);
+		      flag.put("nom", nom);
+		      flag.put("nbJoueurs", nbJoueurs);
+		      flag.put("isPromode", isPromode);
+		      flag.put("userName", userName);
 	
-		      return flag;
+		      return flag.toString();
 		}
 		
-		public static JSONObject encodeConnect(int id){
+		public static String encodeConnect(String nickName){
 			JSONObject flag = new JSONObject();
 			
 			flag.put("nomFlag", Flag.ON_CONNECT);
-			flag.put("id", id);
+			flag.put("nickName", nickName);
 			
-			return flag;
+			return flag.toString();
 			
 		}
 

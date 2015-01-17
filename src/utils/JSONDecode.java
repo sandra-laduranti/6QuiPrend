@@ -8,6 +8,7 @@ import metier.Partie;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import communication.Flag;
 import communication.User;
 
 public class JSONDecode {
@@ -26,11 +27,8 @@ public class JSONDecode {
 		for (int i = 0; i < arr.getJSONArray(0).length(); i++) {
 			JSONObject objTMP =  arr.getJSONArray(0).getJSONObject(i);
 			int id = objTMP.getInt("id");
-			System.out.println("id :" + id);
 			String nom = objTMP.getString("nom");
-			System.out.println("nom :" + nom);
 			int nbJoueur = objTMP.getInt("nbJoueur");
-			System.out.println("nbJoueur :" + nbJoueur);
 			Boolean isPromode = objTMP.getBoolean("isPromode");
 			String users = objTMP.getString("users");
 			String delims = "[:]";
@@ -58,15 +56,28 @@ public class JSONDecode {
 		return liste;
 	}
 	
-	public static String[] decodeCreatePartie(String message){
-		
-		
+	public static Partie decodeCreatePartie(String message){
+	
+		JSONObject messageObj = new JSONObject(message);
+		String nom = messageObj.getString("nom");
+		int nbJoueurs = messageObj.getInt("nbJoueurs");
+		boolean isPromode = messageObj.getBoolean("isPromode");
+		String userName = messageObj.getString("userName");
+
+		//return new Partie(nom, nbJoueurs, isPromode, userName);
 		return null;
 	}
 	
-	public static int decodeConnect(String message){
+	public static String decodeConnect(String message){
 		JSONObject messageObj = new JSONObject(message);
-		int id = messageObj.getInt("id");
+		String name = messageObj.getString("nickName");
+		
+		return name;
+	}
+	
+	public static int decodeQuitParty(String message){
+		JSONObject messageObj = new JSONObject(message);
+		int id = messageObj.getInt("idPartie");
 		
 		return id;
 	}

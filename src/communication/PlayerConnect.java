@@ -12,6 +12,11 @@ public class PlayerConnect {
 		this.id = id;
 	}
 	
+	public PlayerConnect(WebSocket conn, String nickName){
+		this.conn = conn;
+		this.nickName = nickName;
+	}
+	
 	public WebSocket getWebSocket(){
 		return conn;
 	}
