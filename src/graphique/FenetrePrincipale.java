@@ -82,8 +82,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	// La fenetre d'attente
 	private JFrame frame_wait;
 	private WaitLayerUI layerUI;
-
-
+	
+	private boolean boolClickMain = false; // Permet d'ignorer ou non le click d'une carte
+	private boolean boolClickLigne = false;
 
 	public FenetrePrincipale(Object sync){
 		
@@ -111,15 +112,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	    
 	    item_connexion.addActionListener(this); // l'action du listener est définie plus bas (va différencier les connexions et déconnexions)
 	    item_deconnexion.addActionListener(this);
-	    item_exit.addActionListener(new ActionListener(){
-					public void actionPerformed(ActionEvent e) {
-//						int choix = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir quitter ?", "Quitter", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-//			    		if(choix == JOptionPane.OK_OPTION){
-//			    			context.dispatchEvent(new WindowEvent(context, WindowEvent.WINDOW_CLOSING)); // On ferme l'appli
-//			    		}
-						context.startPartie();
-                    }
-        });
+	    item_exit.addActionListener(this);
 	    
 	    menuBar.add(menu);
 	    this.setJMenuBar(menuBar);
@@ -189,12 +182,16 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// Si c'est une connexion
-		if(e.getActionCommand().equals(item_connexion.getText()) || e.getActionCommand().equals(bouton_connexion.getText())){
+	if(e.getSource().equals(item_deconnexion)){
+			this.soumettreCarte();
+		} else 	if(e.getSource().equals(item_exit)){
+			this.soumettreLigne();
+		} else 	if(e.getActionCommand().equals(item_connexion.getText()) || e.getActionCommand().equals(bouton_connexion.getText())){
 			//Pour les tests, commenter les 3 lignes suivantes et laisser décommenté la 4 eme ligne
-//			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
-//			fenetreconnexion.setVisible(true);
-//			if(fenetreconnexion.isSucceeded()){
-			if(true){
+			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
+			fenetreconnexion.setVisible(true);
+			if(fenetreconnexion.isSucceeded()){
+//			if(true){
 				synchronized (sync) {
 					sync.notify();
 				}
@@ -280,6 +277,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	}
 	
 
+	
 	/// Changement d'interfaces
 	private void modifierInterfaceAfterConnexion(){
 		
@@ -349,7 +347,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 					if(fenetrecreation.isSucceeded()){
 						log_client.add("Creation de la partie réussie");
 						context.afficheSalonAttente(fenetrecreation.getNamePartie(),fenetrecreation.getNbMaxJoueurs(), context.getNomUser() );
-//						client.creationPartie(fenetrecreation.getNamePartie(),fenetrecreation.getNbMaxJoueurs(),fenetrecreation.getProMode());
+//						user.creationPartie(fenetrecreation.getNamePartie(),fenetrecreation.getNbMaxJoueurs(),fenetrecreation.getProMode());
 			        } else {
 			        	log_client.add("Création de la partie échouée");
 			        } 
@@ -364,6 +362,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		context.afficherToutesLesParties(parties);
 		
 	}
+	
+	
 	
 	public void afficherToutesLesParties(List<Partie> parties){
 		
@@ -499,12 +499,17 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	
 	}
 	
-	// Une partie commence !
+/////////////////////////////////////////////////::
+//////// LA PARTIE
+	/**
+	 * Commence la partie
+	 */
 	public void startPartie(){
 		// AFFICHER MANCHE 1
 		ecrangauche.removeAll();
 		ecrangauche.setLayout(new GridLayout(6,1));
 		
+//////////// POUR LES TESTS, ON CREE DE FAUSSES CARTES
 		List<ArrayList<Carte>> lignes_cartes = new ArrayList<ArrayList<Carte>>();
 		for(int i = 0; i<4; i++){
 			lignes_cartes.add(new ArrayList<Carte>());
@@ -526,8 +531,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		context.repaint();
 	}
 	
-	
-	private void refreshLignes(List<ArrayList<Carte>> lignes_cartes) {
+	/**
+	 * Raffraichis l'affichage des lignes de cartes
+	 * @param lignes_cartes
+	 */
+	public void refreshLignes(List<ArrayList<Carte>> lignes_cartes) {
 		
 		for(int i=0; i<lignes_cartes.size(); i++){
 			
@@ -538,7 +546,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 			for(int j=0; j< lignes_cartes.get(i).size(); j++){
 				JLabel bouton = new JLabel();
 				if(j==0){
-					bouton.setBorder(new EmptyBorder(0,10,0,0));
+					bouton.setBorder(new EmptyBorder(0,10,0,20));
 				}
 				Carte c = lignes_cartes.get(i).get(j);
 				bouton.setIcon(new ImageIcon(c.getImageIcon().getImage().getScaledInstance(c.getImageIcon().getIconWidth()+8, 
@@ -549,35 +557,34 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 			}
 			JPanel tasvide = new JPanel();
 			tasvide.setOpaque(false);
-			JPanel container_ligne = new JPanel(new GridLayout(0,2,20,15));
-			container_ligne.setBorder(new EmptyBorder(0,1,0,0));
-			container_ligne.setOpaque(false);
-			container_ligne.add(ligne);
-			container_ligne.add(tasvide);
-			
-			ecrangauche.add(container_ligne);
-			
+
 			ligne.addMouseListener(new MouseListener() {
 				
 				@Override
 				public void mouseClicked(final MouseEvent e) {
-//					if(ligne.)
-//					((JPanel) e.getSource()).setEnabled(false);
-					System.out.println( ((JPanel)e.getSource()).getName());
-					((JPanel) e.getSource()).setBorder(new LineBorder(Color.RED,3));
-					ActionListener taskPerformer = new ActionListener() {
-					      public void actionPerformed(ActionEvent evt) {
-  /////						  Ligne à envoyer
-					    	  context.revalidate();
-					    	  context.repaint();
-					    	  ((JPanel) e.getSource()).setBackground(new Color(0,0,50,40));
-					    	  ((JPanel) e.getSource()).setBorder(new LineBorder(Color.BLACK, 2));
-					    	  ((Timer)evt.getSource()).stop();
-					    	  context.revalidate();
-					    	  context.repaint();
-					      }
-				    };
-					new Timer(1000, taskPerformer).start();
+					if(boolClickLigne){
+						boolClickLigne=false; // Pour n'autoriser qu'un seul clik
+						System.out.println( ((JPanel)e.getSource()).getName());
+						
+						((JPanel) e.getSource()).setBorder(new LineBorder(Color.RED,3));
+						((JPanel) e.getSource()).setBackground(new Color(0,0,50,40));
+						((JPanel) e.getSource()).repaint();
+						context.revalidate();
+			    	    context.repaint();
+						ActionListener taskPerformer = new ActionListener() {
+						      public void actionPerformed(ActionEvent evt) {
+	  /////						  TODO:  Ligne à envoyer au serveur
+						    	  context.revalidate();
+						    	  context.repaint();
+						    	  ((JPanel) e.getSource()).setBackground(new Color(0,0,50,40));
+						    	  ((JPanel) e.getSource()).setBorder(new LineBorder(Color.BLACK, 2));
+						    	  ((Timer)evt.getSource()).stop();
+						    	  context.revalidate();
+						    	  context.repaint();
+						      }
+					    };
+						new Timer(1000, taskPerformer).start();
+					}
 				}
 				@Override
 				public void mouseReleased(MouseEvent e) { }
@@ -589,20 +596,48 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 				public void mouseEntered(MouseEvent e) { }
 				
 			});
+		
+			JPanel container_ligne = new JPanel(new GridLayout(0,2,25,15));
+			container_ligne.setBorder(new EmptyBorder(0,1,0,0));
+			container_ligne.setOpaque(false);
+			container_ligne.add(ligne);
+			container_ligne.add(tasvide);
+			ecrangauche.add(container_ligne);
+			
+			context.revalidate();
+	  	  	context.repaint();
+		
 		}
-		
-		context.revalidate();
-  	  	context.repaint();
-		
 	}
 	
-	public int soumettreCarte(){
-		return 0;  
+	/**
+	 * Methode permettant d'envoyer une carte à la partie
+	 */
+	public void soumettreCarte(){  // Elle autorise l'envoie d'une carte à la partie (voir lignes ~ 650)
+		boolClickMain=true; 
+		JOptionPane.showMessageDialog(this,
+                "Vous devez choisir une carte",
+                "Carte", 
+                JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-//	public int soumettreLigne
+	/**
+	 * Methode permettant d'envoyer une ligne à la partie
+	 */
+	public void soumettreLigne(){   // Elle autorise l'envoie d'une ligne à la partie (voir lignes ~ 560)
+		boolClickLigne=true;
+		JOptionPane.showMessageDialog(this,
+                "Vous devez choisir une ligne",
+                "Ligne", 
+                JOptionPane.INFORMATION_MESSAGE);
+	}
 
-	private void distribMain(List<Carte> cartes) {
+	/**
+	 * Methode prenant en paramètre les cartes que la partie attribue au joueur
+	 * et les affiches
+	 * @param cartes
+	 */
+	public void distribMain(List<Carte> cartes) {
 
 		JPanel container_main = new JPanel(new GridLayout(0,1,0,0));
 		container_main.setOpaque(false);
@@ -623,17 +658,21 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 				
 				@Override
 				public void actionPerformed(final ActionEvent e) {
-					((JButton) e.getSource()).setBorder(new LineBorder(Color.RED,3));
-					
-					System.out.println(((JButton) e.getSource()).getName());
-					ActionListener taskPerformer = new ActionListener() {
-					      public void actionPerformed(ActionEvent evt) {
-					    	  // user.sendCarte( Integer.parseInt(((JButton) e.getSource()).getName()) );
-					    	  ((JButton) e.getSource()).setEnabled(false);
-					    	  ((JButton) e.getSource()).setBorder(new EmptyBorder(0, 0, 0, 0));
-					      }
-				    };
-					new Timer(1000, taskPerformer).start();
+					if(boolClickMain){
+						boolClickMain=false; // Pour n'autoriser qu'un seul click
+///						ENVOYER LE CLICK
+						((JButton) e.getSource()).setBorder(new LineBorder(Color.RED,3));
+						
+						System.out.println(((JButton) e.getSource()).getName());
+						ActionListener taskPerformer = new ActionListener() {
+						      public void actionPerformed(ActionEvent evt) {
+						    	  // user.sendCarte( Integer.parseInt(((JButton) e.getSource()).getName()) );
+						    	  ((JButton) e.getSource()).setEnabled(false);
+						    	  ((JButton) e.getSource()).setBorder(new EmptyBorder(0, 0, 0, 0));
+						      }
+					    };
+						new Timer(1000, taskPerformer).start();
+					}
 				}
 			});
 			main.add(bouton_main);
@@ -646,8 +685,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		ecrangauche.add(container_main);
 	}
 
-	///// Méthodes utiles
 	
+	
+	///// Méthodes utiles
 	public void isNotify(boolean debloqueur) {
 		this.debloqueur = debloqueur;
 	}
