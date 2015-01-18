@@ -133,8 +133,6 @@ public class GestionPartie {
 	public static List<String> getWinnerAndLoser(List<String> users){
 		List<String> winnerLoserList = new ArrayList<String>();
 		Collections.sort(users);
-		winnerLoserList.add(users.get(0));
-		winnerLoserList.add(users.get(users.size()-1));
 		return winnerLoserList;
 	}
 
