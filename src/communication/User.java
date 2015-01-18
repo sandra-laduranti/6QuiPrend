@@ -38,7 +38,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 	private String userPassword;
 
 	private int currentBeef;
-	
+
 	private boolean isConsole = true;
 
 	public User(URI serverUri, Draft draft) {
@@ -57,10 +57,10 @@ public class User extends WebSocketClient implements Comparable<User> {
 		// onWebsocketHandshakeReceivedAsClient
 	}
 
-	public void setConsole(boolean isConsole){
+	public void setConsole(boolean isConsole) {
 		this.isConsole = isConsole;
 	}
-	
+
 	public int getUserId() {
 		return this.userId;
 	}
@@ -96,72 +96,75 @@ public class User extends WebSocketClient implements Comparable<User> {
 			return 0;
 		}
 	}
-	
-	public void refreshListPartie(){
+
+	public void refreshListPartie() {
 		JSONObject flag = new JSONObject();
 		flag.put("nomFlag", Flag.REFRESH_LIST_PARTIES);
 		flag.put("nickName", userNickname);
 		send(flag.toString());
 	}
-	
-	//voir comment faire pour que l'ui recup l'info? Synchronize? appeler une méthode de l'ui?
-	public void recupListPartie(String message){
-		ArrayList<Partie> parties = JSONDecode.decodeRefreshListePartie(message);
+
+	// voir comment faire pour que l'ui recup l'info? Synchronize? appeler une
+	// méthode de l'ui?
+	public void recupListPartie(String message) {
+		ArrayList<Partie> parties = JSONDecode
+				.decodeRefreshListePartie(message);
 	}
 
 	// donne la liste des cartes et send celle choisie
 	// le nombre d'essai est limité à 5 pour ne pas faire attendre indéfiniment
 	// les autres joueurs
-	// ! premier element de la liste est l'id de la partie ! 
+	// ! premier element de la liste est l'id de la partie !
 	public void chooseCard(ArrayList<Integer> cards) {
 		int cardValue = 0;
 		int idParty = cards.get(0);
 		cards.remove(0);
 		Scanner sysin = new Scanner(System.in);
-		
+
 		System.out.print("[ ");
-		for(Integer c:cards){
-			System.out.print("("+c+")");
+		for (Integer c : cards) {
+			System.out.print("(" + c + ")");
 		}
 		System.out.println(" ]");
-		
+
 		for (int i = 0; i < 5; i++) {
-			if (isConsole == true){
+			if (isConsole == true) {
 				cardValue = sysin.nextInt();
-			}
-			else{
-				//ICI DOIT RECUP LA VALEUR EN MODE UI
+			} else {
+				// ICI DOIT RECUP LA VALEUR EN MODE UI
 			}
 			if (cards.contains(cardValue)) {
 				System.out.println("Vous avez choisi la carte" + cardValue);
-				send(JSONEncode.encodeCarte(userNickname,cardValue, idParty));
+				send(JSONEncode.encodeCarte(userNickname, cardValue, idParty));
 				return;
-			}
-			else{
-				System.out.println("Erreur cette Carte n'existe pas dans votre main");
+			} else {
+				System.out
+						.println("Erreur cette Carte n'existe pas dans votre main");
 			}
 		}
 		cardValue = Collections.max(cards);
-		System.out.println("Vous vous êtes trompé de carte trop de fois! Nous choisissons la carte " + cardValue + " à votre place :D ");
-		send(JSONEncode.encodeCarte(userNickname,cardValue, idParty));
+		System.out
+				.println("Vous vous êtes trompé de carte trop de fois! Nous choisissons la carte "
+						+ cardValue + " à votre place :D ");
+		send(JSONEncode.encodeCarte(userNickname, cardValue, idParty));
 	}
-	
-	public void chooseLine(int idPartie){
+
+	public void chooseLine(int idPartie) {
 		Scanner sysin = new Scanner(System.in);
 		int row = 1;
-		System.out.println("Votre carte ne peut être placée \n Choisissez une rangée à prendre entre 1 et 4");
-		
-		while(true){
-			if(isConsole == true){
+		System.out
+				.println("Votre carte ne peut être placée \n Choisissez une rangée à prendre entre 1 et 4");
+
+		while (true) {
+			if (isConsole == true) {
 				row = sysin.nextInt();
+			} else {
+				// SI MODE UI RECUP ICI VALEUR
 			}
-			else{
-				//SI MODE UI RECUP ICI VALEUR
-			}
-			if (row < 1 || row > 4){
-				System.out.println("la ligne que vous avez choisi n'existe pas! Merci de rentrer une valeur entre 1 et 4");
-			}
-			else{
+			if (row < 1 || row > 4) {
+				System.out
+						.println("la ligne que vous avez choisi n'existe pas! Merci de rentrer une valeur entre 1 et 4");
+			} else {
 				send(JSONEncode.encodeSendRow(userNickname, idPartie, row));
 				return;
 			}
@@ -211,6 +214,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 
 	/**
 	 * Envoie au serveur la partie qui vient d'être crée, par le joueur nomUser
+	 * 
 	 * @param namePartie
 	 * @param nbMaxJoueurs
 	 * @param proMode
@@ -218,11 +222,13 @@ public class User extends WebSocketClient implements Comparable<User> {
 	 */
 	public void sendCreationPartie(String namePartie, int nbMaxJoueurs,
 			boolean proMode, String nomUser) {
-		send(JSONEncode.encodeCreatePartie(namePartie, nbMaxJoueurs, proMode, nomUser));
+		send(JSONEncode.encodeCreatePartie(namePartie, nbMaxJoueurs, proMode,
+				nomUser));
 	}
 
 	/**
 	 * Demande au serveur si il peut rejoindre la partie
+	 * 
 	 * @param nomUser
 	 * @param parseInt
 	 */
@@ -230,68 +236,76 @@ public class User extends WebSocketClient implements Comparable<User> {
 		send(JSONEncode.encodeJoinParty(nomUser, idParty));
 	}
 
+	
+	//Pour decommenter simplement rajouter // devant le /etoile de la ligne en dessous
+	/*
+	  public static void main(String[] args) throws URISyntaxException,
+	  IOException {
+	  
+	  // Ce bloc sert uniquement à avoir un affichage des éléments plus //
+	  "jolie" try { for (LookAndFeelInfo info :
+	  UIManager.getInstalledLookAndFeels()) { if
+	  ("Nimbus".equals(info.getName())) {
+	  UIManager.setLookAndFeel(info.getClassName()); break; } } } catch
+	  (Exception e) { new MonLogClient() .add(
+	  "If Nimbus is not available, you can set the GUI to another look and feel."
+	  ); }
+	  
+	  Object sync = new Object(); FenetrePrincipale fenetre = new
+	  FenetrePrincipale(sync);
+	  
+	  synchronized (sync) { try { sync.wait(); } catch (InterruptedException e)
+	  { new MonLogClient().add(e.getMessage()); } }
+	  
+	  try { User usr = new User(new URI("ws://localhost:12345")); usr.userId =
+	  fenetre.getIdUser(); usr.userNickname = fenetre.getNomUser();
+	  usr.connect(); new MonLogClient().add("Bienvenue " + usr.userNickname +
+	  " !"); } catch (URISyntaxException e) { new
+	  MonLogClient().add(e.getMessage()); }
+	  
+	  } //*/
+	 
 
+	//Pour commenter simplement => retirer le // sur ligne en dessous
+	// /*
 	public static void main(String[] args) throws URISyntaxException,
 			IOException {
-		
-		// Ce bloc sert uniquement à avoir un affichage des éléments plus "jolie"
-		try { 
-			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-				if ("Nimbus".equals(info.getName())) {
-					  UIManager.setLookAndFeel(info.getClassName()); 
-					  break; 
-				} 
-			} 
-		} catch (Exception e) { 
-			new MonLogClient().add("If Nimbus is not available, you can set the GUI to another look and feel."); 
-		}
-			  
-			  
-		Object sync = new Object(); 
-		FenetrePrincipale fenetre = new FenetrePrincipale(sync);
-		  
-		synchronized (sync) { 
-			try { 
-				sync.wait(); 
-			} catch (InterruptedException e){
-				new MonLogClient().add(e.getMessage());
+		// ici authentification;
+		// fenetre.getId
+		// fenetre .getNickName
+		// uri Fanfan: 192.168.1.29
+		User usr = new User(new URI("ws://localhost:12345"));
+
+		Random random = new Random(System.nanoTime());
+		usr.userId = random.nextInt();
+		usr.userNickname = "toto" + usr.userId;
+		usr.connect();
+
+		System.out.println("bienvenue " + usr.userNickname);
+
+		BufferedReader sysin = new BufferedReader(new InputStreamReader(
+				System.in));
+		while (true) {
+			String in = sysin.readLine();
+			if (in.equals("a")) {
+				System.out.println("send create");
+				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname
+						+ "Party", 3, true, usr.userNickname));
+			}
+			if (in.equals("b")) {
+				System.out.println("send join");
+				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 1));
+			}
+			if (in.equals("c")) {
+				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname
+						+ "Party", 2, true, usr.userNickname));
+			}
+			if (in.equals("d")) {
+				System.out.println("send join");
+				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 2));
 			}
 		}
-
-		try{
-			User usr = new User(new URI("ws://localhost:12345"));
-			usr.userId = fenetre.getIdUser();
-			usr.userNickname = fenetre.getNomUser();
-			usr.connect();
-			new MonLogClient().add("Bienvenue "+usr.userNickname+" !");
-		} catch (URISyntaxException e) {
-			new MonLogClient().add(e.getMessage());
-		}
-
-//		BufferedReader sysin = new BufferedReader(new InputStreamReader(
-//				System.in));
-//		while (true) {
-//			String in = sysin.readLine();
-//			if (in.equals("a")) {
-//				System.out.println("send create");
-//				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname
-//						+ "Party", 2, true, usr.userNickname));
-//			}
-//			if (in.equals("b")) {
-//				System.out.println("send join");
-//				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 1));
-//			}
-//			if (in.equals("c")){
-//				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname
-//						+ "Party", 2, true, usr.userNickname));
-//			}
-//			if (in.equals("d")) {
-//				System.out.println("send join");
-//				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 2));
-//			}
-//			// usr.sendWithFlag(in,"titi");
-//		}
-	}// */
-
+	}
+	// */
 
 }

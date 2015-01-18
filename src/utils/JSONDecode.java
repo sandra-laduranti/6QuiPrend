@@ -20,31 +20,7 @@ public class JSONDecode {
 		return(testObj.getString("nomFlag"));
 	}
 	
-	//TODO: corriger faux avec la nouvelle implémentation de user
-	public static ArrayList<Partie> decodeListPartie(String List) {
-		ArrayList<Partie> liste = new ArrayList<Partie>();
-		JSONObject testObj = new JSONObject(List);
-		JSONArray arr = testObj.getJSONArray("arr");
-
-		for (int i = 0; i < arr.getJSONArray(0).length(); i++) {
-			JSONObject objTMP =  arr.getJSONArray(0).getJSONObject(i);
-			int id = objTMP.getInt("id");
-			String nom = objTMP.getString("nom");
-			int nbJoueur = objTMP.getInt("nbJoueur");
-			Boolean isPromode = objTMP.getBoolean("isPromode");
-			String users = objTMP.getString("users");
-			String delims = "[:]";
-			String[] tokens = users.split(delims);
-			ArrayList<User> usersList = new ArrayList<User>();
-
-			for (String nickName : tokens) {
-				// TODO usersList.add(new User(nickName, "", ""));
-			}
-		//	liste.add(new Partie(id, nom, nbJoueur, isPromode, usersList)); //TODO: corriger avec String
-		}
-		
-		return liste;
-	}
+	
 	
 	//Creer une liste de copies de parties destinée à l'affichage de l'ui
 		public static ArrayList<Partie> decodeRefreshListePartie(String json) {
