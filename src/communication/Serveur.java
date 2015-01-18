@@ -59,7 +59,9 @@ public class Serveur extends WebSocketServer {
 	/* Send un message à l'user concerné pour simple affichage*/
 	public void sendMessage(String nickName, String message){
 		String mess = JSONEncode.encodeMessage(message);
-		players.get(nickName).send(mess);
+		if(players.get(nickName) != null){
+			players.get(nickName).send(mess);
+		}
 	}
 	
 	/* send un message a une liste de joueur */
@@ -158,9 +160,11 @@ public class Serveur extends WebSocketServer {
 				res = entry.getKey();
 				if (res != null){
 					Partie party = getWichParty(res);
-					party.removePlayer(res);
-					players.remove(res);
-					sendMessageListPlayers(party.getListUser(), res + "has left the game", false);
+					if(party != null){
+						party.removePlayer(res);
+						players.remove(res);
+						sendMessageListPlayers(party.getListUser(), res + "has left the game", false);
+					}	
 				}
 			}
 		}
