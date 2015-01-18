@@ -16,6 +16,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import log.MonLogClient;
+import metier.Partie;
 import metierDAO.UserDAO;
 
 import org.java_websocket.client.WebSocketClient;
@@ -97,7 +98,15 @@ public class User extends WebSocketClient implements Comparable<User> {
 	}
 	
 	public void refreshListPartie(){
-		
+		JSONObject flag = new JSONObject();
+		flag.put("nomFlag", Flag.REFRESH_LIST_PARTIES);
+		flag.put("nickName", userNickname);
+		send(flag.toString());
+	}
+	
+	//voir comment faire pour que l'ui recup l'info? Synchronize? appeler une méthode de l'ui?
+	public void recupListPartie(String message){
+		ArrayList<Partie> parties = JSONDecode.decodeRefreshListePartie(message);
 	}
 
 	// donne la liste des cartes et send celle choisie
@@ -177,6 +186,8 @@ public class User extends WebSocketClient implements Comparable<User> {
 			break;
 		case Flag.PARTIE_COMMENCE:
 			System.out.println("La partie commence! Bon jeu :)");
+			break;
+		case Flag.REFRESH_LIST_PARTIES:
 			break;
 		default:
 			System.out.println("Error: ce flag n'existe pas.");

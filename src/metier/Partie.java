@@ -62,6 +62,7 @@ public class Partie extends Thread implements Serializable{
 	public void setChoosenRow(int row){
 		choosenRow = row;
 	}
+
 	
 	public void setServeur(Serveur serveur){
 		this.serveur = serveur;

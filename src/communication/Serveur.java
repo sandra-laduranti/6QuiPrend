@@ -208,6 +208,20 @@ public class Serveur extends WebSocketServer {
 	public void removePartie(String message) {
 
 	}
+	
+	public void refreshListParties(String message){
+		JSONObject obj = new JSONObject(message);
+		String nickName = obj.getString("nickName");
+		
+		ArrayList<Partie> partiesEnCours = new ArrayList<Partie>();
+		for(Entry<Integer, Partie> entry : parties.entrySet()) {
+			Partie part = entry.getValue();
+			if (part.isInGame() == false){
+				partiesEnCours.add(part);
+			}
+		}
+		players.get(nickName).send(JSONEncode.refreshListPartie(partiesEnCours));
+	}
 
 	/* on parse le message afin de récuperer le flag */
 	/* puis switch en fonction du flag */
@@ -238,7 +252,7 @@ public class Serveur extends WebSocketServer {
 		case Flag.QUIT_PARTIE:
 			break;
 		case Flag.REFRESH_LIST_PARTIES:
-			System.out.println("refresh");
+			refreshListParties(message);
 			break;
 		case "getList":
 			System.out.println("getList");
