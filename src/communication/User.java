@@ -37,6 +37,8 @@ public class User extends WebSocketClient implements Comparable<User> {
 	private String userPassword;
 
 	private int currentBeef;
+	
+	private boolean isConsole = true;
 
 	public User(URI serverUri, Draft draft) {
 		super(serverUri, draft);
@@ -54,6 +56,10 @@ public class User extends WebSocketClient implements Comparable<User> {
 		// onWebsocketHandshakeReceivedAsClient
 	}
 
+	public void setConsole(boolean isConsole){
+		this.isConsole = isConsole;
+	}
+	
 	public int getUserId() {
 		return this.userId;
 	}
@@ -95,18 +101,24 @@ public class User extends WebSocketClient implements Comparable<User> {
 	// les autres joueurs
 	// ! premier element de la liste est l'id de la partie ! 
 	public void chooseCard(ArrayList<Integer> cards) {
-		int cardValue;
-		Scanner sysin = new Scanner(System.in);
+		int cardValue = 0;
 		int idParty = cards.get(0);
 		cards.remove(0);
+		Scanner sysin = new Scanner(System.in);
 		
 		System.out.print("[ ");
 		for(Integer c:cards){
 			System.out.print("("+c+")");
 		}
 		System.out.println(" ]");
+		
 		for (int i = 0; i < 5; i++) {
-			cardValue = sysin.nextInt();
+			if (isConsole == true){
+				cardValue = sysin.nextInt();
+			}
+			else{
+				//ICI DOIT RECUP LA VALEUR EN MODE UI
+			}
 			if (cards.contains(cardValue)) {
 				System.out.println("Vous avez choisi la carte" + cardValue);
 				send(JSONEncode.encodeCarte(userNickname,cardValue, idParty));
@@ -123,11 +135,16 @@ public class User extends WebSocketClient implements Comparable<User> {
 	
 	public void chooseLine(int idPartie){
 		Scanner sysin = new Scanner(System.in);
-		int row;
+		int row = 1;
 		System.out.println("Votre carte ne peut être placée \n Choisissez une rangée à prendre entre 1 et 4");
 		
 		while(true){
-			row = sysin.nextInt();
+			if(isConsole == true){
+				row = sysin.nextInt();
+			}
+			else{
+				//SI MODE UI RECUP ICI VALEUR
+			}
 			if (row < 1 || row > 4){
 				System.out.println("la ligne que vous avez choisi n'existe pas! Merci de rentrer une valeur entre 1 et 4");
 			}
