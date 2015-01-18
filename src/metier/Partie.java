@@ -99,6 +99,7 @@ public class Partie extends Thread implements Serializable{
 		while(!isPlayerReach66){
 			initializeRound();
 			currentBeefAllPlayers();
+			serveur.sendMessageListPlayers(getListUser(),"Fin de la manche "+cptRound, false);
 			System.out.println("Fin de la manche "+cptRound);
 			cptRound++;
 		}
@@ -122,9 +123,6 @@ public class Partie extends Thread implements Serializable{
 	}
 
 
-	/*
-	 * TODO  : Ajout des println et d'un Scanner pour la saisie sur console
-	 */
 	private void initializeRound(){
 		this.listCard = GestionPartie.initializeDeck(nbJoueursMax, isProMode);
 		initializeRows();
@@ -158,7 +156,6 @@ public class Partie extends Thread implements Serializable{
 				//Méthode qui propose a chaque joueur de choisir sa carte, retourne une carte
 				int valueCard;
 				
-				//TODO: demander à tous les joueurs de donner une carte
 				int j=0;
 				//Affiche la liste des cartes du joueur
 				System.out.print(getListUser().get(i)+" : [ ");
@@ -183,7 +180,6 @@ public class Partie extends Thread implements Serializable{
 				if (i+1 < getListUser().size()) {
 					System.out.println("Au tour de " + getListUser().get(i+1)+" : ");
 				}
-				//valueCard = GestionPartie.selectValueCardToPlay();
 				valueCard = selectedCardByPlayer.get(selectedCardByPlayer.size() - 1).getValue();
 				boolean saisieCard = false;
 				int cptEssaie = 0;
@@ -246,9 +242,6 @@ public class Partie extends Thread implements Serializable{
 
 				if(GestionPartie.isPlusPetit(cardToPlace, fourLastCardRows)){
 					String userGetRow  = getListUser().get(i);
-					System.out.println("Votre carte ne peut pas être placé");
-					System.out.println(userGetRow+" : Vous devez choisir la rangé a prendre entre 1 et 4");
-					serveur.sendMessage(getListUser().get(i), "Votre carte ne peut pas être placée\n Merci de choisir la rangée à prendre entre 1 et 4");
 					serveur.selectRowToUser( getListUser().get(i), id );
 					synchronized(this) {
 						try {
@@ -269,6 +262,7 @@ public class Partie extends Thread implements Serializable{
 						selectRowCollect = GestionPartie.getRDMRowForPlayer(rows);
 					}
 					int nbBeef = GestionPartie.countBeef(rows.get(selectRowCollect-1));
+					serveur.sendMessage(getListUser().get(i), "Vous avez saisie la rangée : "+selectRowCollect+" qui contient "+nbBeef+" tete de boeufs");
 					System.out.println("Vous avez saisie la rangée : "+selectRowCollect+" qui contient "+nbBeef+" tete de boeufs");
 					attributeBeef(selectRowCollect-1, cardToPlace, selectedCardByPlayer, userGetRow);
 					fourLastCardRows = GestionPartie.getLastCardRows(rows);
@@ -276,6 +270,7 @@ public class Partie extends Thread implements Serializable{
 					String userGetRow  = getListUser().get(indexCardChoosen);
 					// Si le joueur place la 6eme carte alors il prend la rangée
 					selectRow = GestionPartie.selectRow(cardToPlace, fourLastCardRows);
+					serveur.sendMessage(getListUser().get(i), "Vous avez placé la 6ème carte de la rangée "+selectRow);
 					System.out.println("Vous avez placé la 6ème carte de la rangée "+selectRow);
 					attributeBeef(selectRow, cardToPlace, selectedCardByPlayer, userGetRow);
 					fourLastCardRows = GestionPartie.getLastCardRows(rows);
@@ -367,6 +362,7 @@ public class Partie extends Thread implements Serializable{
 			if(name.equals(userGetRow)){
 				nbMapbeef=entry.getValue()+nbBeef;
 				entry.setValue(nbMapbeef);
+				serveur.sendMessage(userGetRow, userGetRow+ " a maintenant :  "+entry.getValue()+ " tete de boeufs");
 				System.out.println(userGetRow+ " a maintenant :  "+entry.getValue()+ " tete de boeufs");
 			}
 		}
@@ -410,6 +406,7 @@ public class Partie extends Thread implements Serializable{
 
 	private void currentBeefAllPlayers(){
 		for (Entry<String, Integer> entry : map.entrySet()) {
+			serveur.sendMessageListPlayers(getListUser(), entry.getKey() + " -> " + entry.getValue(), false);
 			System.out.println(entry.getKey() + " -> " + entry.getValue()) ;
 		}
 	}
