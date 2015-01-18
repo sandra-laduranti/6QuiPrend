@@ -152,28 +152,30 @@ public class Serveur extends WebSocketServer {
 	// supprime l'user de la liste des participants de la partie et previent les autres
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-		String res = conn.toString();
+		String res = "";
 		
 		for(Entry<String, WebSocket> entry:players.entrySet()){
 			if (entry.getValue().equals(conn)){
 				res = entry.getKey();
-				if (res != null){
-					Partie party = getWichParty(res);
-					if(party != null){
-						party.removePlayer(res);
-						players.remove(res);
-						if (party.getListUser().size() < 2){
-							System.out.println("partie annulée!");
-							sendMessageListPlayers(party.getListUser(), "plus assez de joueurs, partie annulée", false);
-							parties.remove(party.getId());
-						}
-						else{
-							sendMessageListPlayers(party.getListUser(), res + "has left the game", false);
-						}
-					}	
-				}
 			}
 		}
+		
+		if ("" != res) {
+			Partie party = getWichParty(res);
+			if(party != null){
+				party.removePlayer(res);
+				players.remove(res);
+				if (party.getListUser().size() < 2){
+					System.out.println("partie annulée!");
+					sendMessageListPlayers(party.getListUser(), "plus assez de joueurs, partie annulée", false);
+					parties.remove(party.getId());
+				}
+				else{
+					sendMessageListPlayers(party.getListUser(), res + "has left the game", false);
+				}
+			}	
+		}
+		
 		System.out.println(res + " has left the game!");
 	}
 
