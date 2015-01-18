@@ -12,10 +12,10 @@ import communication.User;
 public class GestionPartie {
 
 	/**
-	 * Permet de connaitre la rangée en fonction de la carte a place
-	 * et des derniers cartes de chaque rangée
-	 * @param carte carteAPlace a place dans les rangées
-	 * @param cartes list composé des derničres carte de chaque rangée
+	 * Permet de connaitre la rangÃ©e en fonction de la carte a place
+	 * et des derniers cartes de chaque rangÃ©e
+	 * @param carte carteAPlace a place dans les rangÃ©es
+	 * @param cartes list composÃ© des derniÄ�res carte de chaque rangÃ©e
 	 * @return la ligne a laquelle la carte doit etre place
 	 */
 	public static int selectRow(Carte cardToPlace, List<Carte> cards){
@@ -79,7 +79,7 @@ public class GestionPartie {
 	}
 
 	/**
-	 * Compte le nombre de tete de boeuf cumulé par le joueur
+	 * Compte le nombre de tete de boeuf cumulÃ© par le joueur
 	 * @param cards
 	 * @return
 	 */
@@ -92,7 +92,7 @@ public class GestionPartie {
 	}
 
 	/**
-	 * Distribue les cartes ŕ un joueur
+	 * Distribue les cartes Å• un joueur
 	 * @param deck
 	 * @param player
 	 */
@@ -111,7 +111,7 @@ public class GestionPartie {
 	}
 
 	/**
-	 * Retourne la carte joué par le joueur
+	 * Retourne la carte jouÃ© par le joueur
 	 * @param cards la main du joueur
 	 * @param cardValue 
 	 * @return
@@ -126,7 +126,7 @@ public class GestionPartie {
 	}
 
 	/**
-	 * Retourne la liste composé du gagnant et du perdant
+	 * Retourne la liste composÃ© du gagnant et du perdant
 	 * @param users
 	 * @return gagnant position 0 et perdant position 1
 	 */
@@ -202,6 +202,31 @@ public class GestionPartie {
 			System.err.println("Veuillez saisir un nombre");
 		}
 		return -1;
+	}
+
+	public static Carte chooseRDMCardForPlayer(List<Carte> cards) {
+		Carte card = null;
+		int tmpValue = 0;
+		for (Carte carte : cards) {
+			if(tmpValue<carte.getValue()){
+				card = carte;
+				tmpValue = carte.getValue();
+			}
+		}
+		return card;
+	}
+
+	public static int getRDMRowForPlayer(List<List<Carte>> rows) {
+		int posRow = 0;
+		int tmpSize = 0;
+		for (int i = 0; i<rows.size(); i++) {
+			if(tmpSize<rows.get(i).size()){
+				posRow = i;
+				tmpSize = rows.get(i).size();
+			}
+		}
+		
+		return posRow;
 	}
 
 }

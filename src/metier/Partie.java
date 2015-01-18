@@ -6,11 +6,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Scanner;
 import java.util.Set;
 
 import metier.Carte;
-import communication.User;
 
 public class Partie extends Thread implements Serializable{
 
@@ -23,6 +21,7 @@ public class Partie extends Thread implements Serializable{
 	private int nbJoueursMax;
 	private boolean isProMode;
 	private transient List<List<Carte>> rows;
+	private List<Carte> selectedCardByPlayer = null;
 	private String nom;
 	private transient boolean isPlayerReach66=false;
 	private transient boolean isInGame;
@@ -32,7 +31,6 @@ public class Partie extends Thread implements Serializable{
 		this.nbJoueursMax = nbJoueurs;
 		this.isProMode = isProMode;
 		this.nom = nom;
-		this.id = id;
 		isInGame = false;
 		comptes = new HashMap<String, List<Carte>>();
 		map = new HashMap<String, Integer>();
@@ -122,7 +120,6 @@ public class Partie extends Thread implements Serializable{
 		GestionPartie.iniatializeRowsFirstCard(rows, listCard);
 
 		//Représente le déroulement d'une manche
-		List<Carte> selectedCardByPlayer = null;
 		int cptTurn = 0;
 		Carte selectedCard = null;
 		while(cptTurn<10){
@@ -136,7 +133,6 @@ public class Partie extends Thread implements Serializable{
 				//Méthode qui propose a chaque joueur de choisir sa carte, retourne une carte
 				int valueCard;
 				//TODO: demander à tous les joueurs de donner une carte
-				Scanner sc=new Scanner(System.in);
 				int j=0;
 				//Affiche la liste des cartes du joueur
 				System.out.print(getListUser().get(i)+" : [ ");
@@ -150,8 +146,9 @@ public class Partie extends Thread implements Serializable{
 				System.out.println("Au tour de " + getListUser().get(i)+" : ");
 				valueCard = GestionPartie.selectValueCardToPlay();
 				boolean saisieCard = false;
-				while(!saisieCard){
-					if(valueCard != -1){
+				int cptEssaie = 0;
+				while(!saisieCard && cptEssaie<2){
+					if(valueCard != -1 ){
 						if(GestionPartie.getCardFromHand(comptes.get(getListUser().get(i)),valueCard) != null){
 							//TODO: send à la place des syso
 							System.out.println("Vous avez saisie la valeur "+valueCard);
@@ -160,15 +157,23 @@ public class Partie extends Thread implements Serializable{
 							System.err.println("Cette carte n'est pas dans votre main");
 							System.err.println("Recommencez");
 							valueCard = GestionPartie.selectValueCardToPlay();
+							cptEssaie++;
 						}
 					} else {
 						System.out.println("Mauvaise saisie, recommencez");
 						valueCard = GestionPartie.selectValueCardToPlay();
+						cptEssaie++;
 					}
 				}
-				selectedCard = GestionPartie.getCardFromHand(comptes.get(getListUser().get(i)), valueCard);
+				if(cptEssaie == 2){
+					selectedCard = GestionPartie.chooseRDMCardForPlayer(comptes.get(getListUser().get(i)));
+					System.out.println("Une carte a été choisie pour vous "+selectedCard.getValue());
+					cptEssaie = 0;
+				} else {
+					selectedCard = GestionPartie.getCardFromHand(comptes.get(getListUser().get(i)), valueCard);
+				}
 				comptes.get(getListUser().get(i)).remove(selectedCard);
-				selectedCardByPlayer.add(selectedCard);
+				addSelectedCard(selectedCard);
 
 				/*
 				 * TODO : Ajout du while pour l'affichage des cartes qui ne sont pas encore jouées
@@ -204,11 +209,14 @@ public class Partie extends Thread implements Serializable{
 					System.out.println("Votre carte ne peut pas être placé");
 					System.out.println(userGetRow+" : Vous devez choisir la rangé a prendre entre 1 et 4");
 					int selectRowCollect = GestionPartie.getRowToCollect();
-
-
-					while(!(selectRowCollect>0 && selectRowCollect<5)){
+					int cptEssaie = 0;
+					while(!(selectRowCollect>0 && selectRowCollect<5) && cptEssaie<2){
 						System.out.println("Saisie entre 1 et 4 !!!!");
 						selectRowCollect = GestionPartie.getRowToCollect();
+						cptEssaie++;
+					}
+					if(cptEssaie ==3 ){
+						selectRowCollect = GestionPartie.getRDMRowForPlayer(rows);
 					}
 					int nbBeef = GestionPartie.countBeef(rows.get(selectRowCollect-1));
 					System.out.println("Vous avez saisie la rangée : "+selectRowCollect+" qui contient "+nbBeef+" tete de boeufs");
@@ -257,8 +265,8 @@ public class Partie extends Thread implements Serializable{
 	}
 
 	//TODO: probleme User ne devrait plus apparaitre et ne pas être manipulé. 
-	public void removePlayer(User user){
-		getListUser().remove(user);
+	public void removePlayer(String nickName){
+		getListUser().remove(nickName);
 	}
 
 	public List<Carte> getListCard(){
@@ -343,6 +351,15 @@ public class Partie extends Thread implements Serializable{
 		for (Entry<String, Integer> entry : map.entrySet()) {
 			System.out.println(entry.getKey() + " -> " + entry.getValue()) ;
 		}
+	}
+	
+	public List<Carte> getSelectedCardByPlayer() {
+		return selectedCardByPlayer;
+	}
+	
+	public boolean addSelectedCard(Carte card){
+		return selectedCardByPlayer.add(card);
+		
 	}
 }
 
