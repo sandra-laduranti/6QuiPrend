@@ -120,6 +120,23 @@ public class User extends WebSocketClient implements Comparable<User> {
 		System.out.println("Vous vous êtes trompé de carte trop de fois! Nous choisissons la carte " + cardValue + " à votre place :D ");
 		send(JSONEncode.encodeCarte(userNickname,cardValue, idParty));
 	}
+	
+	public void chooseLine(int idPartie){
+		Scanner sysin = new Scanner(System.in);
+		int row;
+		System.out.println("Votre carte ne peut être placée \n Choisissez une rangée à prendre entre 1 et 4");
+		
+		while(true){
+			row = sysin.nextInt();
+			if (row < 1 || row > 4){
+				System.out.println("la ligne que vous avez choisi n'existe pas! Merci de rentrer une valeur entre 1 et 4");
+			}
+			else{
+				send(JSONEncode.encodeSendRow(userNickname, idPartie, row));
+				return;
+			}
+		}
+	}
 
 	@Override
 	public void onMessage(String message) {
@@ -127,10 +144,12 @@ public class User extends WebSocketClient implements Comparable<User> {
 		String flag = JSONDecode.getFlag(message);
 
 		switch (flag) {
-		case "getNickName":
-			break;
 		case Flag.SEND_CARTE:
 			chooseCard(JSONDecode.decodeSendCards(message));
+			break;
+		case Flag.SEND_LIGNE:
+			JSONObject json = new JSONObject("message");
+			chooseLine(json.getInt("idParty"));
 			break;
 		case Flag.MESSAGE:
 			System.out.println(JSONDecode.decodeMessage(message));

@@ -30,6 +30,7 @@ public class Partie extends Thread implements Serializable{
 	private transient boolean isPlayerReach66=false;
 	private transient boolean isInGame;
 	private Serveur serveur;
+	private int choosenRow;
 
 	public Partie(String nom, int nbJoueurs, boolean isProMode, String userNickname){
 		this.listCard=new ArrayList<Carte>();
@@ -58,6 +59,10 @@ public class Partie extends Thread implements Serializable{
 		}
 	}
 
+	public void setChoosenRow(int row){
+		choosenRow = row;
+	}
+	
 	public void setServeur(Serveur serveur){
 		this.serveur = serveur;
 	}

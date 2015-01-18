@@ -72,6 +72,30 @@ public class Serveur extends WebSocketServer {
 			}
 		}
 	}
+	
+	public void selectRowToUser(String nickName, int id){
+		JSONObject flag = new JSONObject();
+		
+		flag.put("nomFlag", Flag.SEND_LIGNE);
+		flag.put("idParty", id);
+		players.get(nickName).send(flag.toString());
+	}
+	
+	public void selectRowToParty(String message){
+		JSONObject obj = new JSONObject(message);
+		int idParty = obj.getInt("idParty");
+		int row = obj.getInt("row");
+		
+		Partie part = parties.get(idParty);
+		
+		if(null != part)
+		{
+			part.setChoosenRow(row);
+			synchronized(part) {
+				part.notify();
+			}
+		}
+	}
 
 	/* Send la liste des cartes de l'user pour qu'il puisse choisir les cartes à jouer */
 	public void sendCardToUser(String nickName, ArrayList<Integer> cards, int idPartie){
@@ -173,10 +197,12 @@ public class Serveur extends WebSocketServer {
 			break;
 		case Flag.CREATION_PARTIE:
 			createPartie(message);
-			System.out.println("newP");
 			break;
 		case Flag.SEND_CARTE:
 			sendCardToPartie(message);
+			break;
+		case Flag.SEND_LIGNE:
+			selectRowToParty(message);
 			break;
 		case Flag.QUIT_PARTIE:
 			break;

@@ -17,6 +17,8 @@ public class JSONEncode {
 		public static String encodeCarte(String nickName, int value, int idParty){
 			JSONObject flag = new JSONObject();
 			
+			System.out.println("\n\n\n\n\n MAFUCKINGIDDEMERDE********************* " + idParty +"*****************\n\n\n");
+			
 			flag.put("nomFlag", Flag.SEND_CARTE);
 			flag.put("nickName", nickName);
 			flag.put("value", value);
@@ -91,7 +93,7 @@ public class JSONEncode {
 		
 		public static String encodeSendCards(ArrayList<Integer> cards, int idPartie){
 			JSONObject flag = new JSONObject();
-			JSONArray cardsArr = new JSONArray();
+			JSONArray cardsArr = new JSONArray();			
 			
 			flag.put("nomFlag", Flag.SEND_CARTE);
 			flag.put("idPartie", idPartie);
@@ -120,6 +122,17 @@ public class JSONEncode {
 			
 			flag.put("nomFlag", Flag.MESSAGE);
 			flag.put("message", message);
+			
+			return flag.toString();
+		}
+		
+		public static String encodeSendRow(String userNickname, int id, int row){
+			JSONObject flag = new JSONObject();
+			
+			flag.put("nomFlag", Flag.SEND_LIGNE);
+			flag.put("nickName", userNickname);
+			flag.put("idParty", id);
+			flag.put("row", row);
 			
 			return flag.toString();
 		}
