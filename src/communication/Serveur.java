@@ -88,9 +88,11 @@ public class Serveur extends WebSocketServer {
 		Partie part = parties.get(idParty);
 		
 		//TODO: ajouter le notify pour reveiller le thread
-		part.addSelectedCard(new Carte(value));
-		part.getSelectedCardByPlayer().notify();
-		
+		if(null != part)
+		{
+			part.addSelectedCard(new Carte(value));
+			part.getSelectedCardByPlayer().notify();
+		}
 	}
 	
 	@Override

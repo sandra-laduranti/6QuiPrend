@@ -164,7 +164,7 @@ public class Partie extends Thread implements Serializable{
 				serveur.sendCardToUser(getListUser().get(i), arrPlayerCards, id);
 				synchronized(selectedCardByPlayer){
 					try {
-						wait();
+						selectedCardByPlayer.wait();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
