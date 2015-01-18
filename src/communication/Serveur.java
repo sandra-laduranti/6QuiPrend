@@ -163,7 +163,13 @@ public class Serveur extends WebSocketServer {
 					if(party != null){
 						party.removePlayer(res);
 						players.remove(res);
-						sendMessageListPlayers(party.getListUser(), res + "has left the game", false);
+						if (party.getListUser().size() < 2){
+							sendMessageListPlayers(party.getListUser(), "plus assez de joueurs, partie annulée", false);
+							parties.remove(party.getId());
+						}
+						else{
+							sendMessageListPlayers(party.getListUser(), res + "has left the game", false);
+						}
 					}	
 				}
 			}
