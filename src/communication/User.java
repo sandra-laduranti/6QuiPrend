@@ -188,6 +188,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 			System.out.println("La partie commence! Bon jeu :)");
 			break;
 		case Flag.REFRESH_LIST_PARTIES:
+			recupListPartie(message);
 			break;
 		default:
 			System.out.println("Error: ce flag n'existe pas.");
