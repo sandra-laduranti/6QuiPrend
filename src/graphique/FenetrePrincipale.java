@@ -97,7 +97,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	public FenetrePrincipale(Object sync){
 		
 		this.context = this;  // Pour pouvoir utiliser notre instance de fenetreprincipale partout (methodes statics, listeners, classes ...) lorsque this ne fonctionne pas
-	    this.sync = sync;
+	    //TODO: quickfix sync on this
+		this.sync = this;
 		this.setTitle("6 Qui Prend");
 	    
 	    URL url_tmp = getClass().getResource("/images/logo 6QuiPrend.png");

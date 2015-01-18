@@ -215,12 +215,12 @@ public class User extends WebSocketClient implements Comparable<User> {
 				System.in));
 		while (true) {
 			String in = sysin.readLine();
-			if (in.equals("1")) {
+			if (in.equals("a")) {
 				System.out.println("send create");
 				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname
 						+ "Party", 2, true, usr.userNickname));
 			}
-			if (in.equals("2")) {
+			if (in.equals("b")) {
 				System.out.println("send join");
 				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 1));
 			}
