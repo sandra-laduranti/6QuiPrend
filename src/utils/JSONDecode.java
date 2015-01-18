@@ -24,10 +24,14 @@ public class JSONDecode {
 	
 	//Creer une liste de copies de parties destinée à l'affichage de l'ui
 		public static ArrayList<Partie> decodeRefreshListePartie(String json) {
+			if (json.equals("isEmpty")){
+				return null;
+			}
 			ArrayList<Partie> parties = new ArrayList<Partie>();
 			JSONObject testObj = new JSONObject(json);
 			JSONArray arr = testObj.getJSONArray("arr");
 
+			
 			for (int i = 0; i < arr.getJSONArray(0).length(); i++) {
 				JSONObject objTMP =  arr.getJSONArray(0).getJSONObject(i);
 				int id = objTMP.getInt("id");

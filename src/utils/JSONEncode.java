@@ -30,6 +30,9 @@ public class JSONEncode {
 			JSONObject flag = new JSONObject();
 			JSONArray  arr = new JSONArray();
 			
+			if (parties.isEmpty()){
+				return ("isEmpty");
+			}
 			flag.put("nomFlag", Flag.REFRESH_LIST_PARTIES);
 			for(Partie partie: parties){
 				JSONObject tmp = new JSONObject();
