@@ -412,8 +412,16 @@ public class Partie extends Thread implements Serializable{
 	}
 	
 	public boolean addSelectedCard(Carte card){
-		return selectedCardByPlayer.add(card);
-		
+		boolean isExist = false;
+		for (Carte carte : selectedCardByPlayer) {
+			if(carte.getValue() == card.getValue()){
+				isExist = true;
+			}
+		}
+		if(!isExist){
+			return selectedCardByPlayer.add(card);
+		}
+		return false;
 	}
 }
 
