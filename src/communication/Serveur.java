@@ -27,6 +27,7 @@ public class Serveur extends WebSocketServer {
 	private HashMap<Integer, Partie> parties;
 	public 	HashMap<Integer, Partie> getParties () { return parties; }
  	private HashMap<String, WebSocket> players;
+ 	public 	HashMap<String, WebSocket> getPlayers () { return players; }
 
 	/** Constructeurs privés */
 	public Serveur(int port) throws UnknownHostException {

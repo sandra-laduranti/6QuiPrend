@@ -9,6 +9,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 import java.util.Scanner;
 
 import javax.swing.UIManager;
@@ -172,7 +173,9 @@ public class User extends WebSocketClient implements Comparable<User> {
 		// fenetre .getNickName
 
 		User usr = new User(new URI("ws://localhost:12345"));
-		usr.userId = (int) Math.floor((Math.random() * 10) + 1);
+		
+		Random random = new Random(System.nanoTime());
+		usr.userId = random.nextInt();
 		usr.userNickname = "toto" + usr.userId;
 		usr.connect();
 
