@@ -313,6 +313,8 @@ public class Partie extends Thread implements Serializable{
 
 	//TODO: probleme User ne devrait plus apparaitre et ne pas être manipulé. 
 	public void removePlayer(String nickName){
+		comptes.remove(nickName);
+		map.remove(nickName);
 		getListUser().remove(nickName);
 		nbJoueursMax--;
 	}
