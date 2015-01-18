@@ -49,6 +49,10 @@ public class ApplicationTest {
 					toto.connect();
 					slip.connect();
 					
+					synchronized(this) {
+						this.wait(1000);
+					}
+					
 					System.out.println( "Test : toto sends createParty" );
 					toto.send(
 							JSONEncode.encodeCreatePartie(
@@ -64,6 +68,10 @@ public class ApplicationTest {
 							slip.getUserNickname(),
 							1));
 					
+					synchronized(this) {
+						this.wait(1000);
+					}
+					
 					HashMap <Integer, Partie> serverMap = server.getParties();
 					HashMap<String, WebSocket> playersMap = server.getPlayers();
 					
@@ -76,8 +84,7 @@ public class ApplicationTest {
 			}
 		} catch ( Throwable e ) {
 			StringBuilder builder = new StringBuilder ();
-				if(null != builder)
-				{
+			if(null != builder) {
 				builder.append( "Exception catched" );
 				if(null != e)
 				{

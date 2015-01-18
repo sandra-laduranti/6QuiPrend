@@ -121,7 +121,7 @@ public class Partie extends Thread implements Serializable{
 	/*
 	 * TODO  : Ajout des println et d'un Scanner pour la saisie sur console
 	 */
-	private void initializeRound(){
+	private void initializeRound() throws InterruptedException{
 		this.listCard = GestionPartie.initializeDeck(nbJoueursMax, isProMode);
 		initializeRows();
 		String user = null;
