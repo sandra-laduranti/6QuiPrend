@@ -72,7 +72,7 @@ public class Serveur extends WebSocketServer {
 	}
 
 	/* Send la liste des cartes de l'user pour qu'il puisse choisir les cartes à jouer */
-	public void sendCardToUser(String nickName, int[] cards, int idPartie){
+	public void sendCardToUser(String nickName, ArrayList<Integer> cards, int idPartie){
 		String mess = JSONEncode.encodeSendCards(cards, idPartie);
 		players.get(nickName).send(mess);
 	}
@@ -123,7 +123,6 @@ public class Serveur extends WebSocketServer {
 	public void joinPartie(WebSocket conn, String message) {
 		String[] messPart = JSONDecode.decodeJoinParty(message);
 
-	
 		if (null != messPart) {
 			Partie party = parties.get(Integer.parseInt(messPart[1]));
 			

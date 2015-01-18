@@ -89,13 +89,13 @@ public class JSONEncode {
 			
 		}
 		
-		public static String encodeSendCards(int[] cards, int idPartie){
+		public static String encodeSendCards(ArrayList<Integer> cards, int idPartie){
 			JSONObject flag = new JSONObject();
 			JSONArray cardsArr = new JSONArray();
 			
 			flag.put("nomFlag", Flag.SEND_CARTE);
 			flag.put("idPartie", idPartie);
-			for(int c: cards){
+			for(Integer c: cards){
 				JSONObject tmp = new JSONObject();
 				cardsArr.put(tmp.put("value",c));
 			}

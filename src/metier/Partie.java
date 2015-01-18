@@ -81,7 +81,7 @@ public class Partie extends Thread implements Serializable{
 			System.out.println("Nombre de joueurs max non atteint");
 		}
 		JSONObject flag = new JSONObject();
-		//serveur.sendMessageListPlayers(getListUser(), flag.put("nomFlag", Flag.PARTIE_COMMENCE).toString(), true);
+		serveur.sendMessageListPlayers(getListUser(), flag.put("nomFlag", Flag.PARTIE_COMMENCE).toString(), true);
 		System.out.println("La partie commence ! Bon jeu");
 		startGame();
 	}
@@ -140,21 +140,27 @@ public class Partie extends Thread implements Serializable{
 
 			//Affiche le plateau
 			showGameArea();
+			serveur.sendMessageListPlayers(getListUser(), showGameArea(), false);
 			System.out.println("Tour numéro : "+(cptTurn+1));
+			serveur.sendMessageListPlayers(getListUser(), "Tour numéro : "+(cptTurn+1)+"\n" , false);
 			// Faire en sorte que chaque joueur selectionne une carte chacun a leur tour
 			for(int i = 0; i<comptes.size(); i++){
 				//Méthode qui propose a chaque joueur de choisir sa carte, retourne une carte
 				int valueCard;
+				
 				//TODO: demander à tous les joueurs de donner une carte
 				int j=0;
 				//Affiche la liste des cartes du joueur
 				System.out.print(getListUser().get(i)+" : [ ");
+				ArrayList<Integer> arrPlayerCards = new ArrayList<Integer>();
 				while(j<=comptes.get(getListUser().get(i)).size()-1){
 					System.out.print(comptes.get(getListUser().get(i)).get(j).getValue()+"  ");
+					arrPlayerCards.add(comptes.get(getListUser().get(i)).get(j).getValue());
 					j++;
 				}
 				System.out.println("]");
 
+				serveur.sendCardToUser(getListUser().get(i), arrPlayerCards, id);
 
 				System.out.println("Au tour de " + getListUser().get(i)+" : ");
 				valueCard = GestionPartie.selectValueCardToPlay();
@@ -352,10 +358,10 @@ public class Partie extends Thread implements Serializable{
 			listCard = rows.get(r);
 			bf.append("          -----------------------------\n");
 			System.out.println("          -----------------------------");
-			bf.append("ligne "+(r+1)+" : \n");
+			bf.append("ligne "+(r+1)+" :");
 			System.out.print("ligne "+(r+1)+" : ");
 			for(Carte carte : listCard){
-				bf.append("| "+carte.getValue()+" | \n");
+				bf.append("| "+carte.getValue()+" |");
 				System.out.print("| "+carte.getValue()+" | ");
 			}
 			System.out.println();

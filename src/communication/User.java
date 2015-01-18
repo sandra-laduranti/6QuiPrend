@@ -94,11 +94,17 @@ public class User extends WebSocketClient implements Comparable<User> {
 	// les autres joueurs
 	// ! premier element de la liste est l'id de la partie ! 
 	public void chooseCard(ArrayList<Integer> cards) {
+		int cardValue;
 		BufferedReader sysin = new BufferedReader(new InputStreamReader(
 				System.in));
 		int idParty = cards.get(0);
 		cards.remove(0);
-		int cardValue;
+		
+		System.out.print("[ ");
+		for(Integer c:cards){
+			System.out.print("("+c+")");
+		}
+		System.out.println(" ]");
 		for (int i = 0; i < 5; i++) {
 			try {
 				String in = sysin.readLine();
@@ -170,6 +176,8 @@ public class User extends WebSocketClient implements Comparable<User> {
 		usr.userNickname = "toto" + usr.userId;
 		usr.connect();
 
+		System.out.println("bienvenue " + usr.userNickname);
+		
 		BufferedReader sysin = new BufferedReader(new InputStreamReader(
 				System.in));
 		while (true) {

@@ -65,8 +65,7 @@ public class JSONDecode {
 		JSONArray arr = messageObj.getJSONArray("arr");
 		cards.add(messageObj.getInt("idPartie"));
 		for (int i = 0; i < arr.length(); i++) {
-			JSONObject tmp = new JSONObject(arr.getJSONObject(i));
-			cards.add(tmp.getInt("value"));
+			cards.add(arr.getJSONObject(i).getInt("value"));
 		}
 
 		return cards;
