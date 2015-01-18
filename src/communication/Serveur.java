@@ -10,7 +10,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
+import log.MonLogServer;
 import metier.Carte;
 import metier.Partie;
 
@@ -50,6 +52,7 @@ public class Serveur extends WebSocketServer {
 			synchronized (Serveur.class) {
 				if (INSTANCE == null) {
 					INSTANCE = new Serveur(port);
+					new MonLogServer().add("Instance du Serveur créée", Level.INFO);
 				}
 			}
 		}
@@ -82,6 +85,7 @@ public class Serveur extends WebSocketServer {
 		flag.put("nomFlag", Flag.SEND_LIGNE);
 		flag.put("idParty", id);
 		players.get(nickName).send(flag.toString());
+		new MonLogServer().add("Le joueur " + nickName + " doit selectionner une ligne pour la partie " + id, Level.INFO);
 	}
 	
 	public void selectRowToParty(String message){
@@ -97,6 +101,7 @@ public class Serveur extends WebSocketServer {
 			synchronized(part) {
 				part.notify();
 			}
+			new MonLogServer().add("La ligne "+ row + " de la partie " + idParty + " a été selectionnée par un joueur", Level.INFO);
 		}
 	}
 
@@ -104,6 +109,7 @@ public class Serveur extends WebSocketServer {
 	public void sendCardToUser(String nickName, ArrayList<Integer> cards, int idPartie){
 		String mess = JSONEncode.encodeSendCards(cards, idPartie);
 		players.get(nickName).send(mess);
+		new MonLogServer().add("La main du joueur " + nickName + " de la partie " + idPartie + " vient de lui être envoyée: " + mess, Level.INFO);
 	}
 	
 	/* set dans la partie la carte choisie par le joueur pour le tour */
@@ -120,6 +126,7 @@ public class Serveur extends WebSocketServer {
 			part.addSelectedCard(new Carte(value));
 			List<Carte> list = part.getSelectedCardByPlayer();
 			synchronized(list) {
+				new MonLogServer().add("Carte de valeur " + value + " envoyée à la partie " + idParty + ", notify", Level.INFO);
 				list.notify();
 			}
 		}
@@ -129,7 +136,10 @@ public class Serveur extends WebSocketServer {
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
 		System.out.println(conn.getRemoteSocketAddress().getAddress()
 				.getHostAddress()
-				+ " entered the room!");
+				+ " connect to the game!");
+		new MonLogServer().add(conn.getRemoteSocketAddress().getAddress()
+				.getHostAddress()
+				+ " connect to the game!", Level.INFO);
 	}
 
 	
@@ -154,11 +164,14 @@ public class Serveur extends WebSocketServer {
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
 		String res = "";
 		
+		MonLogServer monlog = new MonLogServer();
 		for(Entry<String, WebSocket> entry:players.entrySet()){
 			if (entry.getValue().equals(conn)){
 				res = entry.getKey();
 			}
 		}
+		
+		monlog.add("Fermeture de socket détectée pour" + conn +" : " +res +" : " + reason, Level.WARNING);
 		
 		if ("" != res) {
 			Partie party = getWichParty(res);
@@ -168,10 +181,12 @@ public class Serveur extends WebSocketServer {
 				if (party.getListUser().size() < 2){
 					System.out.println("partie annulée!");
 					sendMessageListPlayers(party.getListUser(), "plus assez de joueurs, partie annulée", false);
+					monlog.add("Nombre de joueur inférieur à 2, partie " + party.getId() + " annulée", Level.WARNING);
 					parties.remove(party.getId());
 				}
 				else{
 					sendMessageListPlayers(party.getListUser(), res + "has left the game", false);
+					monlog.add(res + "has left the game", Level.INFO);
 				}
 			}	
 		}
@@ -191,21 +206,26 @@ public class Serveur extends WebSocketServer {
 		parties.put(idParty, party);
 		party.setServeur(this);
 		party.start();
+		new MonLogServer().add("Nouvelle Partie créée, id numéro: " + idParty+ " détail: " + message, Level.INFO);
 		System.out.println("New party: " + party.getName() + " create");
 	}
 
 	public void joinPartie(WebSocket conn, String message) {
 		String[] messPart = JSONDecode.decodeJoinParty(message);
 
+		MonLogServer monLog = new MonLogServer();
+		
 		if (null != messPart) {
 			Partie party = parties.get(Integer.parseInt(messPart[1]));
 			
 			if (null != party) {
 				if (party.addPlayer(messPart[0]) == false) {
-					conn.send(JSONEncode.encodeMessage("Partie déjà pleine")); // TODO: voir avec Julien pour message à renvoyer au client
+					conn.send(JSONEncode.encodeMessage("Partie déjà pleine"));
+					monLog.add(messPart[0] + "a tenté de joindre la partie numéro "+ party.getId() +" cette dernière est déjà pleine, echec." , Level.INFO);
 				}
 				else{
 					conn.send(JSONEncode.encodeMessage("Vous avez rejoins la partie numéro: " + messPart[1]));
+					monLog.add(messPart[0] + "a rejoins la partie numéro "+ party.getId() , Level.INFO);
 					synchronized(party){
 						party.notify();
 					}
@@ -213,14 +233,11 @@ public class Serveur extends WebSocketServer {
 			}
 			else{
 				conn.send(JSONEncode.encodeMessage("La partie que vous essayez de rejoindre n'existe pas"));
+				monLog.add(messPart[0] + "a tenté de joindre la partie numéro "+ party.getId() +" cette dernière n'existe pas, echec." , Level.INFO);
 			}
 		}
 	}
 
-	public void removePartie(String message) {
-
-	}
-	
 	public void refreshListParties(String message){
 		JSONObject obj = new JSONObject(message);
 		String nickName = obj.getString("nickName");
@@ -248,6 +265,8 @@ public class Serveur extends WebSocketServer {
 		String flag = JSONDecode.getFlag(message);
 
 		System.out.println("flag" + flag);
+		
+		new MonLogServer().add("communication reçue par le Server avec le flag: " + flag + "detail du message; " + message, Level.INFO);
 
 		switch (flag) {
 		case Flag.ON_CONNECT:
@@ -277,16 +296,15 @@ public class Serveur extends WebSocketServer {
 		default:
 			System.out.println("Error: ce flag n'existe pas.");
 		}
-		// this.sendToAll( message );
-		// System.out.println( conn + ": " + message + " test trallalaal");
 	}
 
 	@Override
 	public void onError(WebSocket conn, Exception ex) {
 		ex.printStackTrace();
+
 		if (conn != null) {
-			// some errors like port binding failed may not be assignable to a
-			// specific websocket
+			new MonLogServer().add("some errors like port binding failed may not be assignable to a specific websocket ", Level.SEVERE);
+
 		}
 	}
 
@@ -304,6 +322,7 @@ public class Serveur extends WebSocketServer {
 			for (WebSocket c : con) {
 				c.send(text);
 			}
+			new MonLogServer().add("Send to all client message: " + text, Level.INFO);
 		}
 	}
 
@@ -317,7 +336,8 @@ public class Serveur extends WebSocketServer {
 		}
 		Serveur s = Serveur.getInstance(port);
 		s.start();
-		System.out.println("ChatServer started on port: " + s.getPort());
+		System.out.println("Le Serveur vient de démarrer sur le port: " + s.getPort());
+		new MonLogServer().add("Le Serveur vient de démarrer sur le port: " + s.getPort(), Level.INFO);
 
 		BufferedReader sysin = new BufferedReader(new InputStreamReader(
 				System.in));
@@ -327,9 +347,11 @@ public class Serveur extends WebSocketServer {
 			//s.sendToAll(in);
 
 			if (in.equals("exit")) {
+				new MonLogServer().add("Exit du serveur ", Level.WARNING);
 				s.stop();
 				break;
 			} else if (in.equals("restart")) {
+				new MonLogServer().add("Restart du serveur ", Level.WARNING);
 				s.stop();
 				s.start();
 				break;

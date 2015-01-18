@@ -17,6 +17,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import log.MonLogClient;
+import log.MonLogServer;
 import metier.Partie;
 import metierDAO.UserDAO;
 
@@ -56,8 +57,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 	public void onOpen(ServerHandshake handshakedata) {
 		System.out.println("opened connection");
 		send(JSONEncode.encodeConnect(userNickname));
-		// if you plan to refuse connection based on ip or httpfields overload:
-		// onWebsocketHandshakeReceivedAsClient
+		new MonLogServer().add("Connection ouverte", Level.INFO);
 	}
 
 	public void setConsole(boolean isConsole) {
@@ -244,7 +244,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 
 	
 	//Pour decommenter simplement rajouter // devant le /etoile de la ligne en dessous
-	///*
+	/*
 	  public static void main(String[] args) throws URISyntaxException,
 	  IOException {
 	  
@@ -289,7 +289,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 	 
 
 	//Pour commenter simplement => retirer le // sur ligne en dessous
-	 /*
+	 ///*
 	public static void main(String[] args) throws URISyntaxException,
 			IOException {
 		// ici authentification;
