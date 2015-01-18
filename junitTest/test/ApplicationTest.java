@@ -33,6 +33,9 @@ public class ApplicationTest {
 				User toto 		= new User ( uri );
 				User slip 		= new User ( uri );
 				
+				toto.setConsole(false);
+				slip.setConsole(false);
+				
 				if (null != server
 						&& null != toto
 						&& null != slip) {

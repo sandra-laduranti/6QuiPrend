@@ -15,3 +15,21 @@ Fri Jan 16 22:33:19 CET 2015 : Tentative d'inscription
 Fri Jan 16 22:33:35 CET 2015 : Connection à la base réussie
 Fri Jan 16 22:33:38 CET 2015 : Inscription échouée
 Fri Jan 16 22:48:01 CET 2015 : Application lancée :)
+Sun Jan 18 16:59:18 CET 2015 : Tentative d'inscription
+Sun Jan 18 16:59:34 CET 2015 : Connection à la base réussie
+Sun Jan 18 16:59:40 CET 2015 : Tentative de connexion
+Sun Jan 18 17:00:05 CET 2015 : Récupération du compte depuis la base de données (après authentification)
+Sun Jan 18 17:00:21 CET 2015 : Tentative de connexion
+Sun Jan 18 17:00:27 CET 2015 : Récupération du compte depuis la base de données (après authentification)
+Sun Jan 18 17:00:42 CET 2015 : Tentative de connexion
+Sun Jan 18 17:00:51 CET 2015 : Récupération du compte depuis la base de données (après authentification)
+Sun Jan 18 17:02:03 CET 2015 : Application lancée :)
+Sun Jan 18 17:02:05 CET 2015 : Tentative de connexion
+Sun Jan 18 17:02:12 CET 2015 : Connection à la base réussie
+Sun Jan 18 17:02:12 CET 2015 : Récupération du compte depuis la base de données (après authentification)
+Sun Jan 18 17:04:30 CET 2015 : Application lancée :)
+Sun Jan 18 17:04:32 CET 2015 : Tentative de connexion
+Sun Jan 18 17:04:38 CET 2015 : Connection à la base réussie
+Sun Jan 18 17:04:38 CET 2015 : Récupération du compte depuis la base de données (après authentification)
+Sun Jan 18 17:04:40 CET 2015 : Connecté !
+Sun Jan 18 17:04:49 CET 2015 : La partie Nom de partie commence !
