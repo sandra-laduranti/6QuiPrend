@@ -2,6 +2,7 @@ package log;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 public class MonLogClient extends MonLog {
 		
@@ -23,7 +24,7 @@ public class MonLogClient extends MonLog {
 				dossier.mkdir();
 			}
 		} catch (SecurityException e) {
-			new MonLogClient().add(e.getMessage());
+			new MonLogClient().add(e.getMessage(), Level.SEVERE);
 		}
 	}
 	

@@ -5,15 +5,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
+import java.util.logging.Level;
 
 public abstract class MonLog {
 		
 	File fichier;   // package car les classes filles n'utilisent pas le même fichier (constructeurs différents)
 	private BufferedWriter writer;
 	
-	public void add(String texte){
+	public void add(String texte, Level level){
 		
-		String texte_avec_date_heure = new Date().toString()+" : "+texte;
+		String texte_avec_date_heure = new Date().toString()+" : ["+level.getName()+"] "+texte;
 		FileWriter fw = null;
 		try {
 			if(fichier!=null){
@@ -22,7 +23,7 @@ public abstract class MonLog {
 				writer.write(texte_avec_date_heure+"\n");
 			}
 		} catch (IOException e) {
-			new MonLogClient().add(e.getMessage());
+			new MonLogClient().add(e.getMessage(), Level.SEVERE);
 		} finally {
 				try {
 					if(writer != null) writer.close();

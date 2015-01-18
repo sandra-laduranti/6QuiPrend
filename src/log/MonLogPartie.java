@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.logging.Level;
 
 import metier.Partie;
 
@@ -37,7 +38,7 @@ public class MonLogPartie extends MonLog {
 				dossier.mkdir();
 			}
 		} catch (SecurityException e) {
-			new MonLogClient().add(e.getMessage());
+			new MonLogClient().add(e.getMessage(), Level.SEVERE);
 		}
 	}
 	
