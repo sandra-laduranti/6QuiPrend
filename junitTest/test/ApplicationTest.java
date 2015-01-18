@@ -1,24 +1,27 @@
 package test;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.net.URI;
+import java.util.HashMap;
 
+import metier.Partie;
+
+import org.java_websocket.WebSocket;
 import org.junit.Test;
 
 import utils.JSONEncode;
-
 import communication.Serveur;
 import communication.User;
 
 public class ApplicationTest {
-
+	
 	@Test
 	public void test () {
 		try
 		{
 			int port 	= 12345;
-			String url 	= "ws://localhost" + Integer.toString( port );
+			String url 	= "ws://localhost:" + Integer.toString( port );
 			URI uri 	= new URI ( url );
 	
 			if (null != uri
@@ -42,6 +45,10 @@ public class ApplicationTest {
 					System.out.println( "Test : Launching server" );
 					server.start();
 					
+					System.out.println( "Test : Users connects ...");
+					toto.connect();
+					slip.connect();
+					
 					System.out.println( "Test : toto sends createParty" );
 					toto.send(
 							JSONEncode.encodeCreatePartie(
@@ -55,10 +62,39 @@ public class ApplicationTest {
 					System.out.println( "Test : slip joins toto Party" );
 					slip.send(JSONEncode.encodeJoinParty(
 							slip.getUserNickname(),
-							1)
-					);
+							1));
 					
-					System.out.println( server.getParties() );
+					HashMap <Integer, Partie> serverMap = server.getParties();
+					HashMap<String, WebSocket> playersMap = server.getPlayers();
+					StringBuilder serverRes = new StringBuilder();
+					StringBuilder playerRes = new StringBuilder();
+					if(null != serverMap
+							&& null != playersMap
+							&& null != serverRes
+							&& null != playerRes)
+					{
+						serverRes.append( "Parties : [" );
+						playerRes.append( "Players : [" );
+						for (Integer i: serverMap.keySet()) {
+							serverRes.append( Integer.toString(i) );
+							serverRes.append( "," );
+							serverRes.append( serverMap.get(i) );
+							serverRes.append( System.lineSeparator() );
+						}
+						for (String i: playersMap.keySet()) {
+							playerRes.append( i );
+							playerRes.append( "," );
+							playerRes.append( playersMap.get(i) );
+							playerRes.append( System.lineSeparator() );
+						}
+						serverRes.append( "]" );
+						playerRes.append( "]" );
+					}
+					System.out.println( serverRes.toString() );
+					System.out.println( playerRes.toString() );
+
+					assertEquals ( 1, serverMap.size() );
+					assertEquals ( 2, playersMap.size() );
 				}
 			}
 		} catch ( Throwable e ) {
