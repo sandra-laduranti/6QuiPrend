@@ -66,32 +66,9 @@ public class ApplicationTest {
 					
 					HashMap <Integer, Partie> serverMap = server.getParties();
 					HashMap<String, WebSocket> playersMap = server.getPlayers();
-					StringBuilder serverRes = new StringBuilder();
-					StringBuilder playerRes = new StringBuilder();
-					if(null != serverMap
-							&& null != playersMap
-							&& null != serverRes
-							&& null != playerRes)
-					{
-						serverRes.append( "Parties : [" );
-						playerRes.append( "Players : [" );
-						for (Integer i: serverMap.keySet()) {
-							serverRes.append( Integer.toString(i) );
-							serverRes.append( "," );
-							serverRes.append( serverMap.get(i) );
-							serverRes.append( System.lineSeparator() );
-						}
-						for (String i: playersMap.keySet()) {
-							playerRes.append( i );
-							playerRes.append( "," );
-							playerRes.append( playersMap.get(i) );
-							playerRes.append( System.lineSeparator() );
-						}
-						serverRes.append( "]" );
-						playerRes.append( "]" );
-					}
-					System.out.println( serverRes.toString() );
-					System.out.println( playerRes.toString() );
+					
+					System.out.println( serverMap );
+					System.out.println( playersMap );
 
 					assertEquals ( 1, serverMap.size() );
 					assertEquals ( 2, playersMap.size() );

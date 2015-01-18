@@ -239,6 +239,10 @@ public class Partie extends Thread implements Serializable{
 					String userGetRow  = getListUser().get(indexCardChoosen);
 					System.out.println("Votre carte ne peut pas être placé");
 					System.out.println(userGetRow+" : Vous devez choisir la rangé a prendre entre 1 et 4");
+					serveur.selectRowToUser( getListUser().get(i), id );
+					synchronized(this) {
+						this.wait();
+					}
 					int selectRowCollect = GestionPartie.getRowToCollect();
 					int cptEssaie = 0;
 					while(!(selectRowCollect>0 && selectRowCollect<5) && cptEssaie<2){
