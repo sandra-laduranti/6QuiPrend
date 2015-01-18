@@ -171,8 +171,10 @@ public class Partie extends Thread implements Serializable{
 					}
 				}
 
-				System.out.println("Au tour de " + getListUser().get(i)+" : ");
-				valueCard = GestionPartie.selectValueCardToPlay();
+				if (i+1 < getListUser().size()) {
+					System.out.println("Au tour de " + getListUser().get(i+1)+" : ");
+				}
+				//valueCard = GestionPartie.selectValueCardToPlay();
 				valueCard = selectedCardByPlayer.get(selectedCardByPlayer.size() - 1).getValue();
 				boolean saisieCard = false;
 				int cptEssaie = 0;
