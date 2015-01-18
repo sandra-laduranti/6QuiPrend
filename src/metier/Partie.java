@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import communication.Serveur;
+
 import metier.Carte;
 
 public class Partie extends Thread implements Serializable{
@@ -25,6 +27,7 @@ public class Partie extends Thread implements Serializable{
 	private String nom;
 	private transient boolean isPlayerReach66=false;
 	private transient boolean isInGame;
+	private Serveur serveur;
 
 	public Partie(String nom, int nbJoueurs, boolean isProMode, String userNickname){
 		this.listCard=new ArrayList<Carte>();
@@ -53,6 +56,10 @@ public class Partie extends Thread implements Serializable{
 		}
 	}
 
+	public void setServeur(Serveur serveur){
+		this.serveur = serveur;
+	}
+	
 	public void setId(int id){
 		this.id = id;
 	}
@@ -62,6 +69,7 @@ public class Partie extends Thread implements Serializable{
 		try {
 			synchronized (this) {
 				while(getListUser().size()<nbJoueursMax){
+					serveur.sendMessageListPlayers(getListUser(),"En attente de joueurs...");
 					System.out.println("En attente de joueur...");
 					this.wait();
 				}

@@ -58,6 +58,13 @@ public class Serveur extends WebSocketServer {
 		String mess = JSONEncode.encodeMessage(message);
 		players.get(nickName).send(mess);
 	}
+	
+	/* send un message a une liste de joueur */
+	public void sendMessageListPlayers(List<String> nickNames, String message){
+		for(String joueur:nickNames){
+			sendMessage(joueur, message);
+		}
+	}
 
 	/* Send la liste des cartes de l'user pour qu'il puisse choisir les cartes à jouer */
 	public void sendCardToUser(String nickName, int[] cards, int idPartie){
@@ -98,12 +105,12 @@ public class Serveur extends WebSocketServer {
 		int idParty;
 		if (parties.isEmpty()) {
 			idParty = 1;
-			parties.put(idParty, party);
 		} else {
 			idParty = parties.size() + 1;
-			party.setId(idParty);
-			parties.put(idParty, party);
+			party.setId(idParty);		
 		}
+		parties.put(idParty, party);
+		party.setServeur(this);
 		party.start();
 		System.out.println("New party: " + party.getName() + " create");
 	}
@@ -163,7 +170,7 @@ public class Serveur extends WebSocketServer {
 		case Flag.QUIT_PARTIE:
 			break;
 		case Flag.REFRESH_LIST_PARTIES:
-			System.out.println("quitP");
+			System.out.println("refresh");
 			break;
 		case "getList":
 			System.out.println("getList");
