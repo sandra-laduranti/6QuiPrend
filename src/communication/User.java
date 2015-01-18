@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.logging.Level;
 
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -39,7 +40,9 @@ public class User extends WebSocketClient implements Comparable<User> {
 
 	private int currentBeef;
 
-	private boolean isConsole = true;
+	private boolean isConsole = false;
+	private static FenetrePrincipale fenetre;
+	private static Object sync;
 
 	public User(URI serverUri, Draft draft) {
 		super(serverUri, draft);
@@ -107,8 +110,11 @@ public class User extends WebSocketClient implements Comparable<User> {
 	// voir comment faire pour que l'ui recup l'info? Synchronize? appeler une
 	// méthode de l'ui?
 	public void recupListPartie(String message) {
-		ArrayList<Partie> parties = JSONDecode
-				.decodeRefreshListePartie(message);
+		ArrayList<Partie> parties = JSONDecode.decodeRefreshListePartie(message);
+		fenetre.setListe_parties_affichees(parties);
+		synchronized (sync) {
+			sync.notify();
+		}
 	}
 
 	// donne la liste des cartes et send celle choisie
@@ -238,36 +244,52 @@ public class User extends WebSocketClient implements Comparable<User> {
 
 	
 	//Pour decommenter simplement rajouter // devant le /etoile de la ligne en dessous
-	/*
+	///*
 	  public static void main(String[] args) throws URISyntaxException,
 	  IOException {
 	  
-	  // Ce bloc sert uniquement à avoir un affichage des éléments plus //
-	  "jolie" try { for (LookAndFeelInfo info :
-	  UIManager.getInstalledLookAndFeels()) { if
-	  ("Nimbus".equals(info.getName())) {
-	  UIManager.setLookAndFeel(info.getClassName()); break; } } } catch
-	  (Exception e) { new MonLogClient() .add(
-	  "If Nimbus is not available, you can set the GUI to another look and feel."
-	  ); }
-	  
-	  Object sync = new Object(); FenetrePrincipale fenetre = new
-	  FenetrePrincipale(sync);
-	  
-	  synchronized (sync) { try { sync.wait(); } catch (InterruptedException e)
-	  { new MonLogClient().add(e.getMessage()); } }
-	  
-	  try { User usr = new User(new URI("ws://localhost:12345")); usr.userId =
-	  fenetre.getIdUser(); usr.userNickname = fenetre.getNomUser();
-	  usr.connect(); new MonLogClient().add("Bienvenue " + usr.userNickname +
-	  " !"); } catch (URISyntaxException e) { new
-	  MonLogClient().add(e.getMessage()); }
+	  // Ce bloc sert uniquement à avoir un affichage des éléments plus "jolie" 
+		  try { 
+				for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+					if ("Nimbus".equals(info.getName())) {
+						  UIManager.setLookAndFeel(info.getClassName()); 
+						  break; 
+					} 
+				} 
+				
+			} catch (Exception e) { 
+				new MonLogClient().add("If Nimbus is not available, you can set the GUI to another look and feel.",Level.SEVERE); 
+			}
+				  
+				  
+			sync = new Object(); 
+			fenetre = new FenetrePrincipale(sync);
+			  
+			synchronized (sync) { 
+				try { 
+					sync.wait(); 
+				} catch (InterruptedException e){
+					new MonLogClient().add(e.getMessage(),Level.SEVERE);
+				}
+			}
+
+			try{
+				User usr = new User(new URI("ws://localhost:12345"));
+				usr.userId = fenetre.getIdUser();
+				usr.userNickname = fenetre.getNomUser();
+				fenetre.setUser(usr);
+				usr.connect();
+				new MonLogClient().add("Bienvenue "+usr.userNickname+" !",Level.FINE);
+			} catch (URISyntaxException e) {
+				new MonLogClient().add(e.getMessage(),Level.SEVERE);
+			}
+
 	  
 	  } //*/
 	 
 
 	//Pour commenter simplement => retirer le // sur ligne en dessous
-	// /*
+	 /*
 	public static void main(String[] args) throws URISyntaxException,
 			IOException {
 		// ici authentification;
@@ -280,19 +302,17 @@ public class User extends WebSocketClient implements Comparable<User> {
 		usr.userId = random.nextInt();
 		usr.userNickname = "toto" + usr.userId;
 		usr.connect();
-		
+
 		System.out.println("bienvenue " + usr.userNickname);
 
-		usr.refreshListPartie();
-		
-		System.out.println("voulez vous créer une partie? tapez a. Pour rejoindre une partie, tapez b");
 		BufferedReader sysin = new BufferedReader(new InputStreamReader(
 				System.in));
+		while (true) {
 			String in = sysin.readLine();
 			if (in.equals("a")) {
 				System.out.println("send create");
 				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname
-						+ "Party", 2, true, usr.userNickname));
+						+ "Party", 3, true, usr.userNickname));
 			}
 			if (in.equals("b")) {
 				System.out.println("send join");
@@ -306,6 +326,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 				System.out.println("send join");
 				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 2));
 			}
+		}
 	}
 	// */
 

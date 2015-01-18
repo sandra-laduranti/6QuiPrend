@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 
@@ -39,7 +40,7 @@ public class UserDAO {
 				
 				// Une fois que l'on a récupéré l'id du compte
 				if(result!= null && result.first()==true){
-					new MonLogClient().add("Récupération du compte depuis la base de données (après authentification)");
+					new MonLogClient().add("Récupération du compte depuis la base de données (après authentification)",Level.FINE);
 					return result.getInt("id"); 				
 				} else { // aucun user existe avec ce login/mdp
                     JOptionPane.showMessageDialog(null,
@@ -68,7 +69,7 @@ public class UserDAO {
 				statement.setString(2, email);
 				statement.setString(3, encodedPasswd);
 				statement.executeUpdate();
-				new MonLogClient().add("Création du nouveau compte pour "+ nickname);
+				new MonLogClient().add("Création du nouveau compte pour "+ nickname,Level.INFO);
 
 				requete = "SELECT id FROM "+DatabaseUtils.TABLE_USER+" WHERE nickname = ?";
 				statement = DatabaseConnection.getInstance().prepareStatement(requete);
@@ -102,7 +103,7 @@ public class UserDAO {
 				ResultSet result = statement.executeQuery();
 				
 				if(result!= null && result.first()==true){ // Si y'a un résultat
-					new MonLogClient().add("Le login est bien unique");
+					new MonLogClient().add("Le login est bien unique",Level.FINE);
 					return true;
 				}
 			}

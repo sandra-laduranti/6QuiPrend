@@ -15,6 +15,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -96,6 +97,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 	private boolean boolClickMain = false; // Permet d'ignorer ou non le click d'une carte
 	private boolean boolClickLigne = false;
 	private boolean canJoinParty;
+	private List<Partie> liste_parties_affichees;
 
 	public FenetrePrincipale(Object sync){
 		
@@ -184,13 +186,23 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 	    this.repaint();
 	    
 	    log_client = new MonLogClient();
-	    log_client.add("Application lancée :)");
+	    log_client.add("Application lancée :)",Level.FINE);
 	    this.initWaitLayer();
 	}
 
 	
 	/// Changement d'interfaces
 	private void modifierInterfaceAfterConnexion(){
+		
+		/// TODO: FAUSSES PARTIES POUR TESTER
+		Partie p = new Partie("Nom de partie", 5, false, getNomUser());
+		p.addPlayer("Patrick");
+		p.addPlayer("Damien");
+		p.addPlayer("Sandra");
+		p.addPlayer("Nourdine");
+		liste_parties_affichees=new ArrayList<Partie>();
+		liste_parties_affichees.add(p);
+		
 		
 		ecrangauche.paintComponentWithoutImage();
 		
@@ -202,15 +214,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 	    panneau.setLayout(new BorderLayout());
 	    panneau.add(container_infos, BorderLayout.NORTH);
 	    
-	    /// TODO: FAUSSES PARTIES EN ATTENDANT
-	    final ArrayList<Partie> parties = new ArrayList<Partie>();
-		Partie p = new Partie("Nom de partie", 5, false, getNomUser());
-		p.addPlayer("Thomas");
-		p.addPlayer("Hugues");
-		p.addPlayer("Jean-Hubert");
-		p.addPlayer("Dimitrikovska");
-		parties.add(p);
-	    
 	    JPanel container_rafraichir = new JPanel();
 	    container_rafraichir.setOpaque(false);
 	    container_rafraichir.setBorder(new EmptyBorder(130,0,0,0));
@@ -220,11 +223,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try{
-//						user.sendTefreshPart
+//						user.refreshListPartie();
 					} catch (NullPointerException exc){
-						/// test
-						context.afficherToutesLesParties(parties);
-						log_client.add("Le client est à null (modifierInterfaceAfterConnexion, FenetrePrincipale)");
+						context.afficherToutesLesParties(liste_parties_affichees);
+						log_client.add("Le client est à null (modifierInterfaceAfterConnexion, FenetrePrincipale)",Level.WARNING);
 					}
 				}
 			});
@@ -242,11 +244,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 					FenetreCreationPartie fenetrecreation = new FenetreCreationPartie(context);
 					fenetrecreation.setVisible(true);
 					if(fenetrecreation.isSucceeded()){
-						log_client.add("Creation de la partie réussie");
+						log_client.add("Creation de la partie réussie",Level.FINE);
 						context.afficheSalonAttente(fenetrecreation.getNamePartie(),fenetrecreation.getNbMaxJoueurs(), context.getNomUser() );
 						user.sendCreationPartie(fenetrecreation.getNamePartie(),fenetrecreation.getNbMaxJoueurs(),fenetrecreation.getProMode(), context.getNomUser());
 			        } else {
-			        	log_client.add("Création de la partie échouée");
+			        	log_client.add("Création de la partie échouée",Level.WARNING);
 			        } 
 					
 				}
@@ -256,7 +258,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 		panneau.add(container_rafraichir, BorderLayout.CENTER);
 		panneau.addComposantEnBas(container_creer);
 		
-		context.afficherToutesLesParties(parties);
+		context.afficherToutesLesParties(liste_parties_affichees);
 		
 	}
 	
@@ -270,7 +272,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
     	container_all_parties.setOpaque(false);
     	
     	List<String> users;
-    	for(int x=0; x<12;x++)
+    	for(int x=0; x<14;x++) // 14 pour voir comment s'affichent les parties
     	for(int i=0; i<parties.size(); i++){ // On créer un carré par parties
     		users = parties.get(i).getListUser();
     		
@@ -300,23 +302,24 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 					public void actionPerformed(ActionEvent e) {
 						String[] description = ((JButton)e.getSource()).getName().split("::");
 						
-						try{
-							user.sendJoinParty(nomUser, Integer.parseInt(description[0]));
-						} catch (NumberFormatException nmbexc){
-							log_client.add(nmbexc.getMessage());
-						}
-						
-						synchronized (sync) {
-							try {
-								sync.wait();
-							} catch (InterruptedException e1) {
-								log_client.add(e1.getMessage());
-							}
-						}
+						// La demande au serveur pour rejoindre cette partie
+//						try{
+//							user.sendJoinParty(nomUser, Integer.parseInt(description[0]));
+//						} catch (NumberFormatException nmbexc){
+//							log_client.add(nmbexc.getMessage());
+//						}
+//						
+//						synchronized (sync) {
+//							try {
+//								sync.wait();
+//							} catch (InterruptedException e1) {
+//								log_client.add(e1.getMessage());
+//							}
+//						}
 							
 						// Ici, on attend que le serveur donne une réponse (il fera un setCanJoinParty, puis notify)
-						if(canJoinParty==true){
-							canJoinParty=false; // Pour une réutilisation
+//						if(canJoinParty==true){
+//							canJoinParty=false; // Pour une réutilisation
 							try{
 								String nomPartie = description[1];
 								int nbMax = Integer.parseInt(description[2]);
@@ -324,11 +327,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 								afficheSalonAttente(nomPartie, nbMax, participants);
 	
 							} catch (NumberFormatException nf){
-								log_client.add(nf.getMessage());
+								log_client.add(nf.getMessage(),Level.SEVERE);
 							}
-						} else {
-							
-						}
+//						} else {
+//							JOptionPane.showMessageDialog(FenetreInscription.this,
+//                                    "La partie n'est plus accessible.",
+//                                    "Impossible", 
+//                                    JOptionPane.ERROR_MESSAGE);
+//						}
 								
 					}
     			});
@@ -360,7 +366,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 		JLabel nom_texte;
 		if(nomsParticipants.length == nbMax){
 			nom_texte = new JLabel("<html><font color='black'><b><h1>Que la partie ... commence !</h1></b></font></html>");
-			log_client.add("La partie "+titre_partie+" commence !");
+			log_client.add("La partie "+titre_partie+" commence !",Level.INFO);
 			System.out.println("La partie "+titre_partie+" commence !");
 		} else {
 			nom_texte = new JLabel("<html><font color='black'><b><h2>Partie : "+titre_partie+
@@ -695,6 +701,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 		this.user.setUser(idUser,nomUser);
 	}
 	
+	public void setListe_parties_affichees(List<Partie> liste_parties_affichees) {
+		this.liste_parties_affichees = liste_parties_affichees;
+	}
+	
 	private void initWaitLayer() {  // Le popup d'attente
 		layerUI = new WaitLayerUI();
 		frame_wait = new JFrame();
@@ -785,30 +795,47 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 	public void actionPerformed(ActionEvent e) {
 
 		if(e.getActionCommand().equals(item_connexion.getText()) || e.getActionCommand().equals(bouton_connexion.getText())){
-			//Pour les tests, commenter les 3 lignes suivantes et laisser décommenté la 4 eme ligne
+
 			FenetreConnexion fenetreconnexion = new FenetreConnexion(context);
 			fenetreconnexion.setVisible(true);
 			if(fenetreconnexion.isSucceeded()){
-//			if(true){
+
 				synchronized (sync) {
 					sync.notify();
 				}
+				
+				while(user==null){
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {
+						log_client.add(e1.getMessage(),Level.SEVERE);
+					}
+				}
+				//user.refreshListPartie();
 		    	is_connected=true; // Flag
 		    	
 				// Réorganisation des menus
 				this.menu.remove(item_connexion); // Si la connexion à réussie, on l'enlève du menu
 				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
 				
-				log_client.add("Connecté !");
-				//// A DECOMMENTER
-				this.setNomUser("Julien");
-				this.setIdUser(5);
+				log_client.add("Connecté !",Level.FINE);
+				
+				// Attente de récupération des parties du serveur
+//				synchronized (sync) {
+//					try {
+//						while(liste_parties_affichees==null){
+//							sync.wait();
+//						}
+//					} catch (InterruptedException e1) {
+//						log_client.add(e1.getMessage());
+//					}
+//				}
 				
 				this.modifierInterfaceAfterConnexion();
 				
 	        } else {
 	        	is_connected=false;
-	        	log_client.add("Connexion échouée");
+	        	log_client.add("Connexion échouée",Level.SEVERE);
 	        }
 	    
 	    // Si c'est une déconnexion
@@ -832,7 +859,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
     			context.revalidate(); // A mettre toujours avant repaint
     			context.repaint(); // Mise à jour de la fenetre, a faire souvent lorsque changement
 			
-				log_client.add("Déconnecté :(");
+				log_client.add("Déconnecté :(",Level.INFO);
+				
     		}
 		} else if (e.getActionCommand().equals(bouton_inscription.getText())){
 			FenetreInscription fenetreinscription = new FenetreInscription(context);
@@ -841,17 +869,36 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 				synchronized (sync) {
 					sync.notify();
 				}
+
+				while(user==null){
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e1) {
+						log_client.add(e1.getMessage(),Level.SEVERE);
+					}
+				}
+				//user.refreshListPartie();
 		    	is_connected=true; // Flag pouvant servir plus tard
 		    	
 				// Réorganisation des menus
 				this.menu.remove(item_connexion); // Si la connexion à réussie, on l'enlève du menu
 				this.menu.add(item_deconnexion,0); // et on ajoute le bouton deconnexion
 				
-				log_client.add("Inscription réussie");
+				log_client.add("Inscription réussie",Level.FINE);
+				
+				synchronized (sync) {
+					try {
+						while(liste_parties_affichees==null){
+							sync.wait();
+						}
+					} catch (InterruptedException e1) {
+						log_client.add(e1.getMessage(),Level.SEVERE);
+					}
+				}
 				this.modifierInterfaceAfterConnexion();
 	        } else {
 	        	is_connected=false;
-	        	log_client.add("Inscription échouée");
+	        	log_client.add("Inscription échouée",Level.SEVERE);
 	        }
 			
 		////// ACTIONS DES BOUTONS D'ITEMS POUR TESTS	
@@ -882,7 +929,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 			int choix = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir quitter ?", "Quitter", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
     		if(choix == JOptionPane.OK_OPTION){
     			// TODO user.quittePartie()
-    			log_client.add("Fermeture de l'application");
+    			log_client.add("Fermeture de l'application",Level.INFO);
     			System.exit(0);
     		}
 			
@@ -892,13 +939,22 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 		this.repaint();
 	}
 
+	
 	@Override
 	public void windowClosing(WindowEvent e) {
-		log_client.add("Fermeture de la fenetre");
+		log_client.add("Fermeture de la fenetre",Level.INFO);
+		System.out.println("\n************************************************************************************************************************************************************\n"
+			   	   + "**************************************************** Fermeture du 6 Qui Prend ... **************************************************************************\n"
+				   + "****************************************************                              **************************************************************************\n"
+				   + "****************************************************         A Bientot            **************************************************************************\n"
+				   + "************************************************************************************************************************************************************");
 	}
 	
 	@Override
-	public void windowOpened(WindowEvent e) {}
+	public void windowOpened(WindowEvent e) {
+		context.revalidate();
+		context.repaint();
+	}
 
 	@Override
 	public void windowClosed(WindowEvent e) { }
@@ -910,10 +966,13 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 	public void windowDeiconified(WindowEvent e) {}
 
 	@Override
-	public void windowActivated(WindowEvent e) {}
+	public void windowActivated(WindowEvent e) {
+		context.revalidate();
+		context.repaint();
+	}
 
 	@Override
 	public void windowDeactivated(WindowEvent e) { }
-	
-	
+
+
 }

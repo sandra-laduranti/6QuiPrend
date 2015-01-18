@@ -3,6 +3,7 @@ package metierDAO;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 import javax.swing.JOptionPane;
 
@@ -29,9 +30,9 @@ public class DatabaseConnection {
 		    	try {
 		    		url += DatabaseUtils.BASE;
 			        connect = DriverManager.getConnection(url, user, passwd);
-			        new MonLogClient().add("Connection à la base réussie");
+			        new MonLogClient().add("Connection à la base réussie",Level.FINE);
 			    } catch (SQLException e) {
-			    	new MonLogClient().add("Problème d'accès à la base distante"+e.getMessage());
+			    	new MonLogClient().add("Problème d'accès à la base distante"+e.getMessage(),Level.SEVERE);
 			    	JOptionPane.showMessageDialog(null, "Message reçu : "+e.getMessage(), "Erreur de connexion à la base distante", JOptionPane.ERROR_MESSAGE);
 			    }
 	    	}

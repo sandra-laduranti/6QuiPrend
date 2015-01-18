@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -35,7 +36,7 @@ public class FenetreCreationPartie extends JDialog {
     public FenetreCreationPartie(final FenetrePrincipale context) {
 
     	super(context, "Nouvelle partie", true);
-    	new MonLogClient().add("Tentative de création d'une nouvelle partie");
+    	new MonLogClient().add("Tentative de création d'une nouvelle partie",Level.INFO);
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints cs = new GridBagConstraints();
         cs.fill = GridBagConstraints.HORIZONTAL;

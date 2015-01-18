@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -33,7 +34,7 @@ public class FenetreConnexion extends JDialog implements ActionListener{
 
     	super(context, "Login", true);
     	this.context = context;
-    	new MonLogClient().add("Tentative de connexion");
+    	new MonLogClient().add("Tentative de connexion",Level.INFO);
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints cs = new GridBagConstraints();
         cs.fill = GridBagConstraints.HORIZONTAL;

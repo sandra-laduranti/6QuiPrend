@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import javax.swing.JButton;
@@ -28,6 +29,7 @@ public class FenetreInscription extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private JTextField tfUsername;
     private JPasswordField pfPassword;
+    private JPasswordField pfPassword2;
 	private JTextField tfMail;
     private JButton btnInscription;
     private JButton btnCancel;
@@ -37,7 +39,7 @@ public class FenetreInscription extends JDialog {
     public FenetreInscription(final FenetrePrincipale context) {
 
     	super(context, "Inscription", true);
-    	new MonLogClient().add("Tentative d'inscription");
+    	new MonLogClient().add("Tentative d'inscription",Level.INFO);
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints cs = new GridBagConstraints();
         cs.fill = GridBagConstraints.HORIZONTAL;
@@ -67,15 +69,28 @@ public class FenetreInscription extends JDialog {
         panel.add(pfPassword, cs);
         panel.setBorder(new LineBorder(Color.GRAY));
         
-        // Mail
+     // Password
         cs.gridx = 0;
         cs.gridy = 4;
+        cs.gridwidth = 1;
+        panel.add(new JLabel("Confirmation : "), cs);
+
+        pfPassword2 = new JPasswordField(20);
+        cs.gridx = 1;
+        cs.gridy = 4;
+        cs.gridwidth = 2;
+        panel.add(pfPassword2, cs);
+        panel.setBorder(new LineBorder(Color.GRAY));
+        
+        // Mail
+        cs.gridx = 0;
+        cs.gridy = 5;
         cs.gridwidth = 1;
         panel.add(new JLabel("Mail : "), cs);
 
         tfMail = new JTextField(20);
         cs.gridx = 1;
-        cs.gridy = 4;
+        cs.gridy = 5;
         cs.gridwidth = 2;
         panel.add(tfMail, cs);
 
@@ -97,6 +112,12 @@ public class FenetreInscription extends JDialog {
             		JOptionPane.showMessageDialog(FenetreInscription.this,
                             "Votre login contient un ou plusieurs espaces\n"
                             + "Veuillez les retirer.",
+                            "Erreur", 
+                            JOptionPane.ERROR_MESSAGE);
+            		succeeded = false;
+            	} else if( ! getPassword().equals(pfPassword2) ){
+            		JOptionPane.showMessageDialog(FenetreInscription.this,
+                            "Vos mots de passes sont différents.",
                             "Erreur", 
                             JOptionPane.ERROR_MESSAGE);
             		succeeded = false;
