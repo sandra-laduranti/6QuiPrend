@@ -134,6 +134,9 @@ public class User extends WebSocketClient implements Comparable<User> {
 		case Flag.MESSAGE:
 			System.out.println(JSONDecode.decodeMessage(message));
 			break;
+		case Flag.PARTIE_COMMENCE:
+			System.out.println("La partie commence! Bon jeu :)");
+			break;
 		default:
 			System.out.println("Error: ce flag n'existe pas.");
 		}

@@ -60,9 +60,14 @@ public class Serveur extends WebSocketServer {
 	}
 	
 	/* send un message a une liste de joueur */
-	public void sendMessageListPlayers(List<String> nickNames, String message){
+	public void sendMessageListPlayers(List<String> nickNames, String message ,boolean withFlag){
 		for(String joueur:nickNames){
-			sendMessage(joueur, message);
+			if (false == withFlag){
+				sendMessage(joueur, message);
+			}
+			else{
+				players.get(joueur).send(message);
+			}
 		}
 	}
 

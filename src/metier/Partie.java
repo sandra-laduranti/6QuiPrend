@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import communication.Serveur;
+import org.json.JSONObject;
 
+import communication.Flag;
+import communication.Serveur;
 import metier.Carte;
 
 public class Partie extends Thread implements Serializable{
@@ -69,7 +71,7 @@ public class Partie extends Thread implements Serializable{
 		try {
 			synchronized (this) {
 				while(getListUser().size()<nbJoueursMax){
-					serveur.sendMessageListPlayers(getListUser(),"En attente de joueurs...");
+					serveur.sendMessageListPlayers(getListUser(),"Partie en attente de joueurs...",false);
 					System.out.println("En attente de joueur...");
 					this.wait();
 				}
@@ -78,6 +80,8 @@ public class Partie extends Thread implements Serializable{
 			e.printStackTrace();
 			System.out.println("Nombre de joueurs max non atteint");
 		}
+		JSONObject flag = new JSONObject();
+		//serveur.sendMessageListPlayers(getListUser(), flag.put("nomFlag", Flag.PARTIE_COMMENCE).toString(), true);
 		System.out.println("La partie commence ! Bon jeu");
 		startGame();
 	}
@@ -92,6 +96,7 @@ public class Partie extends Thread implements Serializable{
 			cptRound++;
 		}
 		//TODO : Revoir l'algo dans le cas ou y'a un egalite
+		//TODO: ajouter dans client methode "youlose" "youwin"
 		List<String> listWinnerAndLoser = GestionPartie.getWinnerAndLoser(getListUser());
 		for(String user : getListUser()){
 			if(user.equals(listWinnerAndLoser.get(0))){
@@ -339,20 +344,28 @@ public class Partie extends Thread implements Serializable{
 		return isProMode;
 	}
 
-	private void showGameArea(){
+	private String showGameArea(){
+		StringBuffer bf = new StringBuffer("");
+		bf.append("\n*****************************************\n");
 		System.out.println("\n*****************************************");
 		for(int r=0; r<rows.size();r++){
 			listCard = rows.get(r);
+			bf.append("          -----------------------------\n");
 			System.out.println("          -----------------------------");
+			bf.append("ligne "+(r+1)+" : \n");
 			System.out.print("ligne "+(r+1)+" : ");
 			for(Carte carte : listCard){
+				bf.append("| "+carte.getValue()+" | \n");
 				System.out.print("| "+carte.getValue()+" | ");
 			}
 			System.out.println();
+			bf.append("\n          -----------------------------\n");
 			System.out.println("          -----------------------------");
 
 		}
+		bf.append("*****************************************\n\n");
 		System.out.println("*****************************************\n");
+		return bf.toString();
 	}
 
 	private void currentBeefAllPlayers(){
