@@ -121,7 +121,7 @@ public class Partie extends Thread implements Serializable{
 	/*
 	 * TODO  : Ajout des println et d'un Scanner pour la saisie sur console
 	 */
-	private void initializeRound() throws InterruptedException{
+	private void initializeRound(){
 		this.listCard = GestionPartie.initializeDeck(nbJoueursMax, isProMode);
 		initializeRows();
 		String user = null;
@@ -246,7 +246,12 @@ public class Partie extends Thread implements Serializable{
 					System.out.println(userGetRow+" : Vous devez choisir la rangé a prendre entre 1 et 4");
 					serveur.selectRowToUser( getListUser().get(i), id );
 					synchronized(this) {
-						this.wait();
+						try {
+							this.wait();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 					int selectRowCollect = GestionPartie.getRowToCollect();
 					int cptEssaie = 0;
