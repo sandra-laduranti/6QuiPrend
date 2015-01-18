@@ -33,3 +33,7 @@ Sun Jan 18 17:04:38 CET 2015 : Connection à la base réussie
 Sun Jan 18 17:04:38 CET 2015 : Récupération du compte depuis la base de données (après authentification)
 Sun Jan 18 17:04:40 CET 2015 : Connecté !
 Sun Jan 18 17:04:49 CET 2015 : La partie Nom de partie commence !
+Sun Jan 18 21:17:53 CET 2015 : Tentative de connexion
+Sun Jan 18 21:17:59 CET 2015 : Connection à la base réussie
+Sun Jan 18 21:17:59 CET 2015 : Récupération du compte depuis la base de données (après authentification)
+Sun Jan 18 21:18:01 CET 2015 : Bienvenue Julien !
