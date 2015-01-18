@@ -61,7 +61,7 @@ public class UserDAO {
 		String encodedPasswd = Md5.encodeMd5(password);
 		try{
 			if(CONNECTION!=null){
-				requete = "INSERT INTO "+DatabaseUtils.TABLE_USER+" (nickname, email, password) VALUES (?, ?, ?)";
+				requete = "INSERT INTO "+DatabaseUtils.TABLE_USER+" (nickname, email, password, nbWin, nbLose) VALUES (?, ?, ?, 0, 0)";
 
 				statement = DatabaseConnection.getInstance().prepareStatement(requete);
 				statement.setString(1, nickname);		// Rempli le premier "?" avec une valeur
@@ -124,7 +124,8 @@ public class UserDAO {
 				statement.setInt(1, id);
 				ResultSet result = statement.executeQuery();
 				
-				return result.getInt("nbwin");
+				if(result!= null && result.first()==true) // Si y'a un résultat
+					return result.getInt("nbwin");
 			}
 		} catch(SQLException e){
 			return -1;
@@ -143,7 +144,8 @@ public class UserDAO {
 				statement.setInt(1, id);
 				ResultSet result = statement.executeQuery();
 				
-				return result.getInt("nblose");
+				if(result!= null && result.first()==true) // Si y'a un résultat
+					return result.getInt("nblose");
 			}
 		} catch(SQLException e){
 			return -1;

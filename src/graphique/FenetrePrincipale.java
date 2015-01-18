@@ -1,6 +1,7 @@
 package graphique;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -8,8 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,12 +36,13 @@ import log.MonLog;
 import log.MonLogClient;
 import metier.Carte;
 import metier.Partie;
+import metierDAO.UserDAO;
 import utils.EcranGauche;
 import utils.PanneauBordure;
 import communication.User;
 
 
-public class FenetrePrincipale extends JFrame implements ActionListener{
+public class FenetrePrincipale extends JFrame implements ActionListener, WindowListener{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -50,7 +52,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	private static final String texte_deconnexion = "Déconnexion";
 	private static final String texte_inscription = "Inscription";
 	private static final String texte_quitter = "Quitter";
-	
 	private static final String texte_rafraichir = "Rafraichir les parties";
 	private static final String texte_creerPartie = "Creer une nouvelle partie";
 	private FenetrePrincipale context;
@@ -61,12 +62,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	private JMenuItem item_deconnexion; // Apparait si connecté
 	private JMenuItem item_exit;
 	
+	/// Items pour les tests
 	private JMenu menu_test;
 	private JMenuItem item_choix_carte;
 	private JMenuItem item_choix_ligne;
 	private JMenuItem item_gagnant;
 	private JMenuItem item_perdant;
 	private JMenuItem item_tete_boeuf;
+	private JMenuItem item_cartes_pioches;
 	
 	// Connexion
 	private JButton bouton_connexion;
@@ -84,7 +87,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	private int idUser;
 	private String nomUser;
 	
-	private boolean debloqueur = false; // Permet de différencier si la sortie d'1 wait(timeout) est grace a notify ou temps écoulé (le Client va le modifier lors d'un notify)
 	public Object sync;
 	
 	// La fenetre d'attente
@@ -93,12 +95,12 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	
 	private boolean boolClickMain = false; // Permet d'ignorer ou non le click d'une carte
 	private boolean boolClickLigne = false;
+	private boolean canJoinParty;
 
 	public FenetrePrincipale(Object sync){
 		
 		this.context = this;  // Pour pouvoir utiliser notre instance de fenetreprincipale partout (methodes statics, listeners, classes ...) lorsque this ne fonctionne pas
-	    //TODO: quickfix sync on this
-		this.sync = this;
+	    this.sync = sync;
 		this.setTitle("6 Qui Prend");
 	    
 	    URL url_tmp = getClass().getResource("/images/logo 6QuiPrend.png");
@@ -132,11 +134,13 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		item_tete_boeuf = new JMenuItem("Tetes de boeufs");
 		item_gagnant = new JMenuItem("Gagnant");
 		item_perdant = new JMenuItem("Perdant");
+		item_cartes_pioches = new JMenuItem("Cartes piochées");
 		
 	    menu_test = new JMenu("Tests");
 	    menu_test.add(item_choix_carte);
 	    menu_test.add(item_choix_ligne);
 	    menu_test.add(item_tete_boeuf);
+	    menu_test.add(item_cartes_pioches);
 	    menu_test.add(item_gagnant);
 	    menu_test.add(item_perdant);
 	    menuBar.add(menu_test);
@@ -144,6 +148,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	    item_choix_carte.addActionListener(this);
 	    item_choix_ligne.addActionListener(this);
 	    item_tete_boeuf.addActionListener(this);
+	    item_cartes_pioches.addActionListener(this);
 	    item_gagnant.addActionListener(this);
 	    item_perdant.addActionListener(this);
 	    ///////// Fin menu pour tests
@@ -215,7 +220,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try{
-						//TODO: user.sendrafraichirParties();
+//						user.sendTefreshPart
 					} catch (NullPointerException exc){
 						/// test
 						context.afficherToutesLesParties(parties);
@@ -239,7 +244,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 					if(fenetrecreation.isSucceeded()){
 						log_client.add("Creation de la partie réussie");
 						context.afficheSalonAttente(fenetrecreation.getNamePartie(),fenetrecreation.getNbMaxJoueurs(), context.getNomUser() );
-//						user.creationPartie(fenetrecreation.getNamePartie(),fenetrecreation.getNbMaxJoueurs(),fenetrecreation.getProMode());
+						user.sendCreationPartie(fenetrecreation.getNamePartie(),fenetrecreation.getNbMaxJoueurs(),fenetrecreation.getProMode(), context.getNomUser());
 			        } else {
 			        	log_client.add("Création de la partie échouée");
 			        } 
@@ -281,9 +286,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 			
 			
 			JPanel container_bouton = new JPanel(); // Panel permettant de garder une taille raisonnable au bouton
+			container_bouton.setBorder(new EmptyBorder(20,0,0,0));
     			JButton bouton_rejoindre = new JButton("Rejoindre");
     			
-    			bouton_rejoindre.setName(parties.get(i).getNom()+"::"+parties.get(i).getNbJoueursMax());
+    			bouton_rejoindre.setName(parties.get(i).getId()+"::"+parties.get(i).getNom()+"::"+parties.get(i).getNbJoueursMax());
     			for(String user : parties.get(i).getListUser()){
     				bouton_rejoindre.setName(bouton_rejoindre.getName()+"::"+user);
     			}
@@ -292,42 +298,40 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 					
 					@Override
 					public void actionPerformed(ActionEvent e) {
+						String[] description = ((JButton)e.getSource()).getName().split("::");
+						
 						try{
-//							client.rejoindrePartie(context.getUser().getUserNickname(), ((JButton)e.getSource()).getName());
-							
-//					        System.out.println("start");
-//							layerUI.start();
-//							context.revalidate();
-//					        context.repaint();
-							
-//							if(debloqueur){
-								//System.out.println("Débloqué par un notify");
-								String[] description = ((JButton)e.getSource()).getName().split("::");
-								
-								// Ici, je crée la partie avec les infos enregistrées dans le bouton rejoindre (grace au split)
-								try{
-									String nomPartie = description[0];
-									int nbMax = Integer.parseInt(description[1]);
-									String[] participants = Arrays.copyOfRange(description, 2, description.length);
-									afficheSalonAttente(nomPartie, nbMax, participants);
-
-								} catch (NumberFormatException nf){
-									log_client.add(nf.getMessage());
-								}
-								
-								
-//								}
-//							} else {
-//								System.out.println("Temps écoulé");
-//							}
-
-						} catch (NullPointerException exc){
-							log_client.add("Le client est null (afficherToutesLesParties, FenetrePrincipale)");
-							
-							exc.getMessage();
+							user.sendJoinParty(nomUser, Integer.parseInt(description[0]));
+						} catch (NumberFormatException nmbexc){
+							log_client.add(nmbexc.getMessage());
 						}
+						
+						synchronized (sync) {
+							try {
+								sync.wait();
+							} catch (InterruptedException e1) {
+								log_client.add(e1.getMessage());
+							}
+						}
+							
+						// Ici, on attend que le serveur donne une réponse (il fera un setCanJoinParty, puis notify)
+						if(canJoinParty==true){
+							canJoinParty=false; // Pour une réutilisation
+							try{
+								String nomPartie = description[1];
+								int nbMax = Integer.parseInt(description[2]);
+								String[] participants = Arrays.copyOfRange(description, 3, description.length);
+								afficheSalonAttente(nomPartie, nbMax, participants);
+	
+							} catch (NumberFormatException nf){
+								log_client.add(nf.getMessage());
+							}
+						} else {
+							
+						}
+								
 					}
-				});
+    			});
     		container_bouton.add(bouton_rejoindre);
     		
 			container_one_partie.add(infos,BorderLayout.NORTH);
@@ -345,7 +349,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		panneau.removeAll();
 		panneau.add(this.initContainerInfo());
 		bouton_deconnexion.setVisible(false);
-		
 	
 		ecrangauche.setLayout(new BorderLayout());
 		JPanel description_partie = new JPanel(new GridLayout(10,1));
@@ -401,6 +404,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		
 		panneau.removeAll();
 		panneau.add(this.containerInfoDuringPartie(0));
+		
 //////////// POUR LES TESTS, ON CREE DE FAUSSES CARTES
 		List<ArrayList<Carte>> lignes_cartes = new ArrayList<ArrayList<Carte>>();
 		for(int i = 0; i<4; i++){
@@ -436,15 +440,15 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 			ligne.setLayout(new GridLayout(0,5,20,0));
 			ligne.setBackground(new Color(0,0,50,40));
 			for(int j=0; j< lignes_cartes.get(i).size(); j++){
-				JLabel bouton = new JLabel();
+				JLabel panel_carte = new JLabel();
 				if(j==0){
-					bouton.setBorder(new EmptyBorder(0,10,0,20));
+					panel_carte.setBorder(new EmptyBorder(0,10,0,20));
 				}
 				Carte c = lignes_cartes.get(i).get(j);
-				bouton.setIcon(new ImageIcon(c.getImageIcon().getImage().getScaledInstance(c.getImageIcon().getIconWidth()+8, 
+				panel_carte.setIcon(new ImageIcon(c.getImageIcon().getImage().getScaledInstance(c.getImageIcon().getIconWidth()+8, 
 															c.getImageIcon().getIconHeight()-15, java.awt.Image.SCALE_SMOOTH)));
 				
-				ligne.add(bouton);
+				ligne.add(panel_carte);
 				ligne.setName(i+1+"");
 			}
 			JPanel tasvide = new JPanel();
@@ -585,6 +589,31 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		ecrangauche.add(container_main);
 	}
 	
+
+	public void afficheCartePiochees(List<Carte> cartes){
+		Component c = this.getComponentByName(ecrangauche, "pioche");
+		if(c!=null) ecrangauche.remove(c);
+		
+		ecrangauche.setLayout(new BorderLayout());
+		
+		JPanel container_pioche = new JPanel(new BorderLayout()); // Maximum 10 joueurs, donc 5*2 cartes à afficher
+		container_pioche.setName("pioche");
+		container_pioche.setOpaque(false);
+		container_pioche.setPreferredSize(new Dimension(700, 700));
+		container_pioche.setBorder(new EmptyBorder(10,300,200,100));
+		JPanel container_cartes = new JPanel(new GridLayout(5, 2, 8 ,20));
+		container_cartes.setOpaque(false);
+		for(Carte carte : cartes){
+			JLabel dispCarte = new JLabel();
+			dispCarte.setIcon(new ImageIcon(carte.getImageIcon().getImage().getScaledInstance(carte.getImageIcon().getIconWidth()-10, 
+					carte.getImageIcon().getIconHeight()-40, java.awt.Image.SCALE_SMOOTH)));
+			dispCarte.setOpaque(false);
+			container_cartes.add(dispCarte);
+		}
+		container_pioche.add(container_cartes, BorderLayout.BEFORE_FIRST_LINE);
+		ecrangauche.add(container_pioche,BorderLayout.AFTER_LINE_ENDS);
+	}
+	
 	/**
 	 * affiche un popup avec le/les gagnant(s)
 	 * @param liste_nom
@@ -624,14 +653,26 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	                JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
+	
+	public void finishPartie(){
+		this.modifierInterfaceAfterConnexion();
+	}
 
 	
 	
 	///// Méthodes utiles
-	public void isNotify(boolean debloqueur) {
-		this.debloqueur = debloqueur;
+	private Component getComponentByName(JPanel container, String name) {
+		for(Component comp : container.getComponents()){
+			if(comp!=null && comp.getName()!=null && comp.getName().equals(name)){
+				return comp;
+			}
+		}
+		return null;
 	}
-
+	
+	public void setCanJoinParty(boolean can){
+		this.canJoinParty=can;
+	}
 	
 	public void setIdUser(int id) {
 		idUser = id;
@@ -708,8 +749,13 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		    infos.setOpaque(false);
 		    
 	        JLabel texte;
+	        int nbgagne = UserDAO.getWin(this.getIdUser());
+	        int nbperd = UserDAO.getWin(this.getIdUser());
+	        if(nbgagne== -1) nbgagne = 0;
+	        if(nbperd== -1) nbperd = 0;
 	        texte = new JLabel("<html><font color='black'><u>Compte</u> : "+
-	        		this.getNomUser()+"<br><br><br>Nombre de parties gagnées: "+0/*user.getNb_parties_gagnees()*/+"<br><br>Nombre de parties perdues : "+0/*user.getNb_parties_perdues()*/+"<br><br></font></html>");
+	        		this.getNomUser()+"<br><br><br>Nombre de parties gagnées: "+nbgagne+"<br><br>"
+	        				+ "Nombre de parties perdues : "+nbperd+"<br><br></font></html>");
 	    
 	        infos.add(texte,BorderLayout.NORTH); // texte en blanc
 		    infos.add(bouton_deconnexion,BorderLayout.SOUTH);
@@ -807,21 +853,36 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 	        	is_connected=false;
 	        	log_client.add("Inscription échouée");
 	        }
+			
+		////// ACTIONS DES BOUTONS D'ITEMS POUR TESTS	
 		} else if (e.getActionCommand().equals(item_choix_carte.getText())){
 			this.soumettreCarte();
 		} else if (e.getActionCommand().equals(item_choix_ligne.getText())){
 			this.soumettreLigne();
 		} else if (e.getActionCommand().equals(item_gagnant.getText())){
-			this.afficheGagnant("Julien","Patrick");
+			this.afficheGagnant("Julien","Patrick", "Nourdine", "Sandra", "Damien");
 		} else if (e.getActionCommand().equals(item_perdant.getText())){
-			this.affichePerdant("Aniela");
+			this.affichePerdant("Joueur");
 		} else if (e.getActionCommand().equals(item_tete_boeuf.getText())){	
 			panneau.remove(0);
 			panneau.add(this.containerInfoDuringPartie(15));
+		
+		} else if (e.getActionCommand().equals(item_cartes_pioches.getText())){
 			
+			List<Carte> cartes = new ArrayList<Carte>();
+			int hasard;
+			for(int i = 0; i<10; i++){
+				hasard=(int) (Math.random()*104)+1;
+				cartes.add(new Carte(hasard));
+			}
+			this.afficheCartePiochees(cartes);
+			
+		
 		} else if (e.getActionCommand().equals(item_exit.getText())){
 			int choix = JOptionPane.showConfirmDialog(null, "Êtes-vous sûr de vouloir quitter ?", "Quitter", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
     		if(choix == JOptionPane.OK_OPTION){
+    			// TODO user.quittePartie()
+    			log_client.add("Fermeture de l'application");
     			System.exit(0);
     		}
 			
@@ -830,6 +891,29 @@ public class FenetrePrincipale extends JFrame implements ActionListener{
 		this.revalidate();
 		this.repaint();
 	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		log_client.add("Fermeture de la fenetre");
+	}
+	
+	@Override
+	public void windowOpened(WindowEvent e) {}
+
+	@Override
+	public void windowClosed(WindowEvent e) { }
+
+	@Override
+	public void windowIconified(WindowEvent e){ }
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {}
+
+	@Override
+	public void windowActivated(WindowEvent e) {}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) { }
 	
 	
 }

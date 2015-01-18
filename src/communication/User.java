@@ -209,76 +209,89 @@ public class User extends WebSocketClient implements Comparable<User> {
 		// if the error is fatal then onClose will be called additionally
 	}
 
-	// julien mdp
+	/**
+	 * Envoie au serveur la partie qui vient d'être crée, par le joueur nomUser
+	 * @param namePartie
+	 * @param nbMaxJoueurs
+	 * @param proMode
+	 * @param nomUser
+	 */
+	public void sendCreationPartie(String namePartie, int nbMaxJoueurs,
+			boolean proMode, String nomUser) {
+		send(JSONEncode.encodeCreatePartie(namePartie, nbMaxJoueurs, proMode, nomUser));
+	}
 
-	// /*
+	/**
+	 * Demande au serveur si il peut rejoindre la partie
+	 * @param nomUser
+	 * @param parseInt
+	 */
+	public void sendJoinParty(String nomUser, int idParty) {
+		send(JSONEncode.encodeJoinParty(nomUser, idParty));
+	}
+
+
 	public static void main(String[] args) throws URISyntaxException,
 			IOException {
-		// ici authentification;
-		// fenetre.getId
-		// fenetre .getNickName
-//uri Fanfan: 192.168.1.29
-		User usr = new User(new URI("ws://192.168.1.29:12345"));
 		
-		Random random = new Random(System.nanoTime());
-		usr.userId = random.nextInt();
-		usr.userNickname = "toto" + usr.userId;
-		usr.connect();
-
-		System.out.println("bienvenue " + usr.userNickname);
-		
-		BufferedReader sysin = new BufferedReader(new InputStreamReader(
-				System.in));
-		while (true) {
-			String in = sysin.readLine();
-			if (in.equals("a")) {
-				System.out.println("send create");
-				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname
-						+ "Party", 2, true, usr.userNickname));
-			}
-			if (in.equals("b")) {
-				System.out.println("send join");
-				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 1));
-			}
-			if (in.equals("c")){
-				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname
-						+ "Party", 2, true, usr.userNickname));
-			}
-			if (in.equals("d")) {
-				System.out.println("send join");
-				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 2));
-			}
-			// usr.sendWithFlag(in,"titi");
+		// Ce bloc sert uniquement à avoir un affichage des éléments plus "jolie"
+		try { 
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+				if ("Nimbus".equals(info.getName())) {
+					  UIManager.setLookAndFeel(info.getClassName()); 
+					  break; 
+				} 
+			} 
+		} catch (Exception e) { 
+			new MonLogClient().add("If Nimbus is not available, you can set the GUI to another look and feel."); 
 		}
+			  
+			  
+		Object sync = new Object(); 
+		FenetrePrincipale fenetre = new FenetrePrincipale(sync);
+		  
+		synchronized (sync) { 
+			try { 
+				sync.wait(); 
+			} catch (InterruptedException e){
+				new MonLogClient().add(e.getMessage());
+			}
+		}
+
+		try{
+			User usr = new User(new URI("ws://localhost:12345"));
+			usr.userId = fenetre.getIdUser();
+			usr.userNickname = fenetre.getNomUser();
+			usr.connect();
+			new MonLogClient().add("Bienvenue "+usr.userNickname+" !");
+		} catch (URISyntaxException e) {
+			new MonLogClient().add(e.getMessage());
+		}
+
+//		BufferedReader sysin = new BufferedReader(new InputStreamReader(
+//				System.in));
+//		while (true) {
+//			String in = sysin.readLine();
+//			if (in.equals("a")) {
+//				System.out.println("send create");
+//				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname
+//						+ "Party", 2, true, usr.userNickname));
+//			}
+//			if (in.equals("b")) {
+//				System.out.println("send join");
+//				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 1));
+//			}
+//			if (in.equals("c")){
+//				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname
+//						+ "Party", 2, true, usr.userNickname));
+//			}
+//			if (in.equals("d")) {
+//				System.out.println("send join");
+//				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 2));
+//			}
+//			// usr.sendWithFlag(in,"titi");
+//		}
 	}// */
 
-	// code déjà bien assez galère a debug sans que j'ai à fouiller 10000 ans au
-	// milieu de l'ui pour trouver ce que je veux
-	/*
-	 * public static void main( String[] args ) throws URISyntaxException,
-	 * IOException {
-	 * 
-	 * 
-	 * try { for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-	 * if ("Nimbus".equals(info.getName())) {
-	 * UIManager.setLookAndFeel(info.getClassName()); break; } } } catch
-	 * (Exception e) { // If Nimbus is not available, you can set the GUI to
-	 * another look and feel. }
-	 * 
-	 * Object sync = new Object(); FenetrePrincipale fenetre = new
-	 * FenetrePrincipale(sync);
-	 * 
-	 * synchronized (sync) { try { sync.wait(); } catch (InterruptedException e)
-	 * { new MonLogClient().add(e.getMessage());
-	 * System.out.println(e.getMessage()); } } User user = null; try { user =
-	 * new User( new URI( "ws://localhost:12345" )); } catch (URISyntaxException
-	 * e1) { e1.printStackTrace(); } user.connect(); fenetre.setUser(user); int
-	 * id = fenetre.getIdUser();
-	 * 
-	 * BufferedReader sysin = new BufferedReader( new InputStreamReader(
-	 * System.in ) ); while(true){ String in = null; try { in =
-	 * sysin.readLine(); } catch (IOException e) { // TODO Auto-generated catch
-	 * block e.printStackTrace(); } user.sendWithFlag(in,"titi"); } }//
-	 */
 
 }
