@@ -158,7 +158,7 @@ public class Partie extends Thread implements Serializable{
 					arrPlayerCards.add(comptes.get(getListUser().get(i)).get(j).getValue());
 					j++;
 				}
-				System.out.println("]");
+				System.out.println("] ");
 
 				serveur.sendCardToUser(getListUser().get(i), arrPlayerCards, id);
 
