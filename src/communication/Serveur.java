@@ -156,7 +156,6 @@ public class Serveur extends WebSocketServer {
 		
 		for(Entry<String, WebSocket> entry:players.entrySet()){
 			if (entry.getValue().equals(conn)){
-				//removePlayer
 				res = entry.getKey();
 				if (res != null){
 					Partie party = getWichParty(res);
@@ -164,6 +163,7 @@ public class Serveur extends WebSocketServer {
 						party.removePlayer(res);
 						players.remove(res);
 						if (party.getListUser().size() < 2){
+							System.out.println("partie annulée!");
 							sendMessageListPlayers(party.getListUser(), "plus assez de joueurs, partie annulée", false);
 							parties.remove(party.getId());
 						}

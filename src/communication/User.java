@@ -217,7 +217,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 		// ici authentification;
 		// fenetre.getId
 		// fenetre .getNickName
-
+//uri Fanfan: 192.168.1.29
 		User usr = new User(new URI("ws://192.168.1.29:12345"));
 		
 		Random random = new Random(System.nanoTime());
@@ -239,6 +239,14 @@ public class User extends WebSocketClient implements Comparable<User> {
 			if (in.equals("b")) {
 				System.out.println("send join");
 				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 1));
+			}
+			if (in.equals("c")){
+				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname
+						+ "Party", 2, true, usr.userNickname));
+			}
+			if (in.equals("d")) {
+				System.out.println("send join");
+				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 2));
 			}
 			// usr.sendWithFlag(in,"titi");
 		}
