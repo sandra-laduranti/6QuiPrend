@@ -14,10 +14,18 @@ import communication.User;
 
 public class JSONEncode {
 
-		public static JSONObject encodeCarte(){
-			return null;
+		public static String encodeCarte(String nickName, int value, int idParty){
+			JSONObject flag = new JSONObject();
+			
+			flag.put("nomFlag", Flag.SEND_CARTE);
+			flag.put("nickName", nickName);
+			flag.put("value", value);
+			flag.put("idParty", idParty);
+			
+			return flag.toString();
 		}
 		
+		/* Obsolete */
 		public static JSONObject encodeListPartie(ArrayList<Partie> liste){
 			JSONObject flag = new JSONObject();
 			JSONArray  arr = new JSONArray();
@@ -80,6 +88,22 @@ public class JSONEncode {
 			return flag.toString();
 			
 		}
+		
+		public static String encodeSendCards(int[] cards, int idPartie){
+			JSONObject flag = new JSONObject();
+			JSONArray cardsArr = new JSONArray();
+			
+			flag.put("nomFlag", Flag.SEND_CARTE);
+			flag.put("idPartie", idPartie);
+			for(int c: cards){
+				JSONObject tmp = new JSONObject();
+				cardsArr.put(tmp.put("value",c));
+			}
+			flag.put("arr",cardsArr);
+			return flag.toString();
+		}
+		
+		
 		
 		public static String encodeJoinParty(String nickName, int idParty){
 			JSONObject flag = new JSONObject();

@@ -17,6 +17,7 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.json.JSONObject;
 
 import utils.JSONDecode;
 import utils.JSONEncode;
@@ -24,13 +25,13 @@ import utils.JSONEncode;
 public class Serveur extends WebSocketServer {
 
 	private HashMap<Integer, Partie> parties;
-	private List<PlayerConnect> playerConnect;
+ 	private HashMap<String, WebSocket> players;
 
 	/** Constructeurs privés */
 	public Serveur(int port) throws UnknownHostException {
 		super(new InetSocketAddress(port));
 		parties = new HashMap<Integer, Partie>();
-		playerConnect = new ArrayList<PlayerConnect>();
+		players = new HashMap<String, WebSocket>();
 	}
 
 	/** Instance unique non préinitialisée */
@@ -51,9 +52,33 @@ public class Serveur extends WebSocketServer {
 		}
 		return INSTANCE;
 	}
-	
-	
 
+	/* Send un message à l'user concerné pour simple affichage*/
+	public void sendMessage(String nickName, String message){
+		String mess = JSONEncode.encodeMessage(message);
+		players.get(nickName).send(mess);
+	}
+
+	/* Send la liste des cartes de l'user pour qu'il puisse choisir les cartes à jouer */
+	public void sendCardToUser(String nickName, int[] cards, int idPartie){
+		String mess = JSONEncode.encodeSendCards(cards, idPartie);
+		players.get(nickName).send(mess);
+	}
+	
+	/* set dans la partie la carte choisie par le joueur pour le tour */
+	public void sendCardToPartie(String message){
+		JSONObject obj = new JSONObject(message);
+		int idParty = obj.getInt("idParty");
+		int value = obj.getInt("value");
+		
+		Partie part = parties.get(idParty);
+		
+		//TODO: ajouter le notify pour reveiller le thread
+		part.addSelectedCard(new Carte(value));
+		//part.notify();
+		
+	}
+	
 	@Override
 	public void onOpen(WebSocket conn, ClientHandshake handshake) {
 		System.out.println(conn.getRemoteSocketAddress().getAddress()
@@ -122,8 +147,8 @@ public class Serveur extends WebSocketServer {
 
 		switch (flag) {
 		case Flag.ON_CONNECT:
-			playerConnect.add(new PlayerConnect(conn, JSONDecode
-					.decodeConnect(message)));
+			players.put(JSONDecode
+					.decodeConnect(message), conn);
 			break;
 		case Flag.REJOINDRE_PARTIE:
 			joinPartie(conn,message);
@@ -131,6 +156,9 @@ public class Serveur extends WebSocketServer {
 		case Flag.CREATION_PARTIE:
 			createPartie(message);
 			System.out.println("newP");
+			break;
+		case Flag.SEND_CARTE:
+			sendCardToPartie(message);
 			break;
 		case Flag.QUIT_PARTIE:
 			break;

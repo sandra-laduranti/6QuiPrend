@@ -20,6 +20,7 @@ public class JSONDecode {
 		return(testObj.getString("nomFlag"));
 	}
 	
+	//TODO: corriger faux avec la nouvelle implémentation de user
 	public static ArrayList<Partie> decodeListPartie(String List) {
 		ArrayList<Partie> liste = new ArrayList<Partie>();
 		JSONObject testObj = new JSONObject(List);
@@ -56,6 +57,22 @@ public class JSONDecode {
 
 		return liste;
 	}
+	
+	public static ArrayList<Integer> decodeSendCards(String message){
+		JSONObject messageObj = new JSONObject(message);
+		ArrayList<Integer> cards = new ArrayList<Integer>();
+
+		JSONArray arr = messageObj.getJSONArray("arr");
+		cards.add(messageObj.getInt("idPartie"));
+		for (int i = 0; i < arr.length(); i++) {
+			JSONObject tmp = new JSONObject(arr.getJSONObject(i));
+			cards.add(tmp.getInt("value"));
+		}
+
+		return cards;
+	}
+	
+	
 	
 	public static Partie decodeCreatePartie(String message){
 	
