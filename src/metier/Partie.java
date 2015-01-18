@@ -160,7 +160,7 @@ public class Partie extends Thread implements Serializable{
 					j++;
 				}
 				System.out.println("] ");
-
+				
 				serveur.sendCardToUser(getListUser().get(i), arrPlayerCards, id);
 				synchronized(selectedCardByPlayer){
 					try {

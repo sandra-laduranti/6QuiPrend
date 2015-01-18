@@ -91,7 +91,10 @@ public class Serveur extends WebSocketServer {
 		if(null != part)
 		{
 			part.addSelectedCard(new Carte(value));
-			part.getSelectedCardByPlayer().notify();
+			List<Carte> list = part.getSelectedCardByPlayer();
+			synchronized(list) {
+				list.notify();
+			}
 		}
 	}
 	
@@ -116,8 +119,8 @@ public class Serveur extends WebSocketServer {
 			idParty = 1;
 		} else {
 			idParty = parties.size() + 1;
-			party.setId(idParty);		
 		}
+		party.setId(idParty);
 		parties.put(idParty, party);
 		party.setServeur(this);
 		party.start();
