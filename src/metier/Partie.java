@@ -81,6 +81,7 @@ public class Partie extends Thread implements Serializable{
 
 	@Override
 	public void run() {
+		logPartie.add("La partie "+id+" a été créé", Level.INFO);
 		try {
 			synchronized (this) {
 				while(getListUser().size()<nbJoueursMax){
