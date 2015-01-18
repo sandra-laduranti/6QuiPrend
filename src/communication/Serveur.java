@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import metier.Carte;
 import metier.Partie;
@@ -129,11 +130,41 @@ public class Serveur extends WebSocketServer {
 				+ " entered the room!");
 	}
 
+	
+	// Recherche dans la liste de toutes les Parties si le joueur y est présent
+	public Partie getWichParty(String joueur){
+		for(Entry<Integer, Partie> entry : parties.entrySet()) {
+			Partie part = entry.getValue();
+			List<String> joueurs = part.getListUser();
+			for(String nickName: joueurs){
+				if(joueur.equals(nickName)){
+					return part;
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	// récupère dans la map le nickName correspondant à la socket fermée
+	// supprime l'user de la liste des participants de la partie et previent les autres
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-		this.sendToAll( conn + " has left the game!");
-		// playerConnect.remove(); //TODO: remove du client dans la liste
-		System.out.println(conn + " has left the game!");
+		String res = conn.toString();
+		
+		for(Entry<String, WebSocket> entry:players.entrySet()){
+			if (entry.getValue().equals(conn)){
+				//removePlayer
+				res = entry.getKey();
+				if (res != null){
+					Partie party = getWichParty(res);
+					party.removePlayer(res);
+					players.remove(res);
+					sendMessageListPlayers(party.getListUser(), res + "has left the game", false);
+				}
+			}
+		}
+		System.out.println(res + " has left the game!");
 	}
 
 	public void createPartie(String message) {

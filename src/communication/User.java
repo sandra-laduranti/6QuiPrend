@@ -202,7 +202,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 		// fenetre.getId
 		// fenetre .getNickName
 
-		User usr = new User(new URI("ws://localhost:12345"));
+		User usr = new User(new URI("ws://192.168.1.29:12345"));
 		
 		Random random = new Random(System.nanoTime());
 		usr.userId = random.nextInt();
