@@ -9,18 +9,24 @@ import javax.swing.JOptionPane;
 
 import log.MonLogClient;
 
+/**
+ * 
+ * @author Julien M
+ *
+ */
 public class DatabaseConnection {
 	  
-	private static String url = "jdbc:mysql://37.59.110.237:3306/"; // ici 3306 correspond au port que MYSQL Installer m'a désigné (ça peut être un autre pour vous)
+	private static String url = "jdbc:mysql://37.59.110.237:3306/";
 	private static String user = "remote";
-	private static String passwd = "dantoncul"; // Ca c'est les miens
+	private static String passwd = "dantoncul"; // Identifiants de la base sur le serveur de Damien
 	private volatile static Connection connect;
 	
 	// constructeur privé car c'est un singleton
 	private DatabaseConnection(){ }
 
 	/**
-	 * 
+	 * Retourne une instance de la connexion (Design Pattern Singleton), avec la technique du double checking+volatile, donc
+	 * thread-safe.
 	 * @return
 	 */
 	public static Connection getInstance(){

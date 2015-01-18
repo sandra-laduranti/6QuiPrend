@@ -9,16 +9,16 @@ import java.util.logging.Level;
  * @author Julien M
  *
  */
-public class MonLogClient extends MonLog {
+public class MonLogServer extends MonLog {
 		
 	
-	public MonLogClient(){
+	public MonLogServer(){
 		
-		File dossier = new File("Log"+File.separator+"client");
+		File dossier = new File("Log"+File.separator+"server");
 		try {
 			if( dossier.exists() && dossier.isDirectory() ){
 		
-				super.fichier = new File("Log"+File.separator+"client"+File.separator+"client_log.txt");
+				super.fichier = new File("Log"+File.separator+"server"+File.separator+"server_log.txt");
 				try {
 					fichier.createNewFile();
 				} catch (IOException e) {
@@ -29,7 +29,7 @@ public class MonLogClient extends MonLog {
 				dossier.mkdir();
 			}
 		} catch (SecurityException e) {
-			new MonLogClient().add(e.getMessage(), Level.SEVERE);
+			new MonLogServer().add(e.getMessage(), Level.SEVERE);
 		}
 	}
 	

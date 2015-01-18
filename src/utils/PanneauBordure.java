@@ -36,7 +36,11 @@ public class PanneauBordure extends JPanel{
     private Color _backgroundColor = EcranGauche.BACKGROUND_CENTER;
     private Image image;
 
-
+    /**
+     * Panel spécial avec un fond provenant d'une image, un contour amélioré, et permettant l'affichage vertical des composants.
+     * @param context
+     * @param liste_compo
+     */
 	public PanneauBordure(FenetrePrincipale context, JComponent ... liste_compo) {
 		this.setLayout(new GridLayout(3,1));
 		this.setPreferredSize(new Dimension(190,this.getPreferredSize().height));

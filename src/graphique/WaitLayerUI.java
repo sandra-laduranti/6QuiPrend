@@ -16,9 +16,18 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import javax.swing.plaf.LayerUI;
 
+/**
+ * Permet d'afficher une fenetre, type dialog, d'attente.
+ * @author Julien M
+ *
+ */
 public class WaitLayerUI extends LayerUI<JPanel> implements ActionListener {
 
-    private boolean mIsRunning;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private boolean mIsRunning;
     private boolean mIsFadingOut;
     private Timer mTimer;
     private int mAngle;
@@ -92,7 +101,8 @@ public class WaitLayerUI extends LayerUI<JPanel> implements ActionListener {
         mIsFadingOut = true;
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public void applyPropertyChange(PropertyChangeEvent pce, JLayer l) {
         if ("tick".equals(pce.getPropertyName())) {
             l.repaint();

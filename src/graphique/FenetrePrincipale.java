@@ -42,7 +42,11 @@ import utils.EcranGauche;
 import utils.PanneauBordure;
 import communication.User;
 
-
+/**
+ * 
+ * @author Julien M
+ *
+ */
 public class FenetrePrincipale extends JFrame implements ActionListener, WindowListener{
 
 	private static final long serialVersionUID = 1L;
@@ -595,7 +599,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 		ecrangauche.add(container_main);
 	}
 	
-
+	/**
+	 * Affiche toutes les cartes des participants dans le coin droit
+	 * @param cartes
+	 */
 	public void afficheCartePiochees(List<Carte> cartes){
 		Component c = this.getComponentByName(ecrangauche, "pioche");
 		if(c!=null) ecrangauche.remove(c);
@@ -660,13 +667,28 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 		}
 	}
 	
+	/**
+	 * Affiche et traite la fin de la partie
+	 */
 	public void finishPartie(){
+		JOptionPane.showMessageDialog(this,
+                "La partie est terminée !",
+                "Fini !", 
+                JOptionPane.INFORMATION_MESSAGE);
 		this.modifierInterfaceAfterConnexion();
 	}
 
 	
 	
 	///// Méthodes utiles
+	
+	/**
+	 * Méthodes permettant de retourner, s'il existe, le composant de nom name (passé en paramètre) contenu 
+	 * dans le container (passé en paramètre).
+	 * @param container
+	 * @param name
+	 * @return
+	 */
 	private Component getComponentByName(JPanel container, String name) {
 		for(Component comp : container.getComponents()){
 			if(comp!=null && comp.getName()!=null && comp.getName().equals(name)){
@@ -705,6 +727,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 		this.liste_parties_affichees = liste_parties_affichees;
 	}
 	
+	/**
+	 * Initialise la fenêtre d'attente de réponses du serveur
+	 */
 	private void initWaitLayer() {  // Le popup d'attente
 		layerUI = new WaitLayerUI();
 		frame_wait = new JFrame();
@@ -750,6 +775,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 		return bouton_deconnexion;
 	}
 	
+	/**
+	 * Initialise la fenetre d'informations de l'utilisateur (située dans le panneau à droite)
+	 * @return
+	 */
 	private JPanel initContainerInfo() {
 		JPanel container_infos = new JPanel();
 		container_infos.setBorder(new EmptyBorder(20,15,0,20));
@@ -773,6 +802,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener, WindowL
 	    return container_infos;
 	}
 	
+	/**
+	 * Change le contenu de la fenetre d'info situé dans la bordure
+	 * @param nbTetesBoeuf
+	 * @return
+	 */
 	private JPanel containerInfoDuringPartie(int nbTetesBoeuf) {
 		JPanel container_infos = new JPanel();
 		container_infos.setBorder(new EmptyBorder(20,15,0,20));

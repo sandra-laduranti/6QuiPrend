@@ -18,6 +18,10 @@ public class EcranGauche extends JPanel {
     public static final Color BACKGROUND_HAUT_BAS      = new Color(36,163,199);
     public static final Color BACKGROUND_CENTER    = new Color(234,236,236);
 	
+    /**
+     * Panel spécial, contenant un fond en dégradé, ainsi qu'une image si elle est passé avec le setter.
+     * @param layout
+     */
     public EcranGauche(LayoutManager layout) {
         this.setLayout(layout);
     }
@@ -41,6 +45,9 @@ public class EcranGauche extends JPanel {
         
     }
 
+	/**
+	 * Permet de peindre l'écran gauche sans image
+	 */
 	public void paintComponentWithoutImage(){
     	this.image=null;
     	this.paintComponent(g);

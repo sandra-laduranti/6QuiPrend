@@ -20,6 +20,11 @@ import javax.swing.border.LineBorder;
 import log.MonLogClient;
 import metierDAO.UserDAO;
 
+/**
+ * 
+ * @author Julien M
+ *
+ */
 public class FenetreConnexion extends JDialog implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
@@ -30,6 +35,10 @@ public class FenetreConnexion extends JDialog implements ActionListener{
     private boolean succeeded = false;
     private FenetrePrincipale context;
 
+    /**
+     * Créer une fenetre d'authentification
+     * @param context
+     */
     public FenetreConnexion(final FenetrePrincipale context) {
 
     	super(context, "Login", true);
@@ -95,6 +104,10 @@ public class FenetreConnexion extends JDialog implements ActionListener{
         return new String(pfPassword.getPassword());
     }
 
+    /**
+     * Retourne vrai si la connexion s'est bien déroulée
+     * @return
+     */
     public boolean isSucceeded() {
         return succeeded;
     }

@@ -22,6 +22,11 @@ import javax.swing.border.LineBorder;
 
 import log.MonLogClient;
 
+/**
+ * 
+ * @author Julien M
+ *
+ */
 public class FenetreCreationPartie extends JDialog {
 
 	private static final long serialVersionUID = 1L;
@@ -33,6 +38,10 @@ public class FenetreCreationPartie extends JDialog {
     private JButton btnCancel;
     private boolean succeeded = false;
 
+    /**
+     * Créer une fenetre de remplissage de formulaire pour la création d'une partie
+     * @param context
+     */
     public FenetreCreationPartie(final FenetrePrincipale context) {
 
     	super(context, "Nouvelle partie", true);

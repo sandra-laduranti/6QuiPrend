@@ -8,6 +8,11 @@ import java.util.logging.Level;
 
 import metier.Partie;
 
+/**
+ * 
+ * @author Julien M
+ *
+ */
 public class MonLogPartie extends MonLog {
 	
 	public MonLogPartie(Partie partie){

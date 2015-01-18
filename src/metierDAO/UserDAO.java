@@ -11,10 +11,6 @@ import javax.swing.JOptionPane;
 import log.MonLogClient;
 import utils.Md5;
 
-/**
- * @(#) CompteDAO.java
- */
-
 public class UserDAO {
 	
 	private static final Connection CONNECTION = DatabaseConnection.getInstance();

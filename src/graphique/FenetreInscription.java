@@ -23,6 +23,11 @@ import javax.swing.border.LineBorder;
 import log.MonLogClient;
 import metierDAO.UserDAO;
 
+/**
+ * 
+ * @author Julien M
+ *
+ */
 public class FenetreInscription extends JDialog {
 
 	
@@ -36,6 +41,10 @@ public class FenetreInscription extends JDialog {
     private boolean succeeded = false;
     private boolean canceled = false;
 
+    /**
+     * Créer une fenetre avec un formulaire d'inscription, avec vérification de chaque champs et données.
+     * @param context
+     */
     public FenetreInscription(final FenetrePrincipale context) {
 
     	super(context, "Inscription", true);

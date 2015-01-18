@@ -7,11 +7,21 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.logging.Level;
 
+/**
+ * 
+ * @author Julien M
+ *
+ */
 public abstract class MonLog {
 		
 	File fichier;   // package car les classes filles n'utilisent pas le même fichier (constructeurs différents)
 	private BufferedWriter writer;
 	
+	/**
+	 * Ajoute un texte dans un fichier (fichier différent suivant le type réel de l'objet log instancié)
+	 * @param texte
+	 * @param level
+	 */
 	public void add(String texte, Level level){
 		
 		String texte_avec_date_heure = new Date().toString()+" : ["+level.getName()+"] "+texte;
