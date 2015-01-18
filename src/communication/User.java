@@ -57,7 +57,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 	public void onOpen(ServerHandshake handshakedata) {
 		System.out.println("opened connection");
 		send(JSONEncode.encodeConnect(userNickname));
-		new MonLogServer().add("Connection ouverte", Level.INFO);
+		new MonLogClient().add("Connection ouverte", Level.INFO);
 	}
 
 	public void setConsole(boolean isConsole) {
@@ -105,6 +105,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 		flag.put("nomFlag", Flag.REFRESH_LIST_PARTIES);
 		flag.put("nickName", userNickname);
 		send(flag.toString());
+		new MonLogClient().add("Mise à jour de la liste des parties ", Level.INFO);
 	}
 
 	// voir comment faire pour que l'ui recup l'info? Synchronize? appeler une
@@ -126,6 +127,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 		int idParty = cards.get(0);
 		cards.remove(0);
 		Scanner sysin = new Scanner(System.in);
+		new MonLogClient().add("Le client choisit une carte ", Level.INFO);
 
 		System.out.print("[ ");
 		for (Integer c : cards) {
@@ -142,10 +144,12 @@ public class User extends WebSocketClient implements Comparable<User> {
 			if (cards.contains(cardValue)) {
 				System.out.println("Vous avez choisi la carte" + cardValue);
 				send(JSONEncode.encodeCarte(userNickname, cardValue, idParty));
+				new MonLogClient().add("Le client a choisi la carte "+cardValue, Level.INFO);
 				return;
 			} else {
 				System.out
 						.println("Erreur cette Carte n'existe pas dans votre main");
+				new MonLogClient().add("Carte non existante dans votre main "+cardValue, Level.WARNING);
 			}
 		}
 		cardValue = Collections.max(cards);
@@ -153,6 +157,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 				.println("Vous vous êtes trompé de carte trop de fois! Nous choisissons la carte "
 						+ cardValue + " à votre place :D ");
 		send(JSONEncode.encodeCarte(userNickname, cardValue, idParty));
+		new MonLogClient().add("Une carte a été choisie pour vous, qui est la carte :"+cardValue, Level.WARNING);
 	}
 
 	public void chooseLine(int idPartie) {
@@ -160,6 +165,8 @@ public class User extends WebSocketClient implements Comparable<User> {
 		int row = 1;
 		System.out
 				.println("Votre carte ne peut être placée \n Choisissez une rangée à prendre entre 1 et 4");
+		new MonLogClient().add("Impossible de choisir la carte ", Level.INFO);
+		new MonLogClient().add("Envoie d'un message au client afin qu'il choisissent une rangée entre 1 et 4 ", Level.INFO);
 
 		while (true) {
 			if (isConsole == true) {
@@ -170,8 +177,10 @@ public class User extends WebSocketClient implements Comparable<User> {
 			if (row < 1 || row > 4) {
 				System.out
 						.println("la ligne que vous avez choisi n'existe pas! Merci de rentrer une valeur entre 1 et 4");
+				new MonLogClient().add("Rangée non existante", Level.WARNING);
 			} else {
 				send(JSONEncode.encodeSendRow(userNickname, idPartie, row));
+				new MonLogClient().add("Le joueur a choisi la rangée "+row, Level.WARNING);
 				return;
 			}
 		}
@@ -185,22 +194,27 @@ public class User extends WebSocketClient implements Comparable<User> {
 		switch (flag) {
 		case Flag.SEND_CARTE:
 			chooseCard(JSONDecode.decodeSendCards(message));
+			new MonLogClient().add("Envoie de la carte choisie ", Level.INFO);
 			break;
 		case Flag.SEND_LIGNE:
 			JSONObject json = new JSONObject(message.trim());
 			chooseLine(json.getInt("idParty"));
+			new MonLogClient().add("Envoie de la ligne choisie ", Level.INFO);
 			break;
 		case Flag.MESSAGE:
 			System.out.println(JSONDecode.decodeMessage(message));
 			break;
 		case Flag.PARTIE_COMMENCE:
 			System.out.println("La partie commence! Bon jeu :)");
+			new MonLogClient().add("La partie commence ! Bon jeu ", Level.INFO);
 			break;
 		case Flag.REFRESH_LIST_PARTIES:
 			recupListPartie(message);
+			new MonLogClient().add("Mise à jour de la liste des parties ", Level.INFO);
 			break;
 		default:
 			System.out.println("Error: ce flag n'existe pas.");
+			new MonLogClient().add("Flag non existante ", Level.SEVERE);
 		}
 	}
 
@@ -230,6 +244,11 @@ public class User extends WebSocketClient implements Comparable<User> {
 			boolean proMode, String nomUser) {
 		send(JSONEncode.encodeCreatePartie(namePartie, nbMaxJoueurs, proMode,
 				nomUser));
+		if(proMode){
+			new MonLogClient().add("Création de la partie "+namePartie+" avec "+nbMaxJoueurs+" en mode pro", Level.INFO);
+		} else {
+			new MonLogClient().add("Création de la partie "+namePartie+" avec "+nbMaxJoueurs+" en mode pro", Level.INFO);
+		}
 	}
 
 	/**
@@ -240,6 +259,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 	 */
 	public void sendJoinParty(String nomUser, int idParty) {
 		send(JSONEncode.encodeJoinParty(nomUser, idParty));
+		new MonLogClient().add("Le joueur "+nomUser+" a rejoint la partie "+idParty, Level.INFO);
 	}
 
 	
