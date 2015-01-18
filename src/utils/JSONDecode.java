@@ -45,6 +45,29 @@ public class JSONDecode {
 		
 		return liste;
 	}
+	
+	//Creer une liste de copies de parties destinée à l'affichage de l'ui
+		public static ArrayList<Partie> decodeRefreshListePartie(String json) {
+			ArrayList<Partie> parties = new ArrayList<Partie>();
+			JSONObject testObj = new JSONObject(json);
+			JSONArray arr = testObj.getJSONArray("arr");
+
+			for (int i = 0; i < arr.getJSONArray(0).length(); i++) {
+				JSONObject objTMP =  arr.getJSONArray(0).getJSONObject(i);
+				int id = objTMP.getInt("id");
+				String nom = objTMP.getString("nom");
+				int nbJoueur = objTMP.getInt("nbJoueur");
+				Boolean isPromode = objTMP.getBoolean("isPromode");
+				String users = objTMP.getString("usersNickName");
+				String delims = "[:]";
+				String[] usersNickName = users.split(delims);
+				
+				parties.add(new Partie(id,nom,nbJoueur,isPromode,usersNickName));
+			}
+			
+			return parties;
+		}
+
 
 	public static ArrayList<Carte> decodeListCarte(JSONObject jsonList) {
 		String flag = jsonList.getString("nomFlag");

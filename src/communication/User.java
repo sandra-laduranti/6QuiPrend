@@ -95,6 +95,10 @@ public class User extends WebSocketClient implements Comparable<User> {
 			return 0;
 		}
 	}
+	
+	public void refreshListPartie(){
+		
+	}
 
 	// donne la liste des cartes et send celle choisie
 	// le nombre d'essai est limité à 5 pour ne pas faire attendre indéfiniment

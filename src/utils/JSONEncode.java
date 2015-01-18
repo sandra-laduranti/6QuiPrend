@@ -25,30 +25,28 @@ public class JSONEncode {
 			return flag.toString();
 		}
 		
-		/* Obsolete */
-		public static JSONObject encodeListPartie(ArrayList<Partie> liste){
+		/*Créer un string contenant toutes les parties et les joueurs inscrits */
+		public static String refreshListPartie(ArrayList<Partie> parties){
 			JSONObject flag = new JSONObject();
 			JSONArray  arr = new JSONArray();
 			
-			flag.put("nomFlag", "flagtrululu");
-			for(Partie partie : liste){
+			flag.put("nomFlag", Flag.REFRESH_LIST_PARTIES);
+			for(Partie partie: parties){
 				JSONObject tmp = new JSONObject();
 				StringBuffer usersBuff = new StringBuffer("");
 				tmp.put("id", partie.getId());
 				tmp.put("nom", partie.getNom());
 				tmp.put("nbJoueur", partie.getNbJoueursMax());
 				tmp.put("isPromode", partie.isProMode() );
-				//List<User> users = partie.getListUser();
-				JSONArray arrUser = new JSONArray();
-				/*for(User user : users){
-					usersBuff.append(":" + user.getUserNickname());
-				}*/
-				tmp.put("users", usersBuff.toString());
+				List<String> joueurs = partie.getListUser();
+				for(String nickName: joueurs){
+					usersBuff.append(nickName+":");
+				}
+				tmp.put("usersNickName",usersBuff);
 				arr.put(tmp);
 			}
-			flag.append("arr", arr);
-			
-			return flag;
+			flag.put("arr", arr);
+			return flag.toString();
 		}
 		
 		

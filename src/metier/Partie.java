@@ -46,7 +46,7 @@ public class Partie extends Thread implements Serializable{
 
 
 	// Utilisé uniquement par la socket pour afficher les informations utiles à l'affichage (tout n'étant pas nécessaire)
-	public Partie(int id, String nom, int nbJoueurs, boolean isProMode, List<String> userNicknames){
+	public Partie(int id, String nom, int nbJoueurs, boolean isProMode, String[] userNicknames){
 		this.listCard=new ArrayList<Carte>();
 		this.nbJoueursMax = nbJoueurs;
 		this.isProMode = isProMode;
