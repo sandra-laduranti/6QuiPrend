@@ -107,10 +107,13 @@ public class Partie extends Thread implements Serializable{
 		List<String> listWinnerAndLoser = GestionPartie.getWinnerAndLoser(getListUser());
 		for(String user : getListUser()){
 			if(user.equals(listWinnerAndLoser.get(0))){
+				serveur.sendMessage(user, user+" (Winner) -> "+user+ " tete de boeufs \n");
 				System.out.println(user+" (Winner) -> "+user+ " tete de boeufs");
 			} else if (user.equals(listWinnerAndLoser.get(1))){
+				serveur.sendMessage(user, user+" (Loser) -> "+user+ " tete de boeufs");
 				System.out.println(user+" (Loser) -> "+user+ " tete de boeufs");
 			} else {
+				serveur.sendMessage(user, user+" -> "+user+" tete de boeufs");
 				System.out.println(user+" -> "+user+" tete de boeufs");
 
 			}
