@@ -241,7 +241,7 @@ public class Partie extends Thread implements Serializable{
 				int indexCardChoosen = selectedCardByPlayer.indexOf(cardToPlace);
 
 				if(GestionPartie.isPlusPetit(cardToPlace, fourLastCardRows)){
-					String userGetRow  = getListUser().get(indexCardChoosen);
+					String userGetRow  = getListUser().get(i);
 					System.out.println("Votre carte ne peut pas être placé");
 					System.out.println(userGetRow+" : Vous devez choisir la rangé a prendre entre 1 et 4");
 					serveur.sendMessage(getListUser().get(i), "Votre carte ne peut pas être placée\n Merci de choisir la rangée à prendre entre 1 et 4");

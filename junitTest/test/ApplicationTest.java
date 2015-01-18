@@ -63,6 +63,10 @@ public class ApplicationTest {
 							)
 					);
 					
+					synchronized(this) {
+						this.wait(1000);
+					}
+					
 					System.out.println( "Test : slip joins toto Party" );
 					slip.send(JSONEncode.encodeJoinParty(
 							slip.getUserNickname(),
@@ -80,6 +84,11 @@ public class ApplicationTest {
 
 					assertEquals ( 1, serverMap.size() );
 					assertEquals ( 2, playersMap.size() );
+					
+					synchronized(this) {
+						this.wait(1000);
+					}
+					
 				}
 			}
 		} catch ( Throwable e ) {

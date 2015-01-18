@@ -17,8 +17,6 @@ public class JSONEncode {
 		public static String encodeCarte(String nickName, int value, int idParty){
 			JSONObject flag = new JSONObject();
 			
-			System.out.println("\n\n\n\n\n MAFUCKINGIDDEMERDE********************* " + idParty +"*****************\n\n\n");
-			
 			flag.put("nomFlag", Flag.SEND_CARTE);
 			flag.put("nickName", nickName);
 			flag.put("value", value);

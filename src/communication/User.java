@@ -148,7 +148,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 			chooseCard(JSONDecode.decodeSendCards(message));
 			break;
 		case Flag.SEND_LIGNE:
-			JSONObject json = new JSONObject("message");
+			JSONObject json = new JSONObject(message.trim());
 			chooseLine(json.getInt("idParty"));
 			break;
 		case Flag.MESSAGE:
