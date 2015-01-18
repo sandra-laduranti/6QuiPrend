@@ -25,6 +25,7 @@ import utils.JSONEncode;
 public class Serveur extends WebSocketServer {
 
 	private HashMap<Integer, Partie> parties;
+	public 	HashMap<Integer, Partie> getParties () { return parties; }
  	private HashMap<String, WebSocket> players;
 
 	/** Constructeurs privés */
