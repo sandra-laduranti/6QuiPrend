@@ -25,7 +25,7 @@ import utils.JSONEncode;
 public class Serveur extends WebSocketServer {
 
 	private HashMap<Integer, Partie> parties;
-	public 	HashMap<Integer, Partie> getParties () { return parties; }
+	public 	HashMap<Integer, Partie> getParties () { return parties; } //Test
  	private HashMap<String, WebSocket> players;
 
 	/** Constructeurs privés */
@@ -88,7 +88,7 @@ public class Serveur extends WebSocketServer {
 		
 		//TODO: ajouter le notify pour reveiller le thread
 		part.addSelectedCard(new Carte(value));
-		//part.notify();
+		part.getSelectedCardByPlayer().notify();
 		
 	}
 	
@@ -101,9 +101,9 @@ public class Serveur extends WebSocketServer {
 
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-		this.sendToAll(conn + " has left the room!");
+		this.sendToAll( conn + " has left the game!");
 		// playerConnect.remove(); //TODO: remove du client dans la liste
-		System.out.println(conn + " has left the room!");
+		System.out.println(conn + " has left the game!");
 	}
 
 	public void createPartie(String message) {

@@ -95,8 +95,7 @@ public class User extends WebSocketClient implements Comparable<User> {
 	// ! premier element de la liste est l'id de la partie ! 
 	public void chooseCard(ArrayList<Integer> cards) {
 		int cardValue;
-		BufferedReader sysin = new BufferedReader(new InputStreamReader(
-				System.in));
+		Scanner sysin = new Scanner(System.in);
 		int idParty = cards.get(0);
 		cards.remove(0);
 		
@@ -106,19 +105,14 @@ public class User extends WebSocketClient implements Comparable<User> {
 		}
 		System.out.println(" ]");
 		for (int i = 0; i < 5; i++) {
-			try {
-				String in = sysin.readLine();
-				cardValue = Integer.parseInt(in);
-				if (cards.contains(cardValue)) {
-					send(JSONEncode.encodeCarte(userNickname,cardValue, idParty));
-					return;
-				}
-				else{
-					System.out.println("Erreur cette Carte n'existe pas dans votre main");
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			cardValue = sysin.nextInt();
+			if (cards.contains(cardValue)) {
+				System.out.println("Vous avez choisi la carte" + cardValue);
+				send(JSONEncode.encodeCarte(userNickname,cardValue, idParty));
+				return;
+			}
+			else{
+				System.out.println("Erreur cette Carte n'existe pas dans votre main");
 			}
 		}
 		cardValue = Collections.max(cards);

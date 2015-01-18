@@ -66,6 +66,7 @@ public class Partie extends Thread implements Serializable{
 		this.id = id;
 	}
 	
+	
 	@Override
 	public void run() {
 		try {
@@ -161,9 +162,18 @@ public class Partie extends Thread implements Serializable{
 				System.out.println("] ");
 
 				serveur.sendCardToUser(getListUser().get(i), arrPlayerCards, id);
+				synchronized(selectedCardByPlayer){
+					try {
+						wait();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 
 				System.out.println("Au tour de " + getListUser().get(i)+" : ");
 				valueCard = GestionPartie.selectValueCardToPlay();
+				valueCard = selectedCardByPlayer.get(selectedCardByPlayer.size() - 1).getValue();
 				boolean saisieCard = false;
 				int cptEssaie = 0;
 				while(!saisieCard && cptEssaie<2){
