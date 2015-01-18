@@ -49,9 +49,7 @@ public class ApplicationTest {
 					toto.connect();
 					slip.connect();
 					
-					synchronized(this) {
-						this.wait(1000);
-					}
+					Thread.sleep(1000);
 					
 					System.out.println( "Test : toto sends createParty" );
 					toto.send(
@@ -63,18 +61,14 @@ public class ApplicationTest {
 							)
 					);
 					
-					synchronized(this) {
-						this.wait(1000);
-					}
+					Thread.sleep(1000);
 					
 					System.out.println( "Test : slip joins toto Party" );
 					slip.send(JSONEncode.encodeJoinParty(
 							slip.getUserNickname(),
 							1));
 					
-					synchronized(this) {
-						this.wait(1000);
-					}
+					Thread.sleep(1000);
 					
 					HashMap <Integer, Partie> serverMap = server.getParties();
 					HashMap<String, WebSocket> playersMap = server.getPlayers();
@@ -85,9 +79,14 @@ public class ApplicationTest {
 					assertEquals ( 1, serverMap.size() );
 					assertEquals ( 2, playersMap.size() );
 					
-					synchronized(this) {
-						this.wait(1000);
+					if (null != serverMap) {
+						Partie p = serverMap.get(0);
+						if(null != p) {
+							//TODO : check partie has 2 players, toto & slip
+						}
 					}
+					
+					Thread.sleep(1000);
 					
 				}
 			}
