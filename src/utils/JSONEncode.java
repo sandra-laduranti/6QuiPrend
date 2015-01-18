@@ -30,7 +30,7 @@ public class JSONEncode {
 			JSONObject flag = new JSONObject();
 			JSONArray  arr = new JSONArray();
 			
-			if (parties.isEmpty()){
+			if (null == parties){
 				return ("isEmpty");
 			}
 			flag.put("nomFlag", Flag.REFRESH_LIST_PARTIES);

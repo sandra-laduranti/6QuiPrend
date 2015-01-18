@@ -280,17 +280,19 @@ public class User extends WebSocketClient implements Comparable<User> {
 		usr.userId = random.nextInt();
 		usr.userNickname = "toto" + usr.userId;
 		usr.connect();
-
+		
 		System.out.println("bienvenue " + usr.userNickname);
 
+		usr.refreshListPartie();
+		
+		System.out.println("voulez vous créer une partie? tapez a. Pour rejoindre une partie, tapez b");
 		BufferedReader sysin = new BufferedReader(new InputStreamReader(
 				System.in));
-		while (true) {
 			String in = sysin.readLine();
 			if (in.equals("a")) {
 				System.out.println("send create");
 				usr.send(JSONEncode.encodeCreatePartie(usr.userNickname
-						+ "Party", 3, true, usr.userNickname));
+						+ "Party", 2, true, usr.userNickname));
 			}
 			if (in.equals("b")) {
 				System.out.println("send join");
@@ -304,7 +306,6 @@ public class User extends WebSocketClient implements Comparable<User> {
 				System.out.println("send join");
 				usr.send(JSONEncode.encodeJoinParty(usr.userNickname, 2));
 			}
-		}
 	}
 	// */
 

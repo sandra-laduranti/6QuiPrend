@@ -226,11 +226,16 @@ public class Serveur extends WebSocketServer {
 		String nickName = obj.getString("nickName");
 		
 		ArrayList<Partie> partiesEnCours = new ArrayList<Partie>();
+		if(parties.isEmpty()){
+			players.get(nickName).send(JSONEncode.refreshListPartie(null));
+		}
+		else{
 		for(Entry<Integer, Partie> entry : parties.entrySet()) {
 			Partie part = entry.getValue();
 			if (part.isInGame() == false){
 				partiesEnCours.add(part);
 			}
+		}
 		}
 		players.get(nickName).send(JSONEncode.refreshListPartie(partiesEnCours));
 	}
